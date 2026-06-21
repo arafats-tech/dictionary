@@ -4,7 +4,7 @@
 | --- | -------------- | ----------------------------------------- | -------------------------------------- |
 | 1   | Algorithm      | Step-by-step procedure to solve a problem | সমস্যা সমাধানের ধাপসমূহ                |
 | 2   | Function       | Reusable block of code                    | নির্দিষ্ট কাজের জন্য কোড ব্লক          |
-| 3   | Variable       | A named storage location for data         | ডেটা সংরক্ষণের চলক                     |
+| 3   | Variable       | Named storage location for data           | ডেটা সংরক্ষণের চলক                     |
 | 4   | Parameter      | Input defined in a function               | ফাংশনের ইনপুট নির্ধারণকারী             |
 | 5   | Argument       | Actual value passed to a function         | ফাংশনে পাঠানো প্রকৃত মান               |
 | 6   | Return         | Send a result back from a function        | ফলাফল ফেরত দেওয়া                      |
@@ -30,8 +30,8 @@
 | 26  | Inherit        | Acquire features from a parent class      | উত্তরাধিকারসূত্রে গ্রহণ করা            |
 | 27  | Encapsulation  | Hiding internal details                   | তথ্য আড়াল করে রাখা                    |
 | 28  | Abstraction    | Showing only essential details            | অপ্রয়োজনীয় তথ্য লুকিয়ে রাখা         |
-| 29  | Interface      | Contract for interaction                  | যোগাযোগের নিয়ম বা মাধ্যম              |
-| 30  | Framework      | Structure for software development        | সফটওয়্যার তৈরির কাঠামো                |
+| 29  | Interface      | Contract for interaction                  | যোগাযোগের নিয়ম                        |
+| 30  | Framework      | Structure for software development        | সফটওয়্যার উন্নয়নের কাঠামো            |
 | 31  | Library        | Collection of reusable code               | পুনঃব্যবহারযোগ্য কোডের সংগ্রহ          |
 | 32  | Dependency     | Required external component               | নির্ভরশীল উপাদান                       |
 | 33  | Repository     | Storage location for a project            | প্রজেক্ট সংরক্ষণের স্থান               |
