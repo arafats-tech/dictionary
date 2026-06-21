@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urdu Dictionary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #f5f4f1;
+      --surface:  #ffffff;
+      --border:   #e5e4e0;
+      --border2:  #efefed;
+      --text:     #111;
+      --text2:    #555;
+      --text3:    #999;
+      --hover:    #f9f8f6;
+      --accent:   #111;
+      --chip-bg:  #eeede9;
+      --chip-fg:  #444;
+      --mark:     #ffe58a;
+      --header-bg:#111;
+      --header-fg:#f5f4f1;
+    }
+    [data-theme="dark"] {
+      --bg:       #111;
+      --surface:  #1c1c1c;
+      --border:   #2a2a2a;
+      --border2:  #222;
+      --text:     #e8e6e1;
+      --text2:    #aaa;
+      --text3:    #555;
+      --hover:    #1f1f1f;
+      --accent:   #e8e6e1;
+      --chip-bg:  #252525;
+      --chip-fg:  #aaa;
+      --mark:     #6b5a00;
+      --header-bg:#000;
+      --header-fg:#e8e6e1;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 13px;
+      transition: background .2s, color .2s;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--header-bg);
+      color: var(--header-fg);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.1px; }
+    .header-left p  { font-family: 'Noto Serif Bengali', serif; font-size: 11px; color: #666; margin-top: 2px; }
+    [data-theme="dark"] .header-left p { color: #555; }
+
+    /* THEME TOGGLE */
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: none;
+      border: 1px solid #333;
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: var(--header-fg);
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color .2s;
+      white-space: nowrap;
+    }
+    .toggle:hover { border-color: #666; }
+    [data-theme="dark"] .toggle { border-color: #333; }
+
+    /* PAGE */
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      grid-template-areas:
+        "sidebar toolbar"
+        "sidebar meta"
+        "sidebar table";
+      gap: 0 20px;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .sidebar { grid-area: sidebar; }
+    .sidebar-inner {
+      position: sticky;
+      top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .box-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+
+    .stat-val { font-size: 26px; font-weight: 600; line-height: 1; }
+    .stat-sub { font-size: 11px; color: var(--text3); margin-top: 3px; font-family: 'Noto Serif Bengali', serif; }
+
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border2);
+      font-size: 12px;
+    }
+    .lang-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .lang-row:first-child { padding-top: 0; }
+    .lang-name { color: var(--text2); }
+    .lang-script { color: var(--text3); font-size: 10px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .chip {
+      font-size: 10px;
+      padding: 3px 8px;
+      background: var(--chip-bg);
+      color: var(--chip-fg);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s, color .15s;
+    }
+    .chip:hover { background: var(--accent); color: var(--bg); }
+
+    /* TOOLBAR */
+    .toolbar {
+      grid-area: toolbar;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap svg {
+      position: absolute; left: 10px; top: 50%;
+      transform: translateY(-50%); color: var(--text3); pointer-events: none;
+    }
+    input[type="search"] {
+      width: 100%;
+      padding: 8px 10px 8px 30px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    input[type="search"]:focus { border-color: var(--accent); }
+    input[type="search"]::placeholder { color: var(--text3); }
+    input[type="search"]::-webkit-search-cancel-button { display: none; }
+
+    select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text2);
+      outline: none;
+      cursor: pointer;
+    }
+    select:focus { border-color: var(--accent); }
+    select option { background: var(--surface); color: var(--text); }
+
+    /* META */
+    .meta {
+      grid-area: meta;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 7px;
+    }
+
+    /* TABLE */
+    .table-wrap { grid-area: table; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead tr { background: var(--hover); }
+    th {
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text3);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border2);
+      vertical-align: middle;
+      line-height: 1.4;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--hover); }
+
+    .num { color: var(--text3); font-size: 11px; width: 28px; }
+    .urdu-word { font-weight: 600; color: var(--text); }
+    .english { color: var(--text2); }
+    .bangla { font-family: 'Noto Serif Bengali', serif; color: var(--text3); font-size: 12px; }
+
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+    .empty { text-align: center; padding: 40px; color: var(--text3); }
+
+    footer {
+      text-align: center; padding: 16px;
+      font-size: 11px; color: var(--text3);
+      border-top: 1px solid var(--border);
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      .page {
+        grid-template-columns: 1fr;
+        grid-template-areas: "toolbar" "meta" "table" "sidebar";
+        padding: 14px 12px 48px;
+      }
+      .sidebar { margin-top: 16px; }
+      .sidebar-inner { position: static; flex-direction: row; flex-wrap: wrap; }
+      .box { flex: 1 1 130px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Urdu Dictionary</h1>
+    <p>উর্দু শব্দ — ইংরেজি ও বাংলায়</p>
+  </div>
+  <button class="toggle" id="theme-btn" onclick="toggleTheme()">
+    <svg id="theme-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <span id="theme-label">Light</span>
+  </button>
+</header>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="box">
+        <div class="box-label">শব্দ</div>
+        <div class="stat-val" id="total-count">18</div>
+        <div class="stat-sub">সংরক্ষিত</div>
+      </div>
+
+      <div class="box">
+        <div class="box-label">ভাষা</div>
+        <div class="lang-row"><span class="lang-name">Urdu</span><span class="lang-script">Roman</span></div>
+        <div class="lang-row"><span class="lang-name">English</span><span class="lang-script">Latin</span></div>
+        <div class="lang-row"><span class="lang-name">বাংলা</span><span class="lang-script">বর্ণ</span></div>
+      </div>
+
+      <div class="box">
+        <div class="box-label">Quick Pick</div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search" placeholder="শব্দ খুঁজুন…" autocomplete="off" />
+    </div>
+    <select id="sort">
+      <option value="default">Default</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+    </select>
+  </div>
+
+  <div class="meta" id="meta"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Urdu Word</th>
+          <th>English</th>
+          <th>বাংলা</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>Urdu Dictionary &mdash; উর্দু লুঘাত</footer>
+
+<script>
+  const words = [
+    { id:1,  urdu:"Musawir",       en:"Artist",                     bn:"শিল্পী" },
+    { id:2,  urdu:"Taabeer",       en:"Reflection / Interpretation", bn:"প্রতিফলন / ব্যাখ্যা" },
+    { id:3,  urdu:"Nukht-e-Nazar", en:"Perspective",                bn:"দৃষ্টিভঙ্গি" },
+    { id:4,  urdu:"Shiddat",       en:"Passion / Intensity",        bn:"গভীর আবেগ / তীব্রতা" },
+    { id:5,  urdu:"Nigaahon",      en:"Eyes / Gaze",                bn:"চোখ / দৃষ্টি" },
+    { id:6,  urdu:"Karam",         en:"Kindness / Grace",           bn:"দয়া / অনুগ্রহ" },
+    { id:7,  urdu:"Ahista",        en:"Slowly",                     bn:"ধীরে ধীরে" },
+    { id:8,  urdu:"Ghurbat",       en:"Exile",                      bn:"নির্বাসন" },
+    { id:9,  urdu:"Filhaal",       en:"At Present",                 bn:"আপাতত / বর্তমানে" },
+    { id:10, urdu:"Zehnaseeb",     en:"Fortunate / Blessed",        bn:"সৌভাগ্যবান" },
+    { id:11, urdu:"Betahasha",     en:"Wildly / Excessively",       bn:"অত্যধিকভাবে" },
+    { id:12, urdu:"Khairiyat",     en:"Well-being",                 bn:"কুশলতা" },
+    { id:13, urdu:"Dilkashi",      en:"Charm / Attraction",         bn:"আকর্ষণ" },
+    { id:14, urdu:"Justajoo",      en:"Quest / Pursuit",            bn:"অনুসন্ধান" },
+    { id:15, urdu:"Fitoor",        en:"Obsession",                  bn:"মোহ / আসক্তি" },
+    { id:16, urdu:"Darasal",       en:"In Fact / Actually",         bn:"আসলে / প্রকৃতপক্ষে" },
+    { id:17, urdu:"Khubiya",       en:"Qualities",                  bn:"গুণাবলি" },
+    { id:18, urdu:"Khamiya",       en:"Shortcomings",               bn:"ত্রুটি / দুর্বলতা" },
+  ];
+
+  // Theme
+  const html = document.documentElement;
+  const saved = localStorage.getItem('theme') || 'light';
+  setTheme(saved);
+
+  function setTheme(t) {
+    html.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    document.getElementById('theme-label').textContent = t === 'dark' ? 'Dark' : 'Light';
+    const icon = document.getElementById('theme-icon');
+    if (t === 'dark') {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    } else {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+  }
+  function toggleTheme() {
+    setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+
+  // Chips
+  const chipsEl = document.getElementById('chips');
+  words.forEach(w => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = w.urdu;
+    btn.onclick = () => { search.value = w.urdu; render(); };
+    chipsEl.appendChild(btn);
+  });
+
+  // Search & render
+  const tbody   = document.getElementById('tbody');
+  const search  = document.getElementById('search');
+  const sort    = document.getElementById('sort');
+  const meta    = document.getElementById('meta');
+  const totalEl = document.getElementById('total-count');
+
+  function hl(text, q) {
+    if (!q) return text;
+    const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  function render() {
+    const q = search.value.trim().toLowerCase();
+    let list = words.filter(w =>
+      !q || w.urdu.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
+    );
+    const s = sort.value;
+    if (s === 'az') list.sort((a,b) => a.en.localeCompare(b.en));
+    else if (s === 'za') list.sort((a,b) => b.en.localeCompare(a.en));
+
+    totalEl.textContent = list.length;
+    meta.textContent = `${list.length} টি শব্দ`;
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="4"><div class="empty">কোনো শব্দ পাওয়া যায়নি।</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(w => `
+      <tr>
+        <td class="num">${w.id}</td>
+        <td class="urdu-word">${hl(w.urdu, q)}</td>
+        <td class="english">${hl(w.en, q)}</td>
+        <td class="bangla">${hl(w.bn, q)}</td>
+      </tr>`).join('');
+  }
+
+  search.addEventListener('input', render);
+  sort.addEventListener('change', render);
+  render();
+</script>
+</body>
+</html>
