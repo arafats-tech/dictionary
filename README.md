@@ -1,20 +1,14 @@
-# CSE English Vocabulary Journey
+# CSE Dictionary
 
-Learning 50 CSE-related English words every day.
+Learning 50 Computer Science English words every day.
+
+## Vocabulary List
+
+- [Day 01](day-01.md)
+- [Day 02](day-02.md)
+- [Day 03](day-03.md)
 
 ## Progress
 
-- [ ] Day 01
-- [ ] Day 02
-- [ ] Day 03
-- [ ] Day 04
-- [ ] Day 05
-- [ ] Day 06
-- [ ] Day 07
-
-## Goal
-
-- Improve technical English
-- Understand documentation better
-- Read GitHub projects easily
-- Prepare for CSE courses
+- Total Words Learned: 50
+- Goal: 1500+ CSE Words
