@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CSE Vocabulary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #f2f1ee;
+      --surface:   #ffffff;
+      --border:    #e3e2de;
+      --row-line:  #f0efec;
+      --text:      #18181b;
+      --text2:     #52525b;
+      --text3:     #a1a1aa;
+      --hover:     #fafaf9;
+      --chip-bg:   #e8e7e3;
+      --chip-fg:   #52525b;
+      --mark:      #fde68a;
+      --nav-bg:    #18181b;
+      --nav-fg:    #e4e4e7;
+      --nav-sub:   #52525b;
+      --tog-bd:    #3f3f46;
+      --day-bg:    #f0efec;
+      --day-act:   #18181b;
+      --day-act-fg:#ffffff;
+    }
+    [data-theme="dark"] {
+      --bg:        #0f0f10;
+      --surface:   #18181b;
+      --border:    #27272a;
+      --row-line:  #1f1f22;
+      --text:      #e4e4e7;
+      --text2:     #a1a1aa;
+      --text3:     #52525b;
+      --hover:     #1c1c1f;
+      --chip-bg:   #27272a;
+      --chip-fg:   #a1a1aa;
+      --mark:      #78350f;
+      --nav-bg:    #09090b;
+      --nav-fg:    #e4e4e7;
+      --nav-sub:   #3f3f46;
+      --tog-bd:    #3f3f46;
+      --day-bg:    #1c1c1f;
+      --day-act:   #e4e4e7;
+      --day-act-fg:#18181b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14.5px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--nav-bg);
+      height: 52px; padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .nav-brand { display: flex; align-items: baseline; gap: 10px; }
+    .nav-brand strong { font-size: 14px; font-weight: 600; color: var(--nav-fg); letter-spacing: -0.2px; }
+    .nav-brand span   { font-size: 11px; color: var(--nav-sub); font-family: 'Noto Serif Bengali', serif; }
+    .theme-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--tog-bd);
+      border-radius: 6px; padding: 5px 10px;
+      color: var(--nav-fg); font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; opacity: 0.7;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+    .theme-btn:hover { opacity: 1; }
+
+    /* PAGE */
+    .page {
+      max-width: 980px; margin: 0 auto;
+      padding: 24px 20px 80px;
+      display: grid;
+      grid-template-columns: 156px 1fr;
+      gap: 0 20px;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .sidebar { grid-column: 1; grid-row: 1 / 5; }
+    .sidebar-inner {
+      position: sticky; top: 68px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px;
+    }
+    .panel-title {
+      font-size: 9.5px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text3); margin-bottom: 10px;
+    }
+
+    .stat-num  { font-size: 30px; font-weight: 600; letter-spacing: -1px; line-height: 1; }
+    .stat-desc { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'Noto Serif Bengali', serif; }
+
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0; border-bottom: 1px solid var(--row-line); font-size: 12px;
+    }
+    .info-row:first-child { padding-top: 0; }
+    .info-row:last-child  { border-bottom: none; padding-bottom: 0; }
+    .i-key { color: var(--text2); }
+    .i-val { color: var(--text3); font-size: 11px; }
+
+    /* DAY TABS */
+    .day-tabs { display: flex; flex-direction: column; gap: 3px; }
+    .day-tab {
+      width: 100%; text-align: left;
+      padding: 6px 10px; border-radius: 6px;
+      border: none; background: var(--day-bg);
+      color: var(--text2); font-size: 12px;
+      font-family: 'Inter', sans-serif; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background .12s, color .12s;
+    }
+    .day-tab:hover { background: var(--border); color: var(--text); }
+    .day-tab.active { background: var(--day-act); color: var(--day-act-fg); }
+    .day-tab .badge { font-size: 10px; opacity: 0.5; }
+
+    /* CHIPS */
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .chip {
+      font-size: 10px; padding: 2px 8px;
+      background: var(--chip-bg); color: var(--chip-fg);
+      border: none; border-radius: 4px;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .12s, color .12s; line-height: 1.8;
+    }
+    .chip:hover, .chip.active { background: var(--text); color: var(--bg); }
+
+    /* TOOLBAR */
+    .toolbar { grid-column: 2; display: flex; gap: 8px; margin-bottom: 8px; }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap svg {
+      position: absolute; left: 10px; top: 50%;
+      transform: translateY(-50%); color: var(--text3); pointer-events: none;
+    }
+    input[type="search"] {
+      width: 100%; padding: 8px 10px 8px 32px;
+      border: 1px solid var(--border); border-radius: 7px;
+      background: var(--surface); font-size: 14px;
+      font-family: 'Inter', sans-serif; color: var(--text); outline: none;
+      transition: border-color .15s;
+    }
+    input[type="search"]:focus { border-color: var(--text3); }
+    input[type="search"]::placeholder { color: var(--text3); }
+    input[type="search"]::-webkit-search-cancel-button { display: none; }
+    select {
+      padding: 8px 10px; border: 1px solid var(--border);
+      border-radius: 7px; background: var(--surface);
+      font-size: 12px; font-family: 'Inter', sans-serif;
+      color: var(--text2); outline: none; cursor: pointer;
+      min-width: 110px;
+    }
+    select:focus { border-color: var(--text3); }
+    select option { background: var(--surface); color: var(--text); }
+
+    /* META */
+    .meta { grid-column: 2; font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+
+    /* TABLE */
+    .table-wrap { 
+      grid-column: 2; 
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; font-size: inherit;
+      min-width: 600px; /* Ensures table doesn't get too compressed */
+    }
+    thead tr { background: var(--bg); }
+    th {
+      text-align: left; padding: 10px 16px;
+      font-size: 9.5px; font-weight: 600;
+      letter-spacing: 0.9px; text-transform: uppercase;
+      color: var(--text3); border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--row-line); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--hover); }
+    .c-num  { color: var(--text3); font-size: 12px; width: 32px; font-variant-numeric: tabular-nums; }
+    .c-word { font-weight: 600; color: var(--text); font-size: 15px; letter-spacing: -0.1px; }
+    .c-en   { color: var(--text); font-size: 14px; }
+    .c-bn   { font-family: 'Noto Serif Bengali', serif; color: var(--text2); font-size: 13.5px; }
+
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
+
+    /* LOADING */
+    .loading {
+      grid-column: 2; text-align: center;
+      padding: 60px 20px; color: var(--text3); font-size: 12px;
+    }
+
+    footer {
+      text-align: center; padding: 14px;
+      font-size: 11px; color: var(--text3);
+      border-top: 1px solid var(--border);
+    }
+
+    /* MOBILE STYLES */
+    @media (max-width: 768px) {
+      nav { 
+        padding: 0 12px; 
+        height: 48px;
+      }
+      .nav-brand strong { font-size: 13px; }
+      .nav-brand span { font-size: 10px; }
+      
+      .page { 
+        grid-template-columns: 1fr; 
+        padding: 16px 12px 60px; 
+        gap: 16px;
+      }
+      
+      .sidebar { 
+        grid-column: 1; 
+        grid-row: auto; 
+      }
+      
+      .sidebar-inner { 
+        position: static; 
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 8px;
+      }
+      
+      .panel { 
+        min-width: 0; /* Prevents overflow */
+      }
+      
+      .toolbar, .meta, .table-wrap { 
+        grid-column: 1; 
+      }
+      
+      /* Make toolbar stack on very small screens */
+      .toolbar {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      select {
+        width: 100%;
+      }
+      
+      /* Day tabs become horizontal scrollable */
+      .day-tabs { 
+        flex-direction: row; 
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+      }
+      
+      .day-tab { 
+        width: auto; 
+        flex: 0 0 auto;
+        white-space: nowrap;
+        min-width: 70px;
+      }
+      
+      /* Table adjustments for mobile */
+      .table-wrap {
+        border-radius: 8px;
+        margin: 0 -12px;
+        padding: 0 12px;
+      }
+      
+      table {
+        min-width: 500px; /* Slightly smaller minimum for mobile */
+        font-size: 13px;
+      }
+      
+      th {
+        padding: 8px 10px;
+        font-size: 8.5px;
+      }
+      
+      td {
+        padding: 10px;
+        font-size: 13px;
+      }
+      
+      .c-word { font-size: 13px; }
+      .c-en { font-size: 12px; }
+      .c-bn { font-size: 12px; }
+      
+      /* Stats panel adjustments */
+      .stat-num { font-size: 24px; }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      .page {
+        padding: 12px 8px 50px;
+      }
+      
+      .sidebar-inner {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      
+      .panel {
+        padding: 12px;
+      }
+      
+      /* Make table cells more compact */
+      th {
+        padding: 6px 8px;
+        font-size: 8px;
+        letter-spacing: 0.5px;
+      }
+      
+      td {
+        padding: 8px;
+      }
+      
+      .c-word { font-size: 12px; }
+      .c-en { font-size: 11px; }
+      .c-bn { font-size: 11px; }
+      
+      /* Nav adjustments */
+      .nav-brand { gap: 6px; }
+      .nav-brand strong { font-size: 12px; }
+      .nav-brand span { font-size: 9px; }
+    }
+
+    /* Tablet adjustments */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .page {
+        grid-template-columns: 140px 1fr;
+        gap: 0 16px;
+        padding: 20px 16px 70px;
+      }
+      
+      .sidebar-inner {
+        gap: 6px;
+      }
+      
+      .panel {
+        padding: 12px;
+      }
+      
+      .stat-num { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <strong>CSE Vocabulary</strong>
+    <span>ইংরেজি শব্দভান্ডার</span>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()">
+    <svg id="t-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <span id="t-label">Light</span>
+  </button>
+</nav>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="panel">
+        <div class="panel-title">শব্দ</div>
+        <div class="stat-num" id="stat-count">—</div>
+        <div class="stat-desc" id="stat-desc">লোড হচ্ছে…</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">তথ্য</div>
+        <div class="info-row"><span class="i-key">মোট দিন</span><span class="i-val" id="info-days">—</span></div>
+        <div class="info-row"><span class="i-key">মোট শব্দ</span><span class="i-val" id="info-words">—</span></div>
+        <div class="info-row"><span class="i-key">প্রতিদিন</span><span class="i-val">50</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">দিন বেছে নাও</div>
+        <div class="day-tabs" id="day-tabs">
+          <div style="font-size:11px;color:var(--text3)">লোড হচ্ছে…</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Quick</div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search" placeholder="Word বা বাংলায় খুঁজুন…" autocomplete="off" />
+    </div>
+    <select id="sort-sel">
+      <option value="">Default</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+    </select>
+  </div>
+
+  <div class="meta" id="meta"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Word</th>
+          <th>English</th>
+          <th>বাংলা</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="4"><div class="empty">লোড হচ্ছে…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>CSE Vocabulary — ইংরেজি শব্দভান্ডার</footer>
+
+<script>
+/* ─────────────────────────────────────────────
+   HOW TO ADD A NEW DAY:
+   1. Create a new file: day3.html, day4.html ...
+   2. Add the filename to DAY_FILES below
+   3. Done! index.html will load it automatically
+───────────────────────────────────────────── */
+const DAY_FILES = ['day1.html', 'day2.html'];
+
+/* ── THEME ── */
+const root = document.documentElement;
+(function(){
+  const saved = localStorage.getItem('csv-theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(saved);
+})();
+function applyTheme(t) {
+  root.setAttribute('data-theme', t);
+  localStorage.setItem('csv-theme', t);
+  document.getElementById('t-label').textContent = t === 'dark' ? 'Dark' : 'Light';
+  document.getElementById('t-icon').innerHTML = t === 'dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+function toggleTheme() {
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── STATE ── */
+let ALL_WORDS = [];
+let activeDay = 1;
+let activeChip = null;
+
+const searchEl  = document.getElementById('search');
+const sortSel   = document.getElementById('sort-sel');
+const tbody     = document.getElementById('tbody');
+const metaEl    = document.getElementById('meta');
+const statCount = document.getElementById('stat-count');
+const statDesc  = document.getElementById('stat-desc');
+const infoDays  = document.getElementById('info-days');
+const infoWords = document.getElementById('info-words');
+const dayTabsEl = document.getElementById('day-tabs');
+const chipsEl   = document.getElementById('chips');
+
+/* ── LOAD ALL DAY FILES ── */
+async function loadDays() {
+  const results = await Promise.all(
+    DAY_FILES.map(file =>
+      fetch(file)
+        .then(r => r.text())
+        .then(text => {
+          // execute the script content to get DAY_DATA
+          const fn = new Function(text + '; return DAY_DATA;');
+          return fn();
+        })
+        .catch(() => null)
+    )
+  );
+
+  results.forEach(data => {
+    if (data && data.words) {
+      data.words.forEach(w => ALL_WORDS.push({ ...w, day: data.day }));
+    }
+  });
+
+  const days = [...new Set(ALL_WORDS.map(w => w.day))].sort((a,b) => a-b);
+  infoDays.textContent  = days.length;
+  infoWords.textContent = ALL_WORDS.length;
+
+  buildDayTabs(days);
+  buildChips();
+  render();
+}
+
+/* ── DAY TABS ── */
+function buildDayTabs(days) {
+  dayTabsEl.innerHTML = '';
+  days.forEach(d => {
+    const count = ALL_WORDS.filter(w => w.day === d).length;
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (d === activeDay ? ' active' : '');
+    btn.innerHTML = `<span>Day ${d}</span><span class="badge">${count}</span>`;
+    btn.onclick = () => {
+      activeDay = d;
+      activeChip = null;
+      searchEl.value = '';
+      document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      buildChips();
+      render();
+    };
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+/* ── CHIPS ── */
+function buildChips() {
+  chipsEl.innerHTML = '';
+  ALL_WORDS.filter(w => w.day === activeDay).forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (activeChip === w.word ? ' active' : '');
+    b.textContent = w.word;
+    b.onclick = () => {
+      if (activeChip === w.word) {
+        activeChip = null; searchEl.value = '';
+        b.classList.remove('active');
+      } else {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        activeChip = w.word; searchEl.value = w.word;
+        b.classList.add('active');
+      }
+      render();
+    };
+    chipsEl.appendChild(b);
+  });
+}
+
+/* ── RENDER ── */
+function hl(str, q) {
+  if (!q) return str;
+  return str.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function render() {
+  const q = searchEl.value.trim().toLowerCase();
+  const s = sortSel.value;
+  const pool = q ? ALL_WORDS : ALL_WORDS.filter(w => w.day === activeDay);
+  let list = pool.filter(w =>
+    !q || w.word.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
+  );
+  if (s === 'az') list.sort((a,b) => a.word.localeCompare(b.word));
+  else if (s === 'za') list.sort((a,b) => b.word.localeCompare(a.word));
+
+  statCount.textContent = list.length;
+  statDesc.textContent  = q ? 'সার্চ ফলাফল' : `Day ${activeDay} দেখানো হচ্ছে`;
+  metaEl.textContent    = list.length === pool.length
+    ? `${list.length} টি শব্দ`
+    : `${list.length} / ${pool.length} টি শব্দ`;
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="4"><div class="empty">কোনো শব্দ পাওয়া যায়নি।</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(w => `
+    <tr>
+      <td class="c-num">${w.id}</td>
+      <td class="c-word">${hl(w.word, q)}</td>
+      <td class="c-en">${hl(w.en, q)}</td>
+      <td class="c-bn">${hl(w.bn, q)}</td>
+    </tr>`).join('');
+}
+
+searchEl.addEventListener('input', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  activeChip = null;
+  render();
+});
+sortSel.addEventListener('change', render);
+
+loadDays();
+</script>
+</body>
+</html>
