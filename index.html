@@ -1,43 +1,707 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-<title>Dictionary Hub</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{font-family:Arial;background:#f5f5f5;padding:20px}
-.card{
-background:#fff;
-padding:20px;
-margin:15px 0;
-border-radius:12px;
-box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
-a{
-display:inline-block;
-padding:10px 15px;
-background:#2563eb;
-color:#fff;
-text-decoration:none;
-border-radius:8px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary Hub · GitHub</title>
+    <style>
+        :root {
+            --color-bg-primary: #0d1117;
+            --color-bg-secondary: #161b22;
+            --color-bg-tertiary: #21262d;
+            --color-border: #30363d;
+            --color-text-primary: #c9d1d9;
+            --color-text-secondary: #8b949e;
+            --color-text-link: #58a6ff;
+            --color-btn-bg: #21262d;
+            --color-btn-border: #30363d;
+            --color-btn-hover: #30363d;
+            --color-accent: #58a6ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* GitHub Navigation Bar */
+        .github-nav {
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .github-logo {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .github-logo svg {
+            fill: currentColor;
+        }
+
+        .search-bar {
+            background-color: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            width: 300px;
+            margin-left: 16px;
+            transition: width 0.3s;
+        }
+
+        .search-bar:focus {
+            width: 400px;
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .nav-links {
+            margin-left: auto;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text-secondary);
+        }
+
+        .btn {
+            background-color: var(--color-btn-bg);
+            border: 1px solid var(--color-btn-border);
+            border-radius: 6px;
+            padding: 5px 16px;
+            color: var(--color-text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--color-btn-hover);
+        }
+
+        .btn-primary {
+            background-color: #238636;
+            border-color: rgba(240, 246, 252, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #2ea043;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        /* Repository Header */
+        .repo-header {
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 32px;
+            position: sticky;
+            top: 57px;
+            z-index: 50;
+        }
+
+        .repo-header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .repo-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .repo-title svg {
+            fill: var(--color-text-secondary);
+        }
+
+        .repo-title a {
+            color: var(--color-text-link);
+            text-decoration: none;
+        }
+
+        .repo-title a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--color-border);
+            border-radius: 2em;
+            padding: 0 7px;
+            color: var(--color-text-secondary);
+        }
+
+        /* Tabs */
+        .repo-tabs {
+            display: flex;
+            gap: 0;
+            margin-top: 24px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .tab {
+            padding: 8px 16px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .tab:hover {
+            border-bottom-color: var(--color-text-secondary);
+        }
+
+        .tab.active {
+            color: var(--color-text-primary);
+            border-bottom-color: #f78166;
+            font-weight: 600;
+        }
+
+        .tab .counter {
+            background-color: var(--color-bg-tertiary);
+            border-radius: 2em;
+            padding: 0 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Content Area */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 296px;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .main-content {
+            min-width: 0;
+        }
+
+        /* Repository Cards */
+        .repo-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .repo-card:hover {
+            border-color: var(--color-text-secondary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            color: var(--color-text-secondary);
+            margin-top: 2px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-text-link);
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .card-title:hover {
+            text-decoration: underline;
+        }
+
+        .card-description {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            margin: 8px 0 16px;
+            padding-right: 16px;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .language-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            top: 2px;
+        }
+
+        .language-dot.python {
+            background-color: #3572A5;
+        }
+
+        .language-dot.javascript {
+            background-color: #f1e05a;
+        }
+
+        .language-dot.typescript {
+            background-color: #2b7489;
+        }
+
+        .language-dot.markdown {
+            background-color: #083fa1;
+        }
+
+        .language-dot.html {
+            background-color: #e34c26;
+        }
+
+        .card-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 140px;
+        }
+
+        .sidebar-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .about-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .about-item svg {
+            fill: var(--color-text-secondary);
+            flex-shrink: 0;
+        }
+
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .topic-tag {
+            background-color: var(--color-btn-bg);
+            color: var(--color-text-link);
+            padding: 3px 10px;
+            border-radius: 2em;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .topic-tag:hover {
+            background-color: var(--color-btn-hover);
+            color: var(--color-accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1012px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+            .search-bar {
+                width: 200px;
+            }
+            .search-bar:focus {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .github-nav {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+            }
+            .search-bar {
+                order: 3;
+                width: 100%;
+                margin: 8px 0 0 0;
+            }
+            .search-bar:focus {
+                width: 100%;
+            }
+            .repo-header {
+                padding: 12px 16px;
+            }
+            .repo-tabs {
+                overflow-x: auto;
+            }
+            .main-container {
+                padding: 16px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .repo-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
 </head>
 <body>
+    <!-- GitHub Navigation -->
+    <nav class="github-nav">
+        <a href="#" class="github-logo">
+            <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+        </a>
+        <input type="text" class="search-bar" placeholder="Search or jump to…">
+        <div class="nav-links">
+            <a href="#">Pull requests</a>
+            <a href="#">Issues</a>
+            <a href="#">Marketplace</a>
+            <a href="#">Explore</a>
+        </div>
+    </nav>
 
-<h1>📚 Dictionary Hub</h1>
+    <!-- Repository Header -->
+    <div class="repo-header">
+        <div class="repo-header-content">
+            <div class="repo-title">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9zM4.5 1.5a1 1 0 00-1 1v9a1 1 0 001 1h7.25v-11H4.5z"></path>
+                </svg>
+                <a href="#">dictionary-hub</a>
+                <span style="color: var(--color-text-secondary);">/</span>
+                <a href="#" style="font-weight: 600;">Dictionary Hub</a>
+                <span class="badge">Public</span>
+            </div>
+        </div>
+    </div>
 
-<div class="card">
-<h2>💻 CSE Vocabulary</h2>
-<p>Daily Computer Science vocabulary collection.</p>
-<a href="cse/">Open</a>
-</div>
+    <!-- Repository Tabs -->
+    <div class="main-container">
+        <div class="repo-tabs">
+            <a href="#" class="tab active">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9zM4.5 1.5a1 1 0 00-1 1v9a1 1 0 001 1h7.25v-11H4.5z"></path>
+                </svg>
+                Code
+            </a>
+            <a href="#" class="tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"></path>
+                </svg>
+                Issues
+                <span class="counter">0</span>
+            </a>
+            <a href="#" class="tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M1.5 3.25a2.25 2.25 0 112.25 2.25c-.3 0-.6-.06-.87-.17l2.5 2.5a2.24 2.24 0 11-1.06 1.06l-2.5-2.5c.11.27.17.57.17.87a2.25 2.25 0 01-4.5 0zm2.25-1.25a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zm0 9a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zm8.5-8.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z"></path>
+                </svg>
+                Pull requests
+                <span class="counter">0</span>
+            </a>
+            <a href="#" class="tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+                </svg>
+                Actions
+            </a>
+            <a href="#" class="tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75V1.75zm8.755 3a2.25 2.25 0 012.25-2.25H14.5v9h-3.757c-.71 0-1.4.201-1.992.572l.004-7.322zm-1.504 7.324.004-5.073-.002-2.253A2.25 2.25 0 005.003 2.5H1.5v9h3.757a3.75 3.75 0 011.994.574z"></path>
+                </svg>
+                Wiki
+            </a>
+            <a href="#" class="tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                Security
+            </a>
+        </div>
 
-<div class="card">
-<h2>🕌 Urdu Dictionary</h2>
-<p>Urdu words with English & Bengali meanings.</p>
-<a href="urdu/">Open</a>
-</div>
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Repository Card 1: CSE Vocabulary -->
+                <div class="repo-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9zM4.5 1.5a1 1 0 00-1 1v9a1 1 0 001 1h7.25v-11H4.5z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <a href="cse/" class="card-title">💻 CSE Vocabulary</a>
+                            <span class="badge" style="margin-left: 8px;">Public</span>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Daily Computer Science vocabulary collection for developers and engineers. Features comprehensive technical terms with definitions, examples, and usage contexts.
+                    </p>
+                    <div class="card-meta">
+                        <span>
+                            <span class="language-dot html"></span>
+                            HTML / Markdown
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom;">
+                                <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+                            </svg>
+                            12 stars
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom;">
+                                <path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path>
+                            </svg>
+                            4 forks
+                        </span>
+                        <span>Updated 2 days ago</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="cse/" class="btn">📁 Browse files</a>
+                        <a href="#" class="btn">⭐ Star</a>
+                        <a href="#" class="btn">⑂ Fork</a>
+                    </div>
+                </div>
 
+                <!-- Repository Card 2: Urdu Dictionary -->
+                <div class="repo-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9zM4.5 1.5a1 1 0 00-1 1v9a1 1 0 001 1h7.25v-11H4.5z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <a href="urdu/" class="card-title">🕌 Urdu Dictionary</a>
+                            <span class="badge" style="margin-left: 8px;">Public</span>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Comprehensive Urdu dictionary with English & Bengali meanings. Includes pronunciation guides, transliterations, and cultural context for better understanding.
+                    </p>
+                    <div class="card-meta">
+                        <span>
+                            <span class="language-dot markdown"></span>
+                            JSON / Markdown
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom;">
+                                <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+                            </svg>
+                            8 stars
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: text-bottom;">
+                                <path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path>
+                            </svg>
+                            2 forks
+                        </span>
+                        <span>Updated 5 hours ago</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="urdu/" class="btn">📁 Browse files</a>
+                        <a href="#" class="btn">⭐ Star</a>
+                        <a href="#" class="btn">⑂ Fork</a>
+                    </div>
+                </div>
+
+                <!-- README Section -->
+                <div class="repo-card" style="border: 1px solid var(--color-border);">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75V1.75zm8.755 3a2.25 2.25 0 012.25-2.25H14.5v9h-3.757c-.71 0-1.4.201-1.992.572l.004-7.322zm-1.504 7.324.004-5.073-.002-2.253A2.25 2.25 0 005.003 2.5H1.5v9h3.757a3.75 3.75 0 011.994.574z"></path>
+                        </svg>
+                        <span style="font-weight: 600;">README.md</span>
+                    </div>
+                    <h1 style="font-size: 2em; margin-bottom: 8px; padding-bottom: 0.3em; border-bottom: 1px solid var(--color-border);">📚 Dictionary Hub</h1>
+                    <p style="font-size: 16px; margin: 16px 0;">A curated collection of multilingual dictionaries for learners and developers. This repository serves as a central hub for accessing comprehensive vocabulary resources.</p>
+                    <h2 style="margin: 24px 0 16px;">🚀 Features</h2>
+                    <ul style="margin-left: 20px; margin-bottom: 16px;">
+                        <li style="margin-bottom: 8px;">📖 <strong>Multiple Languages:</strong> English, Urdu, Bengali support</li>
+                        <li style="margin-bottom: 8px;">🔍 <strong>Searchable:</strong> Easy to navigate and find words</li>
+                        <li style="margin-bottom: 8px;">📱 <strong>Responsive:</strong> Works on all devices</li>
+                        <li style="margin-bottom: 8px;">🔄 <strong>Regular Updates:</strong> New words added frequently</li>
+                    </ul>
+                    <h2 style="margin: 24px 0 16px;">📦 Available Dictionaries</h2>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <th style="text-align: left; padding: 8px;">Dictionary</th>
+                            <th style="text-align: left; padding: 8px;">Description</th>
+                            <th style="text-align: left; padding: 8px;">Link</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">💻 CSE Vocabulary</td>
+                            <td style="padding: 8px;">Computer Science terms</td>
+                            <td style="padding: 8px;"><a href="cse/" style="color: var(--color-text-link);">Browse →</a></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--color-border);">
+                            <td style="padding: 8px;">🕌 Urdu Dictionary</td>
+                            <td style="padding: 8px;">Urdu with English & Bengali</td>
+                            <td style="padding: 8px;"><a href="urdu/" style="color: var(--color-text-link);">Browse →</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-card">
+                    <div class="sidebar-title">About</div>
+                    <div class="about-item">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path>
+                        </svg>
+                        dictionary-hub.github.io
+                    </div>
+                    <div class="about-item">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+                        </svg>
+                        20 stars
+                    </div>
+                    <div class="about-item">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878z"></path>
+                        </svg>
+                        6 forks
+                    </div>
+                    <div class="topic-tags">
+                        <a href="#" class="topic-tag">dictionary</a>
+                        <a href="#" class="topic-tag">education</a>
+                        <a href="#" class="topic-tag">multilingual</a>
+                        <a href="#" class="topic-tag">computer-science</a>
+                        <a href="#" class="topic-tag">urdu</a>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Languages</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="language-dot html" style="display: inline-block;"></span>
+                            <span>HTML</span>
+                            <span style="margin-left: auto; color: var(--color-text-secondary);">45%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="language-dot markdown" style="display: inline-block;"></span>
+                            <span>Markdown</span>
+                            <span style="margin-left: auto; color: var(--color-text-secondary);">35%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="language-dot javascript" style="display: inline-block;"></span>
+                            <span>JavaScript</span>
+                            <span style="margin-left: auto; color: var(--color-text-secondary);">20%</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="border-top: 1px solid var(--color-border); margin-top: 40px; padding: 40px 32px; text-align: center; color: var(--color-text-secondary); font-size: 12px;">
+        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 16px;">
+            <a href="#" style="color: var(--color-text-link); text-decoration: none;">Terms</a>
+            <a href="#" style="color: var(--color-text-link); text-decoration: none;">Privacy</a>
+            <a href="#" style="color: var(--color-text-link); text-decoration: none;">Security</a>
+            <a href="#" style="color: var(--color-text-link); text-decoration: none;">Status</a>
+            <a href="#" style="color: var(--color-text-link); text-decoration: none;">Docs</a>
+        </div>
+        <p>© 2026 Dictionary Hub, Inc.</p>
+    </footer>
 </body>
 </html>
