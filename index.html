@@ -1,561 +1,1114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>arafats-tech/dictionary</title>
-<style>
-:root {
-  --bg: #0d1117;
-  --bg2: #161b22;
-  --bg3: #21262d;
-  --border: #30363d;
-  --text: #e6edf3;
-  --muted: #7d8590;
-  --blue: #58a6ff;
-  --green: #3fb950;
-  --accent: #f78166;
-  --tag-bg: rgba(56,139,253,0.12);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;}
-a{color:inherit;text-decoration:none;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+  <title>arafats-tech/dictionary · GitHub clone</title>
+  <style>
+    /* ── reset & vars ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --accent: #f78166;
+      --tag-bg: rgba(56, 139, 253, 0.12);
+      --radius: 6px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-/* HEADER */
-.gh-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
-.gh-logo{width:32px;height:32px;background:#fff;border-radius:50%;display:grid;place-items:center;flex-shrink:0;}
-.gh-search{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 12px;color:var(--muted);font-size:13px;width:240px;transition:width .2s,border-color .2s;}
-.gh-search:focus{outline:none;border-color:var(--blue);width:320px;color:var(--text);}
-.gh-nav{margin-left:auto;display:flex;gap:18px;align-items:center;}
-.gh-nav a{font-size:13px;font-weight:500;color:var(--text);opacity:.85;}
-.gh-nav a:hover{opacity:1;}
-.avatar-circle{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#58a6ff,#8b5cf6);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;}
+    /* ── utilities ── */
+    .flex-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .gap-1 {
+      gap: 6px;
+    }
+    .text-muted {
+      color: var(--muted);
+    }
+    .text-blue {
+      color: var(--blue);
+    }
+    .mt-1 {
+      margin-top: 8px;
+    }
+    .mb-1 {
+      margin-bottom: 8px;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .skeleton {
+      background: var(--bg3);
+      border-radius: 4px;
+      height: 14px;
+      animation: pulse 1.5s infinite;
+      display: inline-block;
+    }
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.9;
+      }
+    }
 
-/* REPO BAR */
-.repo-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px 0;}
-.repo-title{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.repo-title svg{opacity:.65;flex-shrink:0;}
-.repo-title a{color:var(--blue);font-size:18px;}
-.repo-title a:hover{text-decoration:underline;}
-.repo-title .sep{color:var(--muted);}
-.repo-name{font-weight:700;font-size:18px;}
-.badge{display:inline-block;border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:11px;color:var(--muted);font-weight:500;margin-left:4px;vertical-align:middle;}
+    /* ── header ── */
+    .gh-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .gh-logo {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .gh-search {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      width: 160px;
+      transition: width 0.2s, border-color 0.2s;
+      flex: 1 1 140px;
+      min-width: 80px;
+    }
+    .gh-search:focus {
+      outline: none;
+      border-color: var(--blue);
+      width: 240px;
+      color: var(--text);
+    }
+    .gh-nav {
+      margin-left: auto;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .gh-nav a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+    .gh-nav a:hover {
+      opacity: 1;
+    }
+    .avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #58a6ff, #8b5cf6);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
 
-/* TABS */
-.tabs{display:flex;gap:2px;overflow-x:auto;}
-.tab{padding:9px 14px;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;cursor:pointer;}
-.tab:hover{color:var(--text);border-bottom-color:var(--border);}
-.tab.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500;}
+    /* ── repo bar ── */
+    .repo-bar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px 0;
+    }
+    .repo-title {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .repo-title a {
+      color: var(--blue);
+      font-size: 18px;
+    }
+    .repo-title a:hover {
+      text-decoration: underline;
+    }
+    .repo-title .sep {
+      color: var(--muted);
+    }
+    .repo-name {
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      vertical-align: middle;
+    }
+    .update-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(63, 185, 80, 0.1);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 11px;
+      color: var(--green);
+      margin-left: 4px;
+    }
 
-/* ACTION ROW */
-.action-row{max-width:1200px;margin:16px auto 0;padding:0 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.branch-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer;}
-.branch-btn:hover{border-color:#58a6ff66;}
-.act-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;transition:background .15s;}
-.act-btn:hover{background:var(--bg2);}
-.spacer{flex:1;}
+    /* ── tabs ── */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab {
+      padding: 9px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+    .tab:hover {
+      color: var(--text);
+      border-bottom-color: var(--border);
+    }
+    .tab.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+      font-weight: 500;
+    }
 
-/* LAYOUT */
-.layout{max-width:1200px;margin:14px auto 40px;padding:0 24px;display:grid;grid-template-columns:1fr 280px;gap:24px;}
-@media(max-width:900px){.layout{grid-template-columns:1fr;padding:0 14px;}}
+    /* ── action row ── */
+    .action-row {
+      max-width: 1200px;
+      margin: 12px auto 0;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .branch-btn,
+    .act-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 12px;
+      font-size: 13px;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .branch-btn:hover,
+    .act-btn:hover {
+      border-color: #58a6ff66;
+      background: var(--bg2);
+    }
+    .spacer {
+      flex: 1;
+      min-width: 20px;
+    }
+    #commit-count-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
 
-/* FILE BOX */
-.file-box{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.file-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.commit-info{font-size:13px;color:var(--muted);flex:1;min-width:0;}
-.commit-info strong{color:var(--text);}
-.commit-sha{font-size:12px;color:var(--blue);font-family:monospace;white-space:nowrap;}
-.commit-count{font-size:12px;color:var(--muted);white-space:nowrap;}
-.commit-count strong{color:var(--text);}
+    /* ── layout ── */
+    .layout {
+      max-width: 1200px;
+      margin: 14px auto 40px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+    }
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 0 12px;
+      }
+    }
 
-.file-row{display:grid;grid-template-columns:20px 1fr 2fr auto;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);transition:background .12s;cursor:pointer;}
-.file-row:last-child{border-bottom:none;}
-.file-row:hover{background:rgba(255,255,255,.03);}
-.file-row .ficon{opacity:.6;display:flex;align-items:center;}
-.file-row .fname{color:var(--blue);font-weight:500;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.file-row .fdesc{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.file-row .ftime{color:var(--muted);font-size:12px;white-space:nowrap;}
+    /* ── file box ── */
+    .file-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .file-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .commit-info {
+      font-size: 13px;
+      color: var(--muted);
+      flex: 1;
+      min-width: 120px;
+    }
+    .commit-info strong {
+      color: var(--text);
+    }
+    .commit-sha {
+      font-size: 12px;
+      color: var(--blue);
+      font-family: monospace;
+      white-space: nowrap;
+    }
+    .commit-count {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .commit-count strong {
+      color: var(--text);
+    }
+    .file-row {
+      display: grid;
+      grid-template-columns: 20px 1fr 2fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+      cursor: pointer;
+      color: inherit;
+    }
+    .file-row:last-child {
+      border-bottom: none;
+    }
+    .file-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .file-row .ficon {
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+    }
+    .file-row .fname {
+      color: var(--blue);
+      font-weight: 500;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-row .fdesc {
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-row .ftime {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+      .file-row {
+        grid-template-columns: 20px 1fr auto;
+        gap: 6px;
+      }
+      .file-row .fdesc {
+        display: none;
+      }
+    }
 
-/* LOADING / ERROR */
-.state-row{padding:24px;text-align:center;color:var(--muted);font-size:13px;}
-.skeleton{background:var(--bg3);border-radius:4px;height:14px;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:.4;}50%{opacity:.9;}}
+    /* ── readme ── */
+    .readme-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 18px;
+    }
+    .readme-head {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      flex-wrap: wrap;
+    }
+    .readme-body {
+      padding: 20px 20px 28px;
+      overflow-x: auto;
+    }
+    .readme-body h1 {
+      font-size: 1.6em;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+    .readme-body h2 {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin: 22px 0 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .readme-body h3 {
+      font-size: 1em;
+      font-weight: 600;
+      margin: 16px 0 8px;
+    }
+    .readme-body p {
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      color: #c9d1d9;
+    }
+    .readme-body ul,
+    .readme-body ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+    .readme-body li {
+      font-size: 14px;
+      margin: 4px 0;
+      color: #c9d1d9;
+    }
+    .readme-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+    .readme-body th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .readme-body td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .readme-body a {
+      color: var(--blue);
+    }
+    .readme-body a:hover {
+      text-decoration: underline;
+    }
+    .readme-body pre {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.6;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      margin: 10px 0;
+    }
+    .readme-body code {
+      background: rgba(110, 118, 129, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 85%;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+    .readme-body input[type="checkbox"] {
+      accent-color: var(--green);
+      margin-right: 4px;
+    }
 
-/* README */
-.readme-box{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:18px;}
-.readme-head{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;}
-.readme-head svg{opacity:.7;}
-.readme-body{padding:28px 32px;}
-.readme-body h1{font-size:1.6em;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:16px;}
-.readme-body h2{font-size:1.2em;font-weight:600;margin:22px 0 10px;border-bottom:1px solid var(--border);padding-bottom:6px;}
-.readme-body h3{font-size:1em;font-weight:600;margin:16px 0 8px;}
-.readme-body p{font-size:14px;line-height:1.7;margin-bottom:12px;color:#c9d1d9;}
-.readme-body ul,.readme-body ol{padding-left:22px;margin-bottom:14px;}
-.readme-body li{font-size:14px;margin:4px 0;color:#c9d1d9;}
-.readme-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;}
-.readme-body th{text-align:left;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:600;}
-.readme-body td{padding:8px 12px;border-bottom:1px solid var(--border);}
-.readme-body tr:last-child td{border-bottom:none;}
-.readme-body a{color:var(--blue);}
-.readme-body a:hover{text-decoration:underline;}
-.readme-body pre{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px;overflow-x:auto;font-size:12px;line-height:1.6;font-family:'SFMono-Regular',Consolas,monospace;margin:10px 0;}
-.readme-body code{background:rgba(110,118,129,.25);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:85%;font-family:'SFMono-Regular',Consolas,monospace;}
-.readme-body input[type=checkbox]{accent-color:var(--green);margin-right:4px;}
-.readme-body .checked{color:var(--muted);text-decoration:line-through;}
+    /* ── sidebar ── */
+    .sidebar-section {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .sidebar-head {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .sidebar-body {
+      padding: 12px 14px;
+    }
+    .about-desc {
+      font-size: 13px;
+      color: #c9d1d9;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 5px 0;
+      word-break: break-all;
+    }
+    .meta-row a {
+      color: var(--blue);
+    }
+    .topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .topic {
+      background: var(--tag-bg);
+      color: var(--blue);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .topic:hover {
+      background: rgba(56, 139, 253, 0.2);
+    }
+    .stats-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+    }
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+    }
+    .stat-pill strong {
+      color: var(--text);
+    }
 
-/* SIDEBAR */
-.sidebar-section{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
-.sidebar-head{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;font-size:13px;font-weight:600;}
-.sidebar-body{padding:14px;}
-.about-desc{font-size:13px;color:#c9d1d9;line-height:1.6;margin-bottom:10px;}
-.meta-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:5px 0;}
-.meta-row svg{opacity:.7;flex-shrink:0;}
-.meta-row a{color:var(--blue);}
-.topics{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.topic{background:var(--tag-bg);color:var(--blue);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;cursor:pointer;}
-.topic:hover{background:rgba(56,139,253,.2);}
+    /* lang bar */
+    .lang-bar {
+      display: flex;
+      height: 8px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      gap: 2px;
+      margin: 10px 0;
+    }
+    .lang-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      margin: 4px 0;
+      color: var(--muted);
+    }
+    .lang-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
-/* Stat pills */
-.stats-pills{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;}
-.stat-pill{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
-.stat-pill strong{color:var(--text);}
+    /* clone */
+    .clone-tabs {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .clone-tab {
+      flex: 1;
+      padding: 5px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.12s;
+      color: var(--muted);
+    }
+    .clone-tab.active {
+      background: var(--bg3);
+      font-weight: 500;
+      color: var(--text);
+    }
+    .clone-tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .clone-input-wrap {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .clone-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      flex: 1;
+      min-width: 0;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 12px;
+      transition: background 0.12s;
+      flex-shrink: 0;
+    }
+    .copy-btn:hover {
+      background: #30363d;
+    }
+    .copy-tip {
+      font-size: 11px;
+      color: var(--green);
+      display: none;
+      margin-bottom: 4px;
+    }
+    .dl-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.12s;
+      margin-bottom: 6px;
+    }
+    .dl-btn:last-child {
+      margin-bottom: 0;
+    }
+    .dl-btn:hover {
+      background: #30363d;
+    }
 
-/* Lang bar */
-.lang-bar{display:flex;height:8px;border-radius:6px;overflow:hidden;gap:2px;margin:10px 0;}
-.lang-row{display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0;color:var(--muted);}
-.lang-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    /* ── footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 16px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .footer-nav {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-nav a {
+      color: var(--muted);
+    }
+    .footer-nav a:hover {
+      color: var(--blue);
+    }
 
-/* Clone */
-.clone-tabs{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:10px;}
-.clone-tab{flex:1;padding:5px;text-align:center;font-size:12px;cursor:pointer;transition:background .12s;color:var(--muted);}
-.clone-tab.active{background:var(--bg3);font-weight:500;color:var(--text);}
-.clone-tab:hover:not(.active){background:rgba(255,255,255,.03);}
-.clone-input-wrap{display:flex;gap:6px;margin-bottom:8px;}
-.clone-input{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--muted);flex:1;min-width:0;font-family:monospace;}
-.copy-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text);font-size:12px;transition:background .12s;}
-.copy-btn:hover{background:#30363d;}
-.copy-tip{font-size:11px;color:var(--green);display:none;margin-bottom:6px;}
-.dl-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:13px;cursor:pointer;color:var(--text);transition:background .12s;margin-bottom:8px;}
-.dl-btn:last-child{margin-bottom:0;}
-.dl-btn:hover{background:#30363d;}
+    /* ── state ── */
+    .state-row {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-/* Last update pill */
-.update-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);border-radius:20px;padding:2px 10px;font-size:11px;color:var(--green);margin-left:8px;}
-
-/* Footer */
-footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px;}
-.footer-nav{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
-.footer-nav a{color:var(--muted);}
-.footer-nav a:hover{color:var(--blue);}
-</style>
+    /* small tweaks */
+    .repo-title svg {
+      opacity: 0.65;
+      flex-shrink: 0;
+    }
+    .readme-head svg {
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+    .update-badge svg {
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="gh-header">
-  <div class="gh-logo">
-    <svg width="20" height="20" viewBox="0 0 16 16" fill="#000">
-      <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-    </svg>
-  </div>
-  <input class="gh-search" placeholder="Search or jump to...">
-  <nav class="gh-nav">
-    <a href="https://github.com/arafats-tech/dictionary/pulls" target="_blank">Pull requests</a>
-    <a href="https://github.com/arafats-tech/dictionary/issues" target="_blank">Issues</a>
-    <a href="https://github.com/marketplace" target="_blank">Marketplace</a>
-    <a href="https://github.com/explore" target="_blank">Explore</a>
-    <div class="avatar-circle">AT</div>
-  </nav>
-</header>
+  <!-- HEADER -->
+  <header class="gh-header">
+    <div class="gh-logo">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="#000">
+        <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+    </div>
+    <input class="gh-search" placeholder="Search or jump to..." />
+    <nav class="gh-nav">
+      <a href="https://github.com/arafats-tech/dictionary/pulls" target="_blank">Pull requests</a>
+      <a href="https://github.com/arafats-tech/dictionary/issues" target="_blank">Issues</a>
+      <a href="https://github.com/marketplace" target="_blank">Marketplace</a>
+      <a href="https://github.com/explore" target="_blank">Explore</a>
+      <div class="avatar-circle">AT</div>
+    </nav>
+  </header>
 
-<!-- REPO BAR -->
-<div class="repo-bar">
-  <div class="repo-title">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9z"/></svg>
-    <a href="https://github.com/arafats-tech" target="_blank">arafats-tech</a>
-    <span class="sep">/</span>
-    <a href="https://github.com/arafats-tech/dictionary" target="_blank"><strong class="repo-name">dictionary</strong></a>
-    <span class="badge">Public</span>
-    <span class="update-badge" id="live-badge">
-      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
-      Live
-    </span>
+  <!-- REPO BAR -->
+  <div class="repo-bar">
+    <div class="repo-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9z"/></svg>
+      <a href="https://github.com/arafats-tech" target="_blank">arafats-tech</a>
+      <span class="sep">/</span>
+      <a href="https://github.com/arafats-tech/dictionary" target="_blank"><strong class="repo-name">dictionary</strong></a>
+      <span class="badge">Public</span>
+      <span class="update-badge" id="live-badge">
+        <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
+        Live
+      </span>
+    </div>
+    <div class="tabs">
+      <a href="https://github.com/arafats-tech/dictionary" target="_blank" class="tab active">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9z"/></svg>
+        Code
+      </a>
+      <a href="https://github.com/arafats-tech/dictionary/issues" target="_blank" class="tab">Issues</a>
+      <a href="https://github.com/arafats-tech/dictionary/pulls" target="_blank" class="tab">Pull requests</a>
+      <a href="https://github.com/arafats-tech/dictionary/actions" target="_blank" class="tab">Actions</a>
+      <a href="https://github.com/arafats-tech/dictionary/pulse" target="_blank" class="tab">Insights</a>
+    </div>
   </div>
-  <div class="tabs">
-    <a href="https://github.com/arafats-tech/dictionary" target="_blank" class="tab active">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-8.5A2.5 2.5 0 012 11.5v-9z"/></svg>
-      Code
+
+  <!-- ACTION ROW -->
+  <div class="action-row">
+    <button class="branch-btn">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122 4.5 4.5 0 01-1.558 3.256l-2.096 1.747a.75.75 0 01-.842 0L6.712 8.628A4.5 4.5 0 015.154 5.372 2.25 2.25 0 118.25 3.25z"/></svg>
+      main
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"/></svg>
+    </button>
+    <span id="commit-count-label"></span>
+    <div class="spacer"></div>
+    <a href="https://github.com/arafats-tech/dictionary/stargazers" target="_blank" class="act-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+      Star <span id="stars-count" style="background:rgba(110,118,129,.35);border-radius:20px;padding:1px 7px;font-size:11px;">…</span>
     </a>
-    <a href="https://github.com/arafats-tech/dictionary/issues" target="_blank" class="tab">Issues</a>
-    <a href="https://github.com/arafats-tech/dictionary/pulls" target="_blank" class="tab">Pull requests</a>
-    <a href="https://github.com/arafats-tech/dictionary/actions" target="_blank" class="tab">Actions</a>
-    <a href="https://github.com/arafats-tech/dictionary/pulse" target="_blank" class="tab">Insights</a>
+    <a href="https://github.com/arafats-tech/dictionary/network/members" target="_blank" class="act-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
+      Fork <span id="forks-count" style="background:rgba(110,118,129,.35);border-radius:20px;padding:1px 7px;font-size:11px;">…</span>
+    </a>
   </div>
-</div>
 
-<!-- ACTION ROW -->
-<div class="action-row">
-  <button class="branch-btn">
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122 4.5 4.5 0 01-1.558 3.256l-2.096 1.747a.75.75 0 01-.842 0L6.712 8.628A4.5 4.5 0 015.154 5.372 2.25 2.25 0 118.25 3.25z"/></svg>
-    main
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"/></svg>
-  </button>
-  <span id="commit-count-label" style="font-size:12px;color:var(--muted);"></span>
-  <div class="spacer"></div>
-  <a href="https://github.com/arafats-tech/dictionary/stargazers" target="_blank" class="act-btn">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
-    Star <span id="stars-count" style="background:rgba(110,118,129,.35);border-radius:20px;padding:1px 7px;font-size:11px;">…</span>
-  </a>
-  <a href="https://github.com/arafats-tech/dictionary/network/members" target="_blank" class="act-btn">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
-    Fork <span id="forks-count" style="background:rgba(110,118,129,.35);border-radius:20px;padding:1px 7px;font-size:11px;">…</span>
-  </a>
-</div>
-
-<!-- MAIN -->
-<div class="layout">
-  <main>
-    <!-- FILE BROWSER -->
-    <div class="file-box">
-      <div class="file-header" id="commit-header">
-        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#58a6ff,#8b5cf6);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">AT</div>
-        <div class="commit-info" id="latest-commit-msg"><span class="skeleton" style="width:260px;display:inline-block;"></span></div>
-        <span class="commit-sha" id="latest-commit-sha"></span>
-        <span class="commit-count" id="commit-count-right"></span>
-      </div>
-      <div id="files-list">
-        <!-- skeleton rows -->
-        <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:80px;"></span><span class="skeleton" style="width:160px;"></span><span class="skeleton" style="width:60px;"></span></div>
-        <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:100px;"></span><span class="skeleton" style="width:140px;"></span><span class="skeleton" style="width:60px;"></span></div>
-        <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:70px;"></span><span class="skeleton" style="width:180px;"></span><span class="skeleton" style="width:60px;"></span></div>
-      </div>
-    </div>
-
-    <!-- README -->
-    <div class="readme-box">
-      <div class="readme-head">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
-        README.md
-        <a href="https://github.com/arafats-tech/dictionary/blob/main/README.md" target="_blank" style="margin-left:auto;opacity:.6;display:flex;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25z"/></svg>
-        </a>
-      </div>
-      <div class="readme-body" id="readme-body">
-        <div class="skeleton" style="width:200px;height:24px;margin-bottom:16px;"></div>
-        <div class="skeleton" style="width:100%;height:12px;margin-bottom:8px;"></div>
-        <div class="skeleton" style="width:80%;height:12px;margin-bottom:8px;"></div>
-        <div class="skeleton" style="width:90%;height:12px;margin-bottom:24px;"></div>
-        <div class="skeleton" style="width:140px;height:18px;margin-bottom:12px;"></div>
-        <div class="skeleton" style="width:100%;height:12px;margin-bottom:8px;"></div>
-        <div class="skeleton" style="width:75%;height:12px;"></div>
-      </div>
-    </div>
-  </main>
-
-  <!-- SIDEBAR -->
-  <aside>
-    <div class="sidebar-section">
-      <div class="sidebar-head">About</div>
-      <div class="sidebar-body">
-        <p class="about-desc" id="about-desc"><span class="skeleton" style="width:100%;display:block;height:12px;margin-bottom:6px;"></span><span class="skeleton" style="width:70%;display:block;height:12px;"></span></p>
-        <div class="meta-row" id="website-row" style="display:none;">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25z"/></svg>
-          <a id="website-link" href="#" target="_blank"></a>
+  <!-- MAIN LAYOUT -->
+  <div class="layout">
+    <main>
+      <!-- FILE BROWSER -->
+      <div class="file-box">
+        <div class="file-header" id="commit-header">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#58a6ff,#8b5cf6);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">AT</div>
+          <div class="commit-info" id="latest-commit-msg"><span class="skeleton" style="width:200px;display:inline-block;"></span></div>
+          <span class="commit-sha" id="latest-commit-sha"></span>
+          <span class="commit-count" id="commit-count-right"></span>
         </div>
-        <div class="stats-pills" id="stats-pills"></div>
-        <div class="topics" id="topics"></div>
-      </div>
-    </div>
-
-    <div class="sidebar-section" id="releases-section" style="display:none;">
-      <div class="sidebar-head">Releases</div>
-      <div class="sidebar-body" id="releases-body"></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-head">Languages</div>
-      <div class="sidebar-body" id="languages-body">
-        <div class="skeleton" style="height:8px;border-radius:6px;margin:10px 0;"></div>
-        <div class="skeleton" style="width:100px;height:12px;margin:6px 0;"></div>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-head">Clone</div>
-      <div class="sidebar-body">
-        <div class="clone-tabs">
-          <div class="clone-tab active" onclick="switchClone(this,'https')">HTTPS</div>
-          <div class="clone-tab" onclick="switchClone(this,'ssh')">SSH</div>
-          <div class="clone-tab" onclick="switchClone(this,'cli')">CLI</div>
+        <div id="files-list">
+          <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:80px;"></span><span class="skeleton" style="width:140px;"></span><span class="skeleton" style="width:60px;"></span></div>
+          <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:100px;"></span><span class="skeleton" style="width:120px;"></span><span class="skeleton" style="width:60px;"></span></div>
+          <div class="file-row"><span class="ficon"></span><span class="skeleton" style="width:70px;"></span><span class="skeleton" style="width:160px;"></span><span class="skeleton" style="width:60px;"></span></div>
         </div>
-        <div class="clone-input-wrap">
-          <input class="clone-input" id="clone-url" value="https://github.com/arafats-tech/dictionary.git" readonly>
-          <button class="copy-btn" onclick="copyUrl()">Copy</button>
-        </div>
-        <span class="copy-tip" id="copy-tip">Copied!</span>
-        <a href="https://github.com/arafats-tech/dictionary/archive/refs/heads/main.zip" target="_blank" class="dl-btn">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"/></svg>
-          Download ZIP
-        </a>
       </div>
-    </div>
-  </aside>
-</div>
 
-<footer>
-  <nav class="footer-nav">
-    <a href="https://docs.github.com/site-policy/github-terms/github-terms-of-service" target="_blank">Terms</a>
-    <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement" target="_blank">Privacy</a>
-    <a href="https://github.com/security" target="_blank">Security</a>
-    <a href="https://www.githubstatus.com/" target="_blank">Status</a>
-    <a href="https://docs.github.com" target="_blank">Docs</a>
-    <a href="https://support.github.com" target="_blank">Contact</a>
-  </nav>
-  <p>© 2026 arafats-tech/dictionary · Data pulled live from GitHub API</p>
-</footer>
+      <!-- README -->
+      <div class="readme-box">
+        <div class="readme-head">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
+          README.md
+          <a href="https://github.com/arafats-tech/dictionary/blob/main/README.md" target="_blank" style="margin-left:auto;opacity:.6;display:flex;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25z"/></svg>
+          </a>
+        </div>
+        <div class="readme-body" id="readme-body">
+          <div class="skeleton" style="width:200px;height:24px;margin-bottom:16px;"></div>
+          <div class="skeleton" style="width:100%;height:12px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:80%;height:12px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:90%;height:12px;margin-bottom:24px;"></div>
+          <div class="skeleton" style="width:140px;height:18px;margin-bottom:12px;"></div>
+          <div class="skeleton" style="width:100%;height:12px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:75%;height:12px;"></div>
+        </div>
+      </div>
+    </main>
 
-<script>
-const OWNER = 'arafats-tech';
-const REPO  = 'dictionary';
-const BASE  = 'https://api.github.com';
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="sidebar-section">
+        <div class="sidebar-head">About</div>
+        <div class="sidebar-body">
+          <p class="about-desc" id="about-desc"><span class="skeleton" style="width:100%;display:block;height:12px;margin-bottom:6px;"></span><span class="skeleton" style="width:70%;display:block;height:12px;"></span></p>
+          <div class="meta-row" id="website-row" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25z"/></svg>
+            <a id="website-link" href="#" target="_blank"></a>
+          </div>
+          <div class="stats-pills" id="stats-pills"></div>
+          <div class="topics" id="topics"></div>
+        </div>
+      </div>
 
-// ── helpers ──────────────────────────────────────────────
-function relTime(iso) {
-  const diff = (Date.now() - new Date(iso)) / 1000;
-  if (diff < 60)   return 'just now';
-  if (diff < 3600) return Math.floor(diff/60) + ' minutes ago';
-  if (diff < 86400)return Math.floor(diff/3600) + ' hours ago';
-  if (diff < 2592000) return Math.floor(diff/86400) + ' days ago';
-  if (diff < 31536000) return Math.floor(diff/2592000) + ' months ago';
-  return Math.floor(diff/31536000) + ' years ago';
-}
+      <div class="sidebar-section" id="releases-section" style="display:none;">
+        <div class="sidebar-head">Releases</div>
+        <div class="sidebar-body" id="releases-body"></div>
+      </div>
 
-function fileIcon(type, name) {
-  if (type === 'dir') {
-    return `<svg width="16" height="16" viewBox="0 0 16 16" fill="#54aeff"><path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>`;
-  }
-  const ext = name.split('.').pop().toLowerCase();
-  const colors = { html:'#e34c26', md:'#58a6ff', js:'#f1e05a', css:'#563d7c', json:'#292929', py:'#3572A5', txt:'#6b737e' };
-  const c = colors[ext] || '#6b737e';
-  return `<svg width="16" height="16" viewBox="0 0 16 16" fill="${c}" style="opacity:.85"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75z"/></svg>`;
-}
+      <div class="sidebar-section">
+        <div class="sidebar-head">Languages</div>
+        <div class="sidebar-body" id="languages-body">
+          <div class="skeleton" style="height:8px;border-radius:6px;margin:10px 0;"></div>
+          <div class="skeleton" style="width:100px;height:12px;margin:6px 0;"></div>
+        </div>
+      </div>
 
-function commitMsg(msg) {
-  const short = msg.split('\n')[0];
-  return short.length > 72 ? short.slice(0,72)+'…' : short;
-}
+      <div class="sidebar-section">
+        <div class="sidebar-head">Clone</div>
+        <div class="sidebar-body">
+          <div class="clone-tabs">
+            <div class="clone-tab active" onclick="switchClone(this,'https')">HTTPS</div>
+            <div class="clone-tab" onclick="switchClone(this,'ssh')">SSH</div>
+            <div class="clone-tab" onclick="switchClone(this,'cli')">CLI</div>
+          </div>
+          <div class="clone-input-wrap">
+            <input class="clone-input" id="clone-url" value="https://github.com/arafats-tech/dictionary.git" readonly />
+            <button class="copy-btn" onclick="copyUrl()">Copy</button>
+          </div>
+          <span class="copy-tip" id="copy-tip">Copied!</span>
+          <a href="https://github.com/arafats-tech/dictionary/archive/refs/heads/main.zip" target="_blank" class="dl-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"/></svg>
+            Download ZIP
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
 
-// ── fetch with error handling ─────────────────────────────
-async function ghFetch(path) {
-  const r = await fetch(BASE + path, { headers: { Accept: 'application/vnd.github.v3+json' } });
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-}
+  <footer>
+    <nav class="footer-nav">
+      <a href="https://docs.github.com/site-policy/github-terms/github-terms-of-service" target="_blank">Terms</a>
+      <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement" target="_blank">Privacy</a>
+      <a href="https://github.com/security" target="_blank">Security</a>
+      <a href="https://www.githubstatus.com/" target="_blank">Status</a>
+      <a href="https://docs.github.com" target="_blank">Docs</a>
+      <a href="https://support.github.com" target="_blank">Contact</a>
+    </nav>
+    <p>© 2026 arafats-tech/dictionary · Data pulled live from GitHub API</p>
+  </footer>
 
-// ── render files ──────────────────────────────────────────
-async function loadFiles() {
-  try {
-    const [contents, commits] = await Promise.all([
-      ghFetch(`/repos/${OWNER}/${REPO}/contents`),
-      ghFetch(`/repos/${OWNER}/${REPO}/commits?per_page=1`)
-    ]);
+  <script>
+    (function() {
+      const OWNER = 'arafats-tech';
+      const REPO = 'dictionary';
+      const BASE = 'https://api.github.com';
 
-    // latest commit
-    if (commits.length) {
-      const c = commits[0];
-      document.getElementById('latest-commit-msg').innerHTML =
-        `<strong>${c.commit.author.name}</strong>&nbsp; ${commitMsg(c.commit.message)}`;
-      document.getElementById('latest-commit-sha').textContent = c.sha.slice(0,7);
-    }
+      // ── helpers ──
+      function relTime(iso) {
+        const diff = (Date.now() - new Date(iso)) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + ' minutes ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
+        if (diff < 2592000) return Math.floor(diff / 86400) + ' days ago';
+        if (diff < 31536000) return Math.floor(diff / 2592000) + ' months ago';
+        return Math.floor(diff / 31536000) + ' years ago';
+      }
 
-    // commit count
-    try {
-      const cHead = await fetch(`${BASE}/repos/${OWNER}/${REPO}/commits?per_page=1`, {
-        headers: { Accept: 'application/vnd.github.v3+json' }
-      });
-      const link = cHead.headers.get('Link') || '';
-      const match = link.match(/page=(\d+)>; rel="last"/);
-      const count = match ? match[1] : '29';
-      document.getElementById('commit-count-label').innerHTML = `<strong style="color:var(--text)">${count}</strong> commits`;
-      document.getElementById('commit-count-right').innerHTML = `<strong style="color:var(--text)">${count}</strong> commits`;
-    } catch(_) {}
+      function fileIcon(type, name) {
+        if (type === 'dir') {
+          return `<svg width="16" height="16" viewBox="0 0 16 16" fill="#54aeff"><path d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"/></svg>`;
+        }
+        const ext = name.split('.').pop().toLowerCase();
+        const colors = { html: '#e34c26', md: '#58a6ff', js: '#f1e05a', css: '#563d7c', json: '#292929', py: '#3572A5',
+          txt: '#6b737e' };
+        const c = colors[ext] || '#6b737e';
+        return `<svg width="16" height="16" viewBox="0 0 16 16" fill="${c}" style="opacity:.85"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75z"/></svg>`;
+      }
 
-    // sort: dirs first, then files alpha
-    const sorted = [...contents].sort((a,b) => {
-      if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
+      function commitMsg(msg) {
+        const short = msg.split('\n')[0];
+        return short.length > 72 ? short.slice(0, 72) + '…' : short;
+      }
 
-    // fetch commit times per file (batch, allow partial failure)
-    const fileCommits = await Promise.allSettled(
-      sorted.map(f => ghFetch(`/repos/${OWNER}/${REPO}/commits?path=${encodeURIComponent(f.path)}&per_page=1`))
-    );
+      async function ghFetch(path) {
+        const r = await fetch(BASE + path, { headers: { Accept: 'application/vnd.github.v3+json' } });
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }
 
-    const html = sorted.map((f, i) => {
-      const fc = fileCommits[i].status === 'fulfilled' ? fileCommits[i].value : [];
-      const msg  = fc.length ? commitMsg(fc[0].commit.message) : '';
-      const time = fc.length ? relTime(fc[0].commit.author.date) : '';
-      const url  = `https://github.com/${OWNER}/${REPO}/${f.type === 'dir' ? 'tree' : 'blob'}/main/${f.path}`;
-      return `<a href="${url}" target="_blank" class="file-row">
-        <span class="ficon">${fileIcon(f.type, f.name)}</span>
-        <span class="fname">${f.name}${f.type==='dir'?'/':''}</span>
-        <span class="fdesc">${msg}</span>
-        <span class="ftime">${time}</span>
-      </a>`;
-    }).join('');
+      // ── load files ──
+      async function loadFiles() {
+        try {
+          const [contents, commits] = await Promise.all([
+            ghFetch(`/repos/${OWNER}/${REPO}/contents`),
+            ghFetch(`/repos/${OWNER}/${REPO}/commits?per_page=1`)
+          ]);
 
-    document.getElementById('files-list').innerHTML = html || '<div class="state-row">No files found.</div>';
-  } catch(e) {
-    document.getElementById('files-list').innerHTML = `<div class="state-row">Could not load files. <a href="https://github.com/${OWNER}/${REPO}" target="_blank" style="color:var(--blue)">View on GitHub →</a></div>`;
-  }
-}
+          if (commits.length) {
+            const c = commits[0];
+            document.getElementById('latest-commit-msg').innerHTML =
+              `<strong>${c.commit.author.name}</strong>&nbsp; ${commitMsg(c.commit.message)}`;
+            document.getElementById('latest-commit-sha').textContent = c.sha.slice(0, 7);
+          }
 
-// ── render repo info ──────────────────────────────────────
-async function loadRepo() {
-  try {
-    const repo = await ghFetch(`/repos/${OWNER}/${REPO}`);
+          try {
+            const cHead = await fetch(`${BASE}/repos/${OWNER}/${REPO}/commits?per_page=1`, {
+              headers: { Accept: 'application/vnd.github.v3+json' }
+            });
+            const link = cHead.headers.get('Link') || '';
+            const match = link.match(/page=(\d+)>; rel="last"/);
+            const count = match ? match[1] : '29';
+            document.getElementById('commit-count-label').innerHTML = `<strong style="color:var(--text)">${count}</strong> commits`;
+            document.getElementById('commit-count-right').innerHTML = `<strong style="color:var(--text)">${count}</strong> commits`;
+          } catch (_) {}
 
-    document.getElementById('stars-count').textContent = repo.stargazers_count;
-    document.getElementById('forks-count').textContent  = repo.forks_count;
+          const sorted = [...contents].sort((a, b) => {
+            if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+            return a.name.localeCompare(b.name);
+          });
 
-    document.getElementById('about-desc').textContent = repo.description || 'No description provided.';
+          const fileCommits = await Promise.allSettled(
+            sorted.map(f => ghFetch(`/repos/${OWNER}/${REPO}/commits?path=${encodeURIComponent(f.path)}&per_page=1`))
+          );
 
-    if (repo.homepage) {
-      document.getElementById('website-row').style.display = 'flex';
-      const wl = document.getElementById('website-link');
-      wl.textContent = repo.homepage.replace(/^https?:\/\//, '');
-      wl.href = repo.homepage;
-    }
+          const html = sorted.map((f, i) => {
+            const fc = fileCommits[i].status === 'fulfilled' ? fileCommits[i].value : [];
+            const msg = fc.length ? commitMsg(fc[0].commit.message) : '';
+            const time = fc.length ? relTime(fc[0].commit.author.date) : '';
+            const url = `https://github.com/${OWNER}/${REPO}/${f.type === 'dir' ? 'tree' : 'blob'}/main/${f.path}`;
+            return `<a href="${url}" target="_blank" class="file-row">
+                <span class="ficon">${fileIcon(f.type, f.name)}</span>
+                <span class="fname">${f.name}${f.type==='dir'?'/':''}</span>
+                <span class="fdesc">${msg}</span>
+                <span class="ftime">${time}</span>
+              </a>`;
+          }).join('');
 
-    const pills = [
-      { icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>`, val: repo.stargazers_count + ' stars' },
-      { icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"/></svg>`, val: (repo.watchers_count || 0) + ' watching' },
-      { icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>`, val: repo.forks_count + ' forks' },
-    ];
-    document.getElementById('stats-pills').innerHTML = pills.map(p =>
-      `<span class="stat-pill">${p.icon} <strong>${p.val.split(' ')[0]}</strong> ${p.val.split(' ').slice(1).join(' ')}</span>`
-    ).join('');
+          document.getElementById('files-list').innerHTML = html || '<div class="state-row">No files found.</div>';
+        } catch (e) {
+          document.getElementById('files-list').innerHTML =
+            `<div class="state-row">Could not load files. <a href="https://github.com/${OWNER}/${REPO}" target="_blank" style="color:var(--blue)">View on GitHub →</a></div>`;
+        }
+      }
 
-    if (repo.topics && repo.topics.length) {
-      document.getElementById('topics').innerHTML = repo.topics.map(t =>
-        `<a href="https://github.com/topics/${t}" target="_blank" class="topic">${t}</a>`
-      ).join('');
-    }
-  } catch(e) {}
-}
+      // ── repo info ──
+      async function loadRepo() {
+        try {
+          const repo = await ghFetch(`/repos/${OWNER}/${REPO}`);
+          document.getElementById('stars-count').textContent = repo.stargazers_count;
+          document.getElementById('forks-count').textContent = repo.forks_count;
+          document.getElementById('about-desc').textContent = repo.description || 'No description provided.';
 
-// ── render README ─────────────────────────────────────────
-async function loadReadme() {
-  try {
-    const data = await ghFetch(`/repos/${OWNER}/${REPO}/readme`);
-    const text = atob(data.content.replace(/\n/g,''));
+          if (repo.homepage) {
+            document.getElementById('website-row').style.display = 'flex';
+            const wl = document.getElementById('website-link');
+            wl.textContent = repo.homepage.replace(/^https?:\/\//, '');
+            wl.href = repo.homepage;
+          }
 
-    // Basic markdown → HTML parser
-    function mdToHtml(md) {
-      // Code blocks
-      md = md.replace(/```[\s\S]*?```/g, m => {
-        const code = m.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
-        return `<pre><code>${escHtml(code)}</code></pre>`;
-      });
-      // Inline code
-      md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
-      // Headings
-      md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-      md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-      md = md.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-      // Bold & italic
-      md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
-      // Checkboxes
-      md = md.replace(/^- \[x\] (.+)$/gm, '<li><input type="checkbox" checked disabled> $1</li>');
-      md = md.replace(/^- \[ \] (.+)$/gm, '<li><input type="checkbox" disabled> $1</li>');
-      // Links
-      md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-      // Horizontal rules
-      md = md.replace(/^---+$/gm, '<hr style="border-color:var(--border);margin:16px 0;">');
-      // Tables
-      md = md.replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)*)/g, (_, header, rows) => {
-        const ths = header.split('|').filter(s=>s.trim()).map(s=>`<th>${s.trim()}</th>`).join('');
-        const trs = rows.trim().split('\n').map(row => {
-          const tds = row.split('|').filter(s=>s.trim()).map(s=>`<td>${s.trim()}</td>`).join('');
-          return `<tr>${tds}</tr>`;
-        }).join('');
-        return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
-      });
-      // Lists
-      md = md.replace(/((?:^- .+\n?)+)/gm, m => {
-        const items = m.trim().split('\n').map(l => l.replace(/^- /, '')).map(l => `<li>${l}</li>`).join('');
-        return `<ul>${items}</ul>`;
-      });
-      md = md.replace(/((?:^\d+\. .+\n?)+)/gm, m => {
-        const items = m.trim().split('\n').map(l => l.replace(/^\d+\. /, '')).map(l => `<li>${l}</li>`).join('');
-        return `<ol>${items}</ol>`;
-      });
-      // Paragraphs
-      md = md.split(/\n\n+/).map(block => {
-        block = block.trim();
-        if (!block) return '';
-        if (/^<(h[1-6]|ul|ol|pre|table|hr)/.test(block)) return block;
-        return `<p>${block.replace(/\n/g,' ')}</p>`;
-      }).join('\n');
-      return md;
-    }
+          const pills = [{
+            icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>`,
+            val: repo.stargazers_count + ' stars'
+          }, {
+            icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"/></svg>`,
+            val: (repo.watchers_count || 0) + ' watching'
+          }, {
+            icon: `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>`,
+            val: repo.forks_count + ' forks'
+          }, ];
+          document.getElementById('stats-pills').innerHTML = pills.map(p =>
+            `<span class="stat-pill">${p.icon} <strong>${p.val.split(' ')[0]}</strong> ${p.val.split(' ').slice(1).join(' ')}</span>`
+          ).join('');
 
-    function escHtml(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
+          if (repo.topics && repo.topics.length) {
+            document.getElementById('topics').innerHTML = repo.topics.map(t =>
+              `<a href="https://github.com/topics/${t}" target="_blank" class="topic">${t}</a>`
+            ).join('');
+          }
+        } catch (e) {}
+      }
 
-    document.getElementById('readme-body').innerHTML = mdToHtml(text);
-  } catch(e) {
-    document.getElementById('readme-body').innerHTML = '<p style="color:var(--muted)">Could not load README.</p>';
-  }
-}
+      // ── readme ──
+      async function loadReadme() {
+        try {
+          const data = await ghFetch(`/repos/${OWNER}/${REPO}/readme`);
+          const text = atob(data.content.replace(/\n/g, ''));
 
-// ── render languages ──────────────────────────────────────
-async function loadLanguages() {
-  try {
-    const langs = await ghFetch(`/repos/${OWNER}/${REPO}/languages`);
-    const total = Object.values(langs).reduce((a,b)=>a+b,0);
-    const COLORS = { JavaScript:'#f1e05a', HTML:'#e34c26', CSS:'#563d7c', Python:'#3572A5', Markdown:'#083fa1', TypeScript:'#2b7489', Shell:'#89e051', Java:'#b07219' };
-    const segments = Object.entries(langs).map(([lang, bytes]) => {
-      const pct = (bytes/total*100).toFixed(1);
-      const color = COLORS[lang] || '#6b737e';
-      return { lang, pct, color };
-    });
-    const bar = segments.map(s => `<div class="lang-seg" style="width:${s.pct}%;background:${s.color};"></div>`).join('');
-    const rows = segments.map(s => `<div class="lang-row"><span class="lang-dot" style="background:${s.color};"></span> ${s.lang} <span style="margin-left:auto;">${s.pct}%</span></div>`).join('');
-    document.getElementById('languages-body').innerHTML = `<div class="lang-bar">${bar}</div>${rows}`;
-  } catch(e) {
-    document.getElementById('languages-body').innerHTML = '<p style="color:var(--muted);font-size:12px;">Could not load language data.</p>';
-  }
-}
+          function mdToHtml(md) {
+            md = md.replace(/```[\s\S]*?```/g, m => {
+              const code = m.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+              return `<pre><code>${escHtml(code)}</code></pre>`;
+            });
+            md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+            md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            md = md.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+            md = md.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            md = md.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            md = md.replace(/^- \[x\] (.+)$/gm, '<li><input type="checkbox" checked disabled> $1</li>');
+            md = md.replace(/^- \[ \] (.+)$/gm, '<li><input type="checkbox" disabled> $1</li>');
+            md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            md = md.replace(/^---+$/gm, '<hr style="border-color:var(--border);margin:16px 0;">');
+            md = md.replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)*)/g, (_, header, rows) => {
+              const ths = header.split('|').filter(s => s.trim()).map(s => `<th>${s.trim()}</th>`).join('');
+              const trs = rows.trim().split('\n').map(row => {
+                const tds = row.split('|').filter(s => s.trim()).map(s => `<td>${s.trim()}</td>`).join('');
+                return `<tr>${tds}</tr>`;
+              }).join('');
+              return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+            });
+            md = md.replace(/((?:^- .+\n?)+)/gm, m => {
+              const items = m.trim().split('\n').map(l => l.replace(/^- /, '')).map(l => `<li>${l}</li>`).join('');
+              return `<ul>${items}</ul>`;
+            });
+            md = md.replace(/((?:^\d+\. .+\n?)+)/gm, m => {
+              const items = m.trim().split('\n').map(l => l.replace(/^\d+\. /, '')).map(l => `<li>${l}</li>`).join('');
+              return `<ol>${items}</ol>`;
+            });
+            md = md.split(/\n\n+/).map(block => {
+              block = block.trim();
+              if (!block) return '';
+              if (/^<(h[1-6]|ul|ol|pre|table|hr)/.test(block)) return block;
+              return `<p>${block.replace(/\n/g, ' ')}</p>`;
+            }).join('\n');
+            return md;
+          }
 
-// ── clone switcher ────────────────────────────────────────
-const CLONE_URLS = {
-  https: `https://github.com/${OWNER}/${REPO}.git`,
-  ssh:   `git@github.com:${OWNER}/${REPO}.git`,
-  cli:   `gh repo clone ${OWNER}/${REPO}`
-};
+          function escHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          }
 
-function switchClone(el, type) {
-  document.querySelectorAll('.clone-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('clone-url').value = CLONE_URLS[type];
-}
+          document.getElementById('readme-body').innerHTML = mdToHtml(text);
+        } catch (e) {
+          document.getElementById('readme-body').innerHTML = '<p style="color:var(--muted)">Could not load README.</p>';
+        }
+      }
 
-function copyUrl() {
-  const val = document.getElementById('clone-url').value;
-  navigator.clipboard.writeText(val).catch(()=>{});
-  const tip = document.getElementById('copy-tip');
-  tip.style.display = 'block';
-  setTimeout(()=>{ tip.style.display='none'; }, 1800);
-}
+      // ── languages ──
+      async function loadLanguages() {
+        try {
+          const langs = await ghFetch(`/repos/${OWNER}/${REPO}/languages`);
+          const total = Object.values(langs).reduce((a, b) => a + b, 0);
+          const COLORS = { JavaScript: '#f1e05a', HTML: '#e34c26', CSS: '#563d7c', Python: '#3572A5', Markdown: '#083fa1',
+            TypeScript: '#2b7489', Shell: '#89e051', Java: '#b07219' };
+          const segments = Object.entries(langs).map(([lang, bytes]) => {
+            const pct = (bytes / total * 100).toFixed(1);
+            const color = COLORS[lang] || '#6b737e';
+            return { lang, pct, color };
+          });
+          const bar = segments.map(s => `<div class="lang-seg" style="width:${s.pct}%;background:${s.color};"></div>`).join('');
+          const rows = segments.map(s =>
+            `<div class="lang-row"><span class="lang-dot" style="background:${s.color};"></span> ${s.lang} <span style="margin-left:auto;">${s.pct}%</span></div>`
+          ).join('');
+          document.getElementById('languages-body').innerHTML = `<div class="lang-bar">${bar}</div>${rows}`;
+        } catch (e) {
+          document.getElementById('languages-body').innerHTML =
+            '<p style="color:var(--muted);font-size:12px;">Could not load language data.</p>';
+        }
+      }
 
-// ── boot ─────────────────────────────────────────────────
-loadRepo();
-loadFiles();
-loadReadme();
-loadLanguages();
-</script>
+      // ── clone switcher ──
+      const CLONE_URLS = {
+        https: `https://github.com/${OWNER}/${REPO}.git`,
+        ssh: `git@github.com:${OWNER}/${REPO}.git`,
+        cli: `gh repo clone ${OWNER}/${REPO}`
+      };
+      window.switchClone = function(el, type) {
+        document.querySelectorAll('.clone-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('clone-url').value = CLONE_URLS[type];
+      };
+      window.copyUrl = function() {
+        const val = document.getElementById('clone-url').value;
+        navigator.clipboard.writeText(val).catch(() => {});
+        const tip = document.getElementById('copy-tip');
+        tip.style.display = 'block';
+        setTimeout(() => { tip.style.display = 'none'; }, 1800);
+      };
+
+      // ── boot ──
+      loadRepo();
+      loadFiles();
+      loadReadme();
+      loadLanguages();
+    })();
+  </script>
 </body>
 </html>
