@@ -1,43 +1,525 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="bn" data-theme="light">
 <head>
-<title>CSE Vocabulary</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{font-family:Arial;padding:20px}
-table{
-width:100%;
-border-collapse:collapse;
-}
-th,td{
-border:1px solid #ddd;
-padding:10px;
-}
-a{text-decoration:none}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSE Vocabulary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #f2f1ee;
+      --surface:  #ffffff;
+      --border:   #e3e2de;
+      --row-line: #f0efec;
+      --text:     #18181b;
+      --text2:    #52525b;
+      --text3:    #a1a1aa;
+      --hover:    #fafaf9;
+      --chip-bg:  #e8e7e3;
+      --chip-fg:  #52525b;
+      --mark:     #fde68a;
+      --nav-bg:   #18181b;
+      --nav-fg:   #e4e4e7;
+      --nav-sub:  #52525b;
+      --tog-bd:   #3f3f46;
+      --day-bg:   #f7f6f4;
+      --day-active: #18181b;
+      --day-active-fg: #ffffff;
+    }
+    [data-theme="dark"] {
+      --bg:       #0f0f10;
+      --surface:  #18181b;
+      --border:   #27272a;
+      --row-line: #1f1f22;
+      --text:     #e4e4e7;
+      --text2:    #a1a1aa;
+      --text3:    #52525b;
+      --hover:    #1c1c1f;
+      --chip-bg:  #27272a;
+      --chip-fg:  #a1a1aa;
+      --mark:     #78350f;
+      --nav-bg:   #09090b;
+      --nav-fg:   #e4e4e7;
+      --nav-sub:  #52525b;
+      --tog-bd:   #3f3f46;
+      --day-bg:   #1c1c1f;
+      --day-active: #e4e4e7;
+      --day-active-fg: #18181b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--nav-bg);
+      height: 52px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-brand { display: flex; align-items: baseline; gap: 10px; }
+    .nav-brand strong { font-size: 14px; font-weight: 600; color: var(--nav-fg); letter-spacing: -0.2px; }
+    .nav-brand span   { font-size: 11px; color: var(--nav-sub); font-family: 'Noto Serif Bengali', serif; }
+    .theme-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--tog-bd);
+      border-radius: 6px; padding: 5px 10px;
+      color: var(--nav-fg); font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; opacity: 0.7;
+      transition: opacity .15s, border-color .15s;
+    }
+    .theme-btn:hover { opacity: 1; border-color: #71717a; }
+
+    /* PAGE */
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+      display: grid;
+      grid-template-columns: 156px 1fr;
+      gap: 0 20px;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .sidebar { grid-column: 1; grid-row: 1 / 5; }
+    .sidebar-inner {
+      position: sticky; top: 68px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .panel-title {
+      font-size: 9.5px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text3); margin-bottom: 10px;
+    }
+
+    .stat-num  { font-size: 30px; font-weight: 600; letter-spacing: -1px; line-height: 1; }
+    .stat-desc { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'Noto Serif Bengali', serif; }
+
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0; border-bottom: 1px solid var(--row-line);
+      font-size: 12px;
+    }
+    .info-row:first-child { padding-top: 0; }
+    .info-row:last-child  { border-bottom: none; padding-bottom: 0; }
+    .i-key { color: var(--text2); }
+    .i-val { color: var(--text3); font-size: 11px; }
+
+    /* DAY TABS */
+    .day-tabs {
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .day-tab {
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: var(--day-bg);
+      color: var(--text2);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .day-tab:hover { background: var(--border); color: var(--text); }
+    .day-tab.active {
+      background: var(--day-active);
+      color: var(--day-active-fg);
+    }
+    .day-tab .badge {
+      font-size: 10px;
+      opacity: 0.5;
+    }
+
+    /* CHIPS */
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .chip {
+      font-size: 10px; padding: 2px 8px;
+      background: var(--chip-bg); color: var(--chip-fg);
+      border: none; border-radius: 4px;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background .12s, color .12s; line-height: 1.8;
+    }
+    .chip:hover, .chip.active { background: var(--text); color: var(--bg); }
+
+    /* TOOLBAR */
+    .toolbar { grid-column: 2; display: flex; gap: 8px; margin-bottom: 8px; }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap svg {
+      position: absolute; left: 10px; top: 50%;
+      transform: translateY(-50%); color: var(--text3); pointer-events: none;
+    }
+    input[type="search"] {
+      width: 100%; padding: 8px 10px 8px 32px;
+      border: 1px solid var(--border); border-radius: 7px;
+      background: var(--surface); font-size: 13px;
+      font-family: 'Inter', sans-serif; color: var(--text);
+      outline: none; transition: border-color .15s, box-shadow .15s;
+    }
+    input[type="search"]:focus {
+      border-color: var(--text3);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent);
+    }
+    input[type="search"]::placeholder { color: var(--text3); }
+    input[type="search"]::-webkit-search-cancel-button { display: none; }
+    select {
+      padding: 8px 10px; border: 1px solid var(--border);
+      border-radius: 7px; background: var(--surface);
+      font-size: 12px; font-family: 'Inter', sans-serif;
+      color: var(--text2); outline: none; cursor: pointer;
+    }
+    select:focus { border-color: var(--text3); }
+    select option { background: var(--surface); color: var(--text); }
+
+    /* META */
+    .meta { grid-column: 2; font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+
+    /* TABLE */
+    .table-wrap { grid-column: 2; }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; font-size: 13px;
+    }
+    thead tr { background: var(--bg); }
+    th {
+      text-align: left; padding: 9px 14px;
+      font-size: 9.5px; font-weight: 600;
+      letter-spacing: 0.9px; text-transform: uppercase;
+      color: var(--text3); border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 14px; border-bottom: 1px solid var(--row-line);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--hover); }
+
+    .c-num  { color: var(--text3); font-size: 11px; width: 32px; font-variant-numeric: tabular-nums; }
+    .c-word { font-weight: 600; color: var(--text); }
+    .c-en   { color: var(--text2); }
+    .c-bn   { font-family: 'Noto Serif Bengali', serif; color: var(--text3); font-size: 12px; }
+
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
+
+    footer {
+      text-align: center; padding: 14px;
+      font-size: 11px; color: var(--text3);
+      border-top: 1px solid var(--border);
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      nav { padding: 0 14px; }
+      .page {
+        grid-template-columns: 1fr;
+        padding: 14px 12px 60px;
+      }
+      .sidebar { grid-column: 1; grid-row: auto; margin-top: 20px; }
+      .sidebar-inner { position: static; flex-direction: row; flex-wrap: wrap; }
+      .panel { flex: 1 1 140px; }
+      .toolbar, .meta, .table-wrap { grid-column: 1; }
+      .day-tabs { flex-direction: row; flex-wrap: wrap; }
+      .day-tab { width: auto; flex: 1 1 60px; }
+    }
+  </style>
 </head>
 <body>
 
-<h1>💻 CSE Vocabulary</h1>
+<nav>
+  <div class="nav-brand">
+    <strong>CSE Vocabulary</strong>
+    <span>ইংরেজি শব্দভান্ডার</span>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()">
+    <svg id="t-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <span id="t-label">Light</span>
+  </button>
+</nav>
 
-<table>
-<tr>
-<th>Day</th>
-<th>Link</th>
-</tr>
+<div class="page">
 
-<tr>
-<td>Day 01</td>
-<td><a href="day-01.html">Open</a></td>
-</tr>
+  <aside class="sidebar">
+    <div class="sidebar-inner">
 
-<tr>
-<td>Day 02</td>
-<td><a href="day-02.html">Open</a></td>
-</tr>
+      <div class="panel">
+        <div class="panel-title">শব্দ</div>
+        <div class="stat-num" id="stat-count">50</div>
+        <div class="stat-desc" id="stat-desc">Day 1 দেখানো হচ্ছে</div>
+      </div>
 
-</table>
+      <div class="panel">
+        <div class="panel-title">তথ্য</div>
+        <div class="info-row"><span class="i-key">মোট দিন</span><span class="i-val" id="total-days">1</span></div>
+        <div class="info-row"><span class="i-key">মোট শব্দ</span><span class="i-val" id="total-words">50</span></div>
+        <div class="info-row"><span class="i-key">প্রতিদিন</span><span class="i-val">50</span></div>
+      </div>
 
+      <div class="panel">
+        <div class="panel-title">দিন বেছে নাও</div>
+        <div class="day-tabs" id="day-tabs"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Quick</div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search" placeholder="Word বা বাংলায় খুঁজুন…" autocomplete="off" />
+    </div>
+    <select id="sort-sel">
+      <option value="">Default</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+    </select>
+  </div>
+
+  <div class="meta" id="meta"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Word</th>
+          <th>English Meaning</th>
+          <th>বাংলা অর্থ</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>CSE Vocabulary &mdash; ইংরেজি শব্দভান্ডার</footer>
+
+<script>
+const ALL_WORDS = [
+  // ── DAY 1 ──
+  { day:1, id:1,  word:"Algorithm",  en:"A step-by-step procedure to solve a problem",       bn:"সমস্যা সমাধানের ধাপে ধাপে পদ্ধতি" },
+  { day:1, id:2,  word:"Iterate",    en:"To repeat a process multiple times",                 bn:"বারবার একটি প্রক্রিয়া পুনরাবৃত্তি করা" },
+  { day:1, id:3,  word:"Implement",  en:"To put a plan or code into action",                  bn:"পরিকল্পনা বা কোড কার্যকর করা" },
+  { day:1, id:4,  word:"Execute",    en:"To run or carry out a program or command",           bn:"প্রোগ্রাম বা কমান্ড চালানো" },
+  { day:1, id:5,  word:"Compile",    en:"To convert source code into machine code",           bn:"সোর্স কোডকে মেশিন কোডে রূপান্তর করা" },
+  { day:1, id:6,  word:"Debug",      en:"To find and fix errors in code",                     bn:"কোডের ত্রুটি খুঁজে ঠিক করা" },
+  { day:1, id:7,  word:"Syntax",     en:"The rules of writing code correctly",                bn:"কোড সঠিকভাবে লেখার নিয়ম" },
+  { day:1, id:8,  word:"Variable",   en:"A named storage location for data",                  bn:"ডেটা রাখার জন্য নামযুক্ত জায়গা" },
+  { day:1, id:9,  word:"Function",   en:"A reusable block of code",                           bn:"পুনরায় ব্যবহারযোগ্য কোডের একটি অংশ" },
+  { day:1, id:10, word:"Parameter",  en:"A value passed into a function",                     bn:"ফাংশনে পাঠানো মান" },
+  { day:1, id:11, word:"Return",     en:"To send back a value from a function",               bn:"ফাংশন থেকে মান ফেরত পাঠানো" },
+  { day:1, id:12, word:"Loop",       en:"A structure that repeats code",                      bn:"কোড বারবার চালানোর কাঠামো" },
+  { day:1, id:13, word:"Condition",  en:"A true or false check in code",                      bn:"কোডে সত্য/মিথ্যা যাচাই" },
+  { day:1, id:14, word:"Boolean",    en:"A data type with only true or false",                bn:"শুধু সত্য বা মিথ্যা মানের ডেটা টাইপ" },
+  { day:1, id:15, word:"Integer",    en:"A whole number without decimals",                    bn:"দশমিক ছাড়া পূর্ণ সংখ্যা" },
+  { day:1, id:16, word:"String",     en:"A sequence of characters or text",                   bn:"অক্ষরের ধারা / টেক্সট" },
+  { day:1, id:17, word:"Array",      en:"An ordered collection of items",                     bn:"সাজানো আইটেমের সংগ্রহ" },
+  { day:1, id:18, word:"Index",      en:"The position of an item in an array",                bn:"অ্যারেতে আইটেমের অবস্থান" },
+  { day:1, id:19, word:"Object",     en:"A data structure with properties and methods",       bn:"প্রপার্টি ও মেথডসহ ডেটা কাঠামো" },
+  { day:1, id:20, word:"Class",      en:"A blueprint for creating objects",                   bn:"অবজেক্ট তৈরির নকশা" },
+  { day:1, id:21, word:"Instance",   en:"A specific object created from a class",             bn:"ক্লাস থেকে তৈরি নির্দিষ্ট অবজেক্ট" },
+  { day:1, id:22, word:"Inherit",    en:"To receive properties from a parent class",          bn:"প্যারেন্ট ক্লাস থেকে বৈশিষ্ট্য নেওয়া" },
+  { day:1, id:23, word:"Declare",    en:"To define a variable or function",                   bn:"ভেরিয়েবল বা ফাংশন সংজ্ঞায়িত করা" },
+  { day:1, id:24, word:"Initialize", en:"To assign a starting value",                         bn:"প্রাথমিক মান নির্ধারণ করা" },
+  { day:1, id:25, word:"Assign",     en:"To give a value to a variable",                      bn:"ভেরিয়েবলে মান দেওয়া" },
+  { day:1, id:26, word:"Operator",   en:"A symbol that performs an operation",                bn:"অপারেশন সম্পাদনকারী চিহ্ন" },
+  { day:1, id:27, word:"Expression", en:"A combination of values and operators",              bn:"মান ও অপারেটরের সমন্বয়" },
+  { day:1, id:28, word:"Statement",  en:"A single instruction in code",                       bn:"কোডের একটি নির্দেশ" },
+  { day:1, id:29, word:"Argument",   en:"The actual value passed to a function",              bn:"ফাংশনে দেওয়া প্রকৃত মান" },
+  { day:1, id:30, word:"Scope",      en:"The region where a variable is accessible",          bn:"যেখানে ভেরিয়েবল ব্যবহার করা যায়" },
+  { day:1, id:31, word:"Recursion",  en:"A function that calls itself",                       bn:"নিজেকে ডাকে এমন ফাংশন" },
+  { day:1, id:32, word:"Stack",      en:"A last-in, first-out data structure",                bn:"শেষে ঢোকা প্রথমে বের হয় এমন কাঠামো" },
+  { day:1, id:33, word:"Queue",      en:"A first-in, first-out data structure",               bn:"প্রথমে ঢোকা প্রথমে বের হয় এমন কাঠামো" },
+  { day:1, id:34, word:"Pointer",    en:"A variable that stores a memory address",            bn:"মেমরি ঠিকানা ধরে রাখে এমন ভেরিয়েবল" },
+  { day:1, id:35, word:"Memory",     en:"Storage space used by a program",                    bn:"প্রোগ্রামের ব্যবহৃত সঞ্চয় স্থান" },
+  { day:1, id:36, word:"Allocate",   en:"To reserve memory for use",                          bn:"ব্যবহারের জন্য মেমরি সংরক্ষণ করা" },
+  { day:1, id:37, word:"Runtime",    en:"The time when a program is running",                 bn:"প্রোগ্রাম চলার সময়" },
+  { day:1, id:38, word:"Exception",  en:"An error that occurs during runtime",                bn:"রানটাইমে ঘটা ত্রুটি" },
+  { day:1, id:39, word:"Handle",     en:"To manage or deal with something such as errors",    bn:"কিছু (যেমন ত্রুটি) সামলানো" },
+  { day:1, id:40, word:"Library",    en:"A collection of pre-written code",                   bn:"পূর্বলিখিত কোডের সংগ্রহ" },
+  { day:1, id:41, word:"Framework",  en:"A structured base for building applications",        bn:"অ্যাপ তৈরির কাঠামোগত ভিত্তি" },
+  { day:1, id:42, word:"Module",     en:"A self-contained unit of code",                      bn:"স্বনির্ভর কোড একক" },
+  { day:1, id:43, word:"Import",     en:"To bring in code from another file or module",       bn:"অন্য ফাইল থেকে কোড আনা" },
+  { day:1, id:44, word:"Export",     en:"To make code available for other files",             bn:"অন্য ফাইলের জন্য কোড উন্মুক্ত করা" },
+  { day:1, id:45, word:"API",        en:"Interface for two programs to communicate",          bn:"দুটি প্রোগ্রামের যোগাযোগের মাধ্যম" },
+  { day:1, id:46, word:"Request",    en:"Asking a server for data",                           bn:"সার্ভারের কাছে ডেটা চাওয়া" },
+  { day:1, id:47, word:"Response",   en:"The data sent back by a server",                     bn:"সার্ভার থেকে ফেরত আসা ডেটা" },
+  { day:1, id:48, word:"Database",   en:"An organized collection of stored data",             bn:"সাজানো ডেটার সংগ্রহশালা" },
+  { day:1, id:49, word:"Query",      en:"A request to retrieve data from a database",         bn:"ডেটাবেজ থেকে ডেটা আনার অনুরোধ" },
+  { day:1, id:50, word:"Repository", en:"A storage location for code such as GitHub",         bn:"কোড রাখার জায়গা (যেমন GitHub)" },
+];
+
+/* ── THEME ── */
+const root = document.documentElement;
+(function(){
+  const saved = localStorage.getItem('csv-theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(saved);
+})();
+function applyTheme(t) {
+  root.setAttribute('data-theme', t);
+  localStorage.setItem('csv-theme', t);
+  document.getElementById('t-label').textContent = t === 'dark' ? 'Dark' : 'Light';
+  document.getElementById('t-icon').innerHTML = t === 'dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+function toggleTheme() {
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── STATE ── */
+const days = [...new Set(ALL_WORDS.map(w => w.day))];
+let activeDay = 1;
+let activeChip = null;
+
+const searchEl  = document.getElementById('search');
+const sortSel   = document.getElementById('sort-sel');
+const tbody     = document.getElementById('tbody');
+const metaEl    = document.getElementById('meta');
+const statCount = document.getElementById('stat-count');
+const statDesc  = document.getElementById('stat-desc');
+const totalDays = document.getElementById('total-days');
+const totalWords= document.getElementById('total-words');
+const dayTabsEl = document.getElementById('day-tabs');
+const chipsEl   = document.getElementById('chips');
+
+/* ── BUILD DAY TABS ── */
+function buildDayTabs() {
+  totalDays.textContent = days.length;
+  totalWords.textContent = ALL_WORDS.length;
+  dayTabsEl.innerHTML = '';
+  days.forEach(d => {
+    const count = ALL_WORDS.filter(w => w.day === d).length;
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (d === activeDay ? ' active' : '');
+    btn.innerHTML = `<span>Day ${d}</span><span class="badge">${count}</span>`;
+    btn.onclick = () => {
+      activeDay = d;
+      activeChip = null;
+      searchEl.value = '';
+      document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      buildChips();
+      render();
+    };
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+/* ── BUILD CHIPS ── */
+function buildChips() {
+  chipsEl.innerHTML = '';
+  ALL_WORDS.filter(w => w.day === activeDay).forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (activeChip === w.word ? ' active' : '');
+    b.textContent = w.word;
+    b.onclick = () => {
+      if (activeChip === w.word) {
+        activeChip = null; searchEl.value = '';
+        b.classList.remove('active');
+      } else {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        activeChip = w.word; searchEl.value = w.word;
+        b.classList.add('active');
+      }
+      render();
+    };
+    chipsEl.appendChild(b);
+  });
+}
+
+/* ── RENDER ── */
+function hl(str, q) {
+  if (!q) return str;
+  return str.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function render() {
+  const q = searchEl.value.trim().toLowerCase();
+  const s = sortSel.value;
+
+  // if searching, show all days; else show activeDay
+  let pool = q ? ALL_WORDS : ALL_WORDS.filter(w => w.day === activeDay);
+
+  let list = pool.filter(w =>
+    !q || w.word.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
+  );
+
+  if (s === 'az') list.sort((a,b) => a.word.localeCompare(b.word));
+  else if (s === 'za') list.sort((a,b) => b.word.localeCompare(a.word));
+
+  statCount.textContent = list.length;
+  statDesc.textContent  = q ? 'সার্চ ফলাফল' : `Day ${activeDay} দেখানো হচ্ছে`;
+  metaEl.textContent    = list.length === pool.length
+    ? `${list.length} টি শব্দ`
+    : `${list.length} / ${pool.length} টি শব্দ`;
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="4"><div class="empty">কোনো শব্দ পাওয়া যায়নি।</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(w => `
+    <tr>
+      <td class="c-num">${w.id}</td>
+      <td class="c-word">${hl(w.word, q)}</td>
+      <td class="c-en">${hl(w.en, q)}</td>
+      <td class="c-bn">${hl(w.bn, q)}</td>
+    </tr>`).join('');
+}
+
+searchEl.addEventListener('input', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  activeChip = null;
+  render();
+});
+sortSel.addEventListener('change', render);
+
+buildDayTabs();
+buildChips();
+render();
+</script>
 </body>
 </html>
