@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>উর্দু শব্দভান্ডার</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Noto+Serif+Bengali:wght@400;500;600&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg:          #f5f4f0;
+      --surface:     #ffffff;
+      --surface2:    #faf9f6;
+      --border:      #e8e6e0;
+      --border2:     #d4d2cc;
+      --text:        #1a1a1a;
+      --text2:       #5a5a5a;
+      --text3:       #999;
+      --accent:      #7c5cbf;
+      --accent-soft: #f0ebfa;
+      --accent2:     #c084fc;
+      --gold:        #b8860b;
+      --gold-soft:   #fef9ec;
+      --green:       #2d7d46;
+      --green-soft:  #edf7f1;
+      --red:         #c0392b;
+      --red-soft:    #fdf0ee;
+      --mark:        #fde68a;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:   0 12px 32px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.05);
+      --radius:      12px;
+      --radius-sm:   8px;
+    }
+    [data-theme="dark"] {
+      --bg:          #111113;
+      --surface:     #1c1c1f;
+      --surface2:    #242428;
+      --border:      #2e2e33;
+      --border2:     #3a3a40;
+      --text:        #eeeef0;
+      --text2:       #a0a0aa;
+      --text3:       #606068;
+      --accent:      #a78bfa;
+      --accent-soft: #1e1830;
+      --accent2:     #c4b5fd;
+      --gold:        #f0c040;
+      --gold-soft:   #1f1a08;
+      --green:       #4ade80;
+      --green-soft:  #0d1f14;
+      --red:         #f87171;
+      --red-soft:    #1f0d0d;
+      --mark:        #78350f;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.4);
+      --shadow-lg:   0 12px 32px rgba(0,0,0,.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-logo {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #fff;
+    }
+    .nav-title { font-size: 15px; font-weight: 600; }
+    .nav-sub { font-size: 12px; color: var(--text3); font-family: 'Noto Serif Bengali', serif; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    .nav-tabs { display: flex; gap: 2px; }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+    .nav-tab:hover { background: var(--bg); color: var(--text); }
+    .nav-tab.active { background: var(--accent-soft); color: var(--accent); }
+
+    .icon-btn {
+      width: 34px; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: none;
+      color: var(--text2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      font-size: 15px;
+    }
+    .icon-btn:hover { background: var(--bg); color: var(--text); }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+
+    /* ── PAGE SECTIONS ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO STATS ── */
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-card .s-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+    .stat-card .s-val {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: var(--text);
+    }
+    .stat-card .s-sub {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px;
+      font-family: 'Noto Serif Bengali', serif;
+    }
+    .stat-card.accent-card { background: var(--accent); border-color: var(--accent); }
+    .stat-card.accent-card .s-label,
+    .stat-card.accent-card .s-val,
+    .stat-card.accent-card .s-sub { color: #fff; }
+    .stat-card.accent-card .s-label { opacity: 0.75; }
+    .stat-card.accent-card .s-sub { opacity: 0.7; }
+
+    /* ── DAY TABS ── */
+    .day-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .day-chip {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .day-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .day-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .day-chip .chip-count {
+      background: rgba(255,255,255,0.25);
+      border-radius: 10px;
+      padding: 1px 6px;
+      font-size: 10px;
+    }
+    .day-chip:not(.active) .chip-count {
+      background: var(--bg);
+      color: var(--text3);
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap svg {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%); color: var(--text3); pointer-events: none;
+    }
+    input[type="search"] {
+      width: 100%; padding: 10px 12px 10px 38px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); font-size: 13px;
+      font-family: 'Inter', sans-serif; color: var(--text); outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="search"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    input[type="search"]::placeholder { color: var(--text3); }
+    select {
+      padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--surface);
+      font-size: 12px; font-family: 'Inter', sans-serif;
+      color: var(--text2); outline: none; cursor: pointer;
+    }
+
+    .result-meta { font-size: 11px; color: var(--text3); margin-bottom: 14px; }
+
+    /* ── WORD CARDS ── */
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .word-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.15s;
+      position: relative;
+      cursor: default;
+    }
+    .word-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--border2);
+    }
+    .word-card.bookmarked { border-color: var(--gold); }
+    .word-card.bookmarked::before {
+      content: '';
+      position: absolute; top: 0; right: 18px;
+      width: 3px; height: 22px;
+      background: var(--gold);
+      border-radius: 0 0 3px 3px;
+    }
+
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .card-id {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
+      color: var(--text3); font-variant-numeric: tabular-nums;
+    }
+    .card-actions { display: flex; gap: 6px; }
+    .card-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+      background: none; cursor: pointer; color: var(--text3); font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .card-btn:hover { background: var(--bg); color: var(--text); }
+    .card-btn.bookmarked-btn { border-color: var(--gold); color: var(--gold); background: var(--gold-soft); }
+
+    .card-word {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+    .card-day-tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 600;
+      background: var(--accent-soft); color: var(--accent);
+      padding: 2px 8px; border-radius: 10px;
+      margin-bottom: 10px; letter-spacing: 0.4px;
+    }
+    .card-divider { height: 1px; background: var(--border); margin: 10px 0; }
+    .card-en {
+      font-size: 13px; color: var(--text2);
+      margin-bottom: 6px; font-weight: 500;
+    }
+    .card-bn {
+      font-size: 13px; color: var(--text2);
+      font-family: 'Noto Serif Bengali', serif;
+    }
+    .card-bn span { color: var(--text3); font-family: 'Inter', sans-serif; font-size: 11px; margin-right: 4px; }
+
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px;
+      color: var(--text3); font-size: 14px;
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── QUIZ PAGE ── */
+    .quiz-setup {
+      max-width: 520px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .quiz-setup h2 {
+      font-size: 20px; font-weight: 600; margin-bottom: 6px;
+    }
+    .quiz-setup p { color: var(--text2); font-size: 13px; margin-bottom: 24px; }
+    .setup-row { margin-bottom: 16px; }
+    .setup-row label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.4px; text-transform: uppercase; }
+    .setup-row select { width: 100%; }
+    .quiz-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qt-btn {
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface2); cursor: pointer; text-align: left; transition: all 0.15s;
+    }
+    .qt-btn:hover { border-color: var(--accent); }
+    .qt-btn.selected { border-color: var(--accent); background: var(--accent-soft); }
+    .qt-btn .qt-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .qt-btn .qt-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .qt-btn.selected .qt-title { color: var(--accent); }
+
+    .start-btn {
+      width: 100%; padding: 13px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      margin-top: 20px; transition: opacity 0.15s;
+    }
+    .start-btn:hover { opacity: 0.9; }
+
+    /* ── FLASHCARD ── */
+    .flashcard-arena {
+      display: none;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .flashcard-arena.active { display: block; }
+
+    .quiz-progress-bar {
+      height: 4px; background: var(--border);
+      border-radius: 4px; margin-bottom: 20px; overflow: hidden;
+    }
+    .quiz-progress-fill {
+      height: 100%; background: var(--accent); border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    .quiz-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; font-size: 12px; color: var(--text3);
+    }
+    .quiz-score-badge {
+      display: flex; gap: 12px;
+    }
+    .score-pill {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 500;
+    }
+    .score-pill.correct { color: var(--green); }
+    .score-pill.wrong { color: var(--red); }
+
+    /* Flashcard flip */
+    .fc-scene { perspective: 1000px; margin-bottom: 20px; }
+    .fc-card {
+      width: 100%; min-height: 220px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      cursor: pointer;
+    }
+    .fc-card.flipped { transform: rotateY(180deg); }
+    .fc-face {
+      position: absolute; width: 100%; min-height: 220px;
+      backface-visibility: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px; text-align: center;
+    }
+    .fc-back { transform: rotateY(180deg); }
+    .fc-face .fc-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+    .fc-face .fc-word {
+      font-size: 32px; font-weight: 600; letter-spacing: -0.5px;
+      font-family: 'Playfair Display', serif; font-style: italic;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .fc-face .fc-hint { font-size: 12px; color: var(--text3); margin-top: 8px; }
+    .fc-face .fc-en { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .fc-face .fc-bn { font-size: 15px; font-family: 'Noto Serif Bengali', serif; color: var(--text2); }
+    .fc-face .fc-day-tag {
+      font-size: 11px; background: var(--accent-soft); color: var(--accent);
+      padding: 3px 10px; border-radius: 10px; margin-bottom: 10px;
+    }
+
+    .fc-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .fc-btn {
+      padding: 11px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 500; cursor: pointer; background: var(--surface);
+      color: var(--text2); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .fc-btn:hover { background: var(--bg); }
+    .fc-btn.wrong-btn:hover { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+    .fc-btn.correct-btn:hover { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+    .fc-btn.skip-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+    /* MCQ Quiz */
+    .mcq-arena {
+      display: none;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .mcq-arena.active { display: block; }
+
+    .mcq-question-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .mcq-q-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+    .mcq-q-word {
+      font-size: 36px; font-weight: 600; letter-spacing: -0.5px;
+      font-family: 'Playfair Display', serif; font-style: italic;
+      color: var(--text);
+    }
+    .mcq-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mcq-opt {
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer; text-align: left;
+      font-size: 13px; color: var(--text2); font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+    .mcq-opt:hover:not(.disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .mcq-opt.correct { border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 500; }
+    .mcq-opt.wrong { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+    .mcq-opt.disabled { cursor: default; }
+
+    .mcq-next {
+      width: 100%; padding: 12px; background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius-sm); font-size: 13px;
+      font-weight: 600; cursor: pointer; margin-top: 12px;
+      display: none; transition: opacity 0.15s;
+    }
+    .mcq-next:hover { opacity: 0.9; }
+    .mcq-next.visible { display: block; }
+
+    /* ── RESULT SCREEN ── */
+    .result-screen {
+      display: none;
+      max-width: 420px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+    .result-screen.active { display: block; }
+    .result-emoji { font-size: 48px; margin-bottom: 16px; }
+    .result-screen h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+    .result-screen p { color: var(--text2); font-size: 13px; margin-bottom: 24px; }
+    .result-score-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 0%, var(--border) 0%);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      position: relative;
+      font-size: 22px; font-weight: 700;
+    }
+    .result-score-ring::before {
+      content: '';
+      position: absolute;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+    .result-score-ring span { position: relative; z-index: 1; }
+    .result-actions { display: flex; gap: 8px; }
+    .result-btn {
+      flex: 1; padding: 11px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); font-size: 13px; font-weight: 500;
+      cursor: pointer; background: var(--surface); color: var(--text2);
+      transition: all 0.15s;
+    }
+    .result-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .result-btn:hover { background: var(--bg); }
+    .result-btn.primary:hover { opacity: 0.9; background: var(--accent); }
+
+    /* ── BOOKMARKS PAGE ── */
+    .bookmarks-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .bookmarks-header h2 { font-size: 18px; font-weight: 600; }
+    .clear-btn {
+      font-size: 12px; color: var(--red); background: none; border: none;
+      cursor: pointer; padding: 4px 8px; border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .clear-btn:hover { background: var(--red-soft); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 28px 20px;
+      font-size: 11px; color: var(--text3);
+      border-top: 1px solid var(--border); margin-top: 40px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 0 14px; }
+      .nav-sub { display: none; }
+      .nav-tabs { gap: 0; }
+      .nav-tab { padding: 6px 10px; font-size: 12px; }
+      .container { padding: 16px 14px; }
+      .hero { grid-template-columns: 1fr 1fr; }
+      .hero .stat-card:nth-child(1) { grid-column: 1 / -1; }
+      .word-grid { grid-template-columns: 1fr; }
+      .mcq-options { grid-template-columns: 1fr; }
+      .fc-actions { grid-template-columns: 1fr 1fr 1fr; }
+      .quiz-type-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">اُ</div>
+    <div>
+      <div class="nav-title">Urdu Dictionary</div>
+      <div class="nav-sub">উর্দু শব্দভান্ডার</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('dictionary')">📖 Dictionary</button>
+      <button class="nav-tab" onclick="showPage('quiz')">✏️ Quiz</button>
+      <button class="nav-tab" onclick="showPage('bookmarks')">🔖 Saved</button>
+    </div>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ DICTIONARY PAGE ═══════════════════════════════ -->
+<div class="container">
+
+  <div id="page-dictionary" class="page active">
+
+    <!-- Hero stats -->
+    <div class="hero">
+      <div class="stat-card accent-card">
+        <div class="s-label">দেখাচ্ছে</div>
+        <div class="s-val" id="stat-showing">—</div>
+        <div class="s-sub" id="stat-desc">লোড হচ্ছে…</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">মোট দিন</div>
+        <div class="s-val" id="stat-days">—</div>
+        <div class="s-sub">days covered</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">মোট শব্দ</div>
+        <div class="s-val" id="stat-total">—</div>
+        <div class="s-sub">words total</div>
+      </div>
+    </div>
+
+    <!-- Day filter -->
+    <div class="day-bar" id="day-bar">লোড হচ্ছে…</div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="search" id="search" placeholder="শব্দ বা অর্থ খুঁজুন…" autocomplete="off" />
+      </div>
+      <select id="sort-sel">
+        <option value="">Default</option>
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+        <option value="bookmarked">⭐ Saved first</option>
+      </select>
+    </div>
+    <div class="result-meta" id="result-meta"></div>
+
+    <!-- Word grid -->
+    <div class="word-grid" id="word-grid"><div class="empty-state"><div class="icon">⏳</div>লোড হচ্ছে…</div></div>
+
+  </div>
+
+  <!-- ═══════════════════════════════ QUIZ PAGE ═══════════════════════════════ -->
+  <div id="page-quiz" class="page">
+
+    <!-- Setup -->
+    <div class="quiz-setup" id="quiz-setup">
+      <h2>Quiz Mode</h2>
+      <p>উর্দু শব্দ অনুশীলন করো — Flashcard বা MCQ বেছে নাও।</p>
+
+      <div class="setup-row">
+        <label>Day filter</label>
+        <select id="quiz-day-sel">
+          <option value="all">All Days</option>
+        </select>
+      </div>
+
+      <div class="setup-row">
+        <label>Quiz Type</label>
+        <div class="quiz-type-grid">
+          <button class="qt-btn selected" data-type="flashcard" onclick="selectQType(this)">
+            <div class="qt-title">🃏 Flashcard</div>
+            <div class="qt-sub">Flip করে অর্থ দেখো</div>
+          </button>
+          <button class="qt-btn" data-type="mcq" onclick="selectQType(this)">
+            <div class="qt-title">✅ MCQ</div>
+            <div class="qt-sub">৪টি অপশন থেকে বেছে নাও</div>
+          </button>
+        </div>
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">শুরু করো →</button>
+    </div>
+
+    <!-- Flashcard arena -->
+    <div class="flashcard-arena" id="fc-arena">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="fc-progress"></div></div>
+      <div class="quiz-meta">
+        <span id="fc-counter">1 / 9</span>
+        <div class="quiz-score-badge">
+          <span class="score-pill correct">✓ <span id="fc-correct">0</span></span>
+          <span class="score-pill wrong">✗ <span id="fc-wrong">0</span></span>
+        </div>
+      </div>
+
+      <div class="fc-scene">
+        <div class="fc-card" id="fc-card" onclick="flipCard()">
+          <div class="fc-face fc-front">
+            <div class="fc-label">উর্দু শব্দ</div>
+            <div class="fc-word" id="fc-word">—</div>
+            <div class="fc-hint">Tap to reveal meaning</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-day-tag" id="fc-back-day"></div>
+            <div class="fc-word" id="fc-back-word">—</div>
+            <div class="fc-en" id="fc-en">—</div>
+            <div class="fc-bn" id="fc-bn">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fc-actions">
+        <button class="fc-btn wrong-btn" onclick="fcAnswer(false)">✗ জানি না</button>
+        <button class="fc-btn skip-btn" onclick="fcSkip()">→ Skip</button>
+        <button class="fc-btn correct-btn" onclick="fcAnswer(true)">✓ জানি</button>
+      </div>
+    </div>
+
+    <!-- MCQ Arena -->
+    <div class="mcq-arena" id="mcq-arena">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="mcq-progress"></div></div>
+      <div class="quiz-meta">
+        <span id="mcq-counter">1 / 9</span>
+        <div class="quiz-score-badge">
+          <span class="score-pill correct">✓ <span id="mcq-correct">0</span></span>
+          <span class="score-pill wrong">✗ <span id="mcq-wrong">0</span></span>
+        </div>
+      </div>
+
+      <div class="mcq-question-card">
+        <div class="mcq-q-label">এই শব্দের অর্থ কী?</div>
+        <div class="mcq-q-word" id="mcq-word">—</div>
+      </div>
+
+      <div class="mcq-options" id="mcq-options"></div>
+      <button class="mcq-next" id="mcq-next" onclick="mcqNext()">পরবর্তী →</button>
+    </div>
+
+    <!-- Result screen -->
+    <div class="result-screen" id="result-screen">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <div class="result-score-ring" id="result-ring"><span id="result-pct">—</span></div>
+      <h2 id="result-title">দারুণ!</h2>
+      <p id="result-msg">তুমি ভালো করেছো।</p>
+      <div class="result-actions">
+        <button class="result-btn" onclick="showPage('dictionary')">📖 Dictionary</button>
+        <button class="result-btn primary" onclick="restartQuiz()">আবার চেষ্টা করো</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════ BOOKMARKS PAGE ═══════════════════════════════ -->
+  <div id="page-bookmarks" class="page">
+    <div class="bookmarks-header">
+      <h2>🔖 সেভ করা শব্দ</h2>
+      <button class="clear-btn" onclick="clearBookmarks()">সব মুছো</button>
+    </div>
+    <div class="word-grid" id="bookmark-grid">
+      <div class="empty-state"><div class="icon">🔖</div>কোনো শব্দ সেভ করা নেই।<br><small>Dictionary থেকে ⭐ চেপে save করো।</small></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>উর্দু শব্দভান্ডার · Urdu Dictionary</footer>
+
+<script>
+/* ════════════════════════════════
+   THEME
+════════════════════════════════ */
+const root = document.documentElement;
+(function(){
+  const saved = localStorage.getItem('urdu-theme') ||
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(saved);
+})();
+function applyTheme(t) {
+  root.setAttribute('data-theme', t);
+  localStorage.setItem('urdu-theme', t);
+  document.getElementById('theme-btn').textContent = t === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ════════════════════════════════
+   STATE
+════════════════════════════════ */
+let ALL_WORDS   = [];
+let BOOKMARKS   = new Set(JSON.parse(localStorage.getItem('urdu-bookmarks') || '[]'));
+let activeDay   = null;
+
+const searchEl  = document.getElementById('search');
+const sortSel   = document.getElementById('sort-sel');
+const wordGrid  = document.getElementById('word-grid');
+const metaEl    = document.getElementById('result-meta');
+
+/* ════════════════════════════════
+   PAGES
+════════════════════════════════ */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(name === 'dictionary' ? 'dict' : name === 'quiz' ? 'quiz' : 'saved'))
+      t.classList.add('active');
+  });
+  if (name === 'bookmarks') renderBookmarks();
+  if (name === 'quiz') resetQuizUI();
+}
+
+/* ════════════════════════════════
+   LOAD DATA
+════════════════════════════════ */
+async function loadData() {
+  try {
+    const res  = await fetch('urdu_words.html');
+    const html = await res.text();
+    const m    = html.match(/<script>([\s\S]*?)<\/script>/);
+    if (!m) throw new Error('Script block not found');
+    const fn   = new Function(m[1] + '; return ALL_DAYS_DATA;');
+    const data = fn();
+
+    data.forEach(day => day.words.forEach(w => ALL_WORDS.push({ ...w, day: day.day })));
+
+    const days = [...new Set(ALL_WORDS.map(w => w.day))].sort((a,b)=>a-b);
+    document.getElementById('stat-days').textContent  = days.length;
+    document.getElementById('stat-total').textContent = ALL_WORDS.length;
+
+    buildDayBar(days);
+    buildQuizDaySel(days);
+    render();
+  } catch(e) {
+    wordGrid.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div>ডাটা লোড করতে সমস্যা হয়েছে।<br><small>${e.message}</small></div>`;
+  }
+}
+
+function buildDayBar(days) {
+  const bar = document.getElementById('day-bar');
+  bar.innerHTML = '';
+
+  const allBtn = makeChip('All', ALL_WORDS.length, true, () => {
+    activeDay = null;
+    bar.querySelectorAll('.day-chip').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+    render();
+  });
+  bar.appendChild(allBtn);
+
+  days.forEach(d => {
+    const cnt = ALL_WORDS.filter(w => w.day === d).length;
+    const btn = makeChip('Day ' + d, cnt, false, () => {
+      activeDay = d;
+      bar.querySelectorAll('.day-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+    bar.appendChild(btn);
+  });
+}
+
+function makeChip(label, count, active, onclick) {
+  const btn = document.createElement('button');
+  btn.className = 'day-chip' + (active ? ' active' : '');
+  btn.innerHTML = `${label}<span class="chip-count">${count}</span>`;
+  btn.onclick = onclick;
+  return btn;
+}
+
+function buildQuizDaySel(days) {
+  const sel = document.getElementById('quiz-day-sel');
+  days.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = `Day ${d}`;
+    sel.appendChild(opt);
+  });
+}
+
+/* ════════════════════════════════
+   RENDER DICTIONARY
+════════════════════════════════ */
+function hl(str, q) {
+  if (!q || !str) return str || '';
+  return str.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function render() {
+  const q = searchEl.value.trim().toLowerCase();
+  const s = sortSel.value;
+
+  let pool = activeDay ? ALL_WORDS.filter(w => w.day === activeDay) : ALL_WORDS;
+  let list = pool.filter(w =>
+    !q || w.word.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
+  );
+
+  if      (s === 'az') list.sort((a,b) => a.word.localeCompare(b.word));
+  else if (s === 'za') list.sort((a,b) => b.word.localeCompare(a.word));
+  else if (s === 'bookmarked') list.sort((a,b) => (BOOKMARKS.has(b.id)?1:0)-(BOOKMARKS.has(a.id)?1:0));
+
+  document.getElementById('stat-showing').textContent = list.length;
+  document.getElementById('stat-desc').textContent =
+    activeDay ? `Day ${activeDay}${q ? ' · search' : ''}` : `সকল দিন${q ? ' · search' : ''}`;
+
+  metaEl.textContent = list.length === pool.length
+    ? `${list.length} টি শব্দ`
+    : `${list.length} / ${pool.length} টি শব্দ`;
+
+  if (!list.length) {
+    wordGrid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div>কোনো শব্দ পাওয়া যায়নি।</div>';
+    return;
+  }
+
+  wordGrid.innerHTML = list.map(w => makeCard(w, q)).join('');
+}
+
+function makeCard(w, q='') {
+  const bm = BOOKMARKS.has(w.id);
+  return `
+  <div class="word-card${bm ? ' bookmarked' : ''}" id="card-${w.id}">
+    <div class="card-header">
+      <span class="card-id">#${w.id}</span>
+      <div class="card-actions">
+        <button class="card-btn${bm ? ' bookmarked-btn' : ''}" onclick="toggleBookmark(${w.id})" title="${bm ? 'Remove bookmark' : 'Save word'}">
+          ${bm ? '⭐' : '☆'}
+        </button>
+      </div>
+    </div>
+    <div class="card-word">${hl(w.word, q)}</div>
+    <span class="card-day-tag">Day ${w.day}</span>
+    <div class="card-divider"></div>
+    <div class="card-en">${hl(w.en, q)}</div>
+    <div class="card-bn"><span>বাং</span>${hl(w.bn, q)}</div>
+  </div>`;
+}
+
+function toggleBookmark(id) {
+  if (BOOKMARKS.has(id)) BOOKMARKS.delete(id);
+  else BOOKMARKS.add(id);
+  localStorage.setItem('urdu-bookmarks', JSON.stringify([...BOOKMARKS]));
+  render();
+  if (document.getElementById('page-bookmarks').classList.contains('active')) renderBookmarks();
+}
+
+function renderBookmarks() {
+  const grid = document.getElementById('bookmark-grid');
+  const list = ALL_WORDS.filter(w => BOOKMARKS.has(w.id));
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="icon">🔖</div>কোনো শব্দ সেভ করা নেই।<br><small>Dictionary থেকে ☆ চেপে save করো।</small></div>';
+  } else {
+    grid.innerHTML = list.map(w => makeCard(w)).join('');
+  }
+}
+
+function clearBookmarks() {
+  if (!confirm('সব saved শব্দ মুছে দেবে?')) return;
+  BOOKMARKS.clear();
+  localStorage.setItem('urdu-bookmarks', '[]');
+  render();
+  renderBookmarks();
+}
+
+searchEl.addEventListener('input', render);
+sortSel.addEventListener('change', render);
+
+/* ════════════════════════════════
+   QUIZ
+════════════════════════════════ */
+let quizType    = 'flashcard';
+let quizWords   = [];
+let quizIdx     = 0;
+let quizCorrect = 0;
+let quizWrong   = 0;
+let fcFlipped   = false;
+
+function selectQType(btn) {
+  document.querySelectorAll('.qt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizType = btn.dataset.type;
+}
+
+function resetQuizUI() {
+  document.getElementById('quiz-setup').style.display   = '';
+  document.getElementById('fc-arena').classList.remove('active');
+  document.getElementById('mcq-arena').classList.remove('active');
+  document.getElementById('result-screen').classList.remove('active');
+}
+
+function startQuiz() {
+  const dayVal = document.getElementById('quiz-day-sel').value;
+  quizWords = dayVal === 'all' ? [...ALL_WORDS] : ALL_WORDS.filter(w => w.day == dayVal);
+  if (quizWords.length < 2) { alert('কমপক্ষে ২টি শব্দ দরকার।'); return; }
+
+  shuffle(quizWords);
+  quizIdx = quizCorrect = quizWrong = 0;
+  document.getElementById('quiz-setup').style.display = 'none';
+  document.getElementById('result-screen').classList.remove('active');
+
+  if (quizType === 'flashcard') startFlashcard();
+  else startMCQ();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+}
+
+/* ── FLASHCARD ── */
+function startFlashcard() {
+  document.getElementById('fc-arena').classList.add('active');
+  loadFC();
+}
+
+function loadFC() {
+  if (quizIdx >= quizWords.length) { showResult(); return; }
+  const w = quizWords[quizIdx];
+  fcFlipped = false;
+  const card = document.getElementById('fc-card');
+  card.classList.remove('flipped');
+  document.getElementById('fc-word').textContent      = w.word;
+  document.getElementById('fc-back-word').textContent = w.word;
+  document.getElementById('fc-back-day').textContent  = 'Day ' + w.day;
+  document.getElementById('fc-en').textContent        = w.en;
+  document.getElementById('fc-bn').textContent        = w.bn;
+  updateFCMeta();
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fc-card').classList.toggle('flipped', fcFlipped);
+}
+
+function fcAnswer(correct) {
+  if (correct) quizCorrect++; else quizWrong++;
+  quizIdx++;
+  loadFC();
+}
+function fcSkip() { quizIdx++; loadFC(); }
+
+function updateFCMeta() {
+  const total = quizWords.length;
+  document.getElementById('fc-counter').textContent   = `${quizIdx+1} / ${total}`;
+  document.getElementById('fc-progress').style.width  = `${(quizIdx/total)*100}%`;
+  document.getElementById('fc-correct').textContent   = quizCorrect;
+  document.getElementById('fc-wrong').textContent     = quizWrong;
+}
+
+/* ── MCQ ── */
+function startMCQ() {
+  document.getElementById('mcq-arena').classList.add('active');
+  loadMCQ();
+}
+
+function loadMCQ() {
+  if (quizIdx >= quizWords.length) { showResult(); return; }
+  const w     = quizWords[quizIdx];
+  const total = quizWords.length;
+  document.getElementById('mcq-counter').textContent  = `${quizIdx+1} / ${total}`;
+  document.getElementById('mcq-progress').style.width = `${(quizIdx/total)*100}%`;
+  document.getElementById('mcq-correct').textContent  = quizCorrect;
+  document.getElementById('mcq-wrong').textContent    = quizWrong;
+  document.getElementById('mcq-word').textContent     = w.word;
+  document.getElementById('mcq-next').classList.remove('visible');
+
+  const others = ALL_WORDS.filter(x => x.id !== w.id);
+  shuffle(others);
+  const opts = [{ en: w.en, correct: true }, ...others.slice(0,3).map(x => ({ en: x.en, correct: false }))];
+  shuffle(opts);
+
+  const container = document.getElementById('mcq-options');
+  container.innerHTML = opts.map((o,i) =>
+    `<button class="mcq-opt" onclick="mcqPick(this,${o.correct})">${o.en}</button>`
+  ).join('');
+}
+
+function mcqPick(btn, correct) {
+  document.querySelectorAll('.mcq-opt').forEach(b => b.classList.add('disabled'));
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    document.querySelectorAll('.mcq-opt').forEach(b => {
+      // highlight correct answer
+      const w = quizWords[quizIdx];
+      if (b.textContent === w.en) b.classList.add('correct');
+    });
+    quizWrong++;
+  } else {
+    quizCorrect++;
+  }
+  document.getElementById('mcq-correct').textContent = quizCorrect;
+  document.getElementById('mcq-wrong').textContent   = quizWrong;
+  document.getElementById('mcq-next').classList.add('visible');
+}
+
+function mcqNext() {
+  quizIdx++;
+  loadMCQ();
+}
+
+/* ── RESULT ── */
+function showResult() {
+  document.getElementById('fc-arena').classList.remove('active');
+  document.getElementById('mcq-arena').classList.remove('active');
+  const screen = document.getElementById('result-screen');
+  screen.classList.add('active');
+
+  const answered = quizCorrect + quizWrong;
+  const pct = answered > 0 ? Math.round((quizCorrect/answered)*100) : 0;
+  const total = quizWords.length;
+
+  document.getElementById('result-pct').textContent = pct + '%';
+
+  // Conic gradient ring
+  const ring = document.getElementById('result-ring');
+  ring.style.background = `conic-gradient(var(--accent) ${pct}%, var(--border) 0%)`;
+
+  let emoji, title, msg;
+  if (pct >= 90) { emoji='🏆'; title='অসাধারণ!'; msg=`${total} টির মধ্যে ${quizCorrect} টি সঠিক। তুমি দারুণ করেছো!`; }
+  else if (pct >= 60) { emoji='👍'; title='ভালো চেষ্টা!'; msg=`${total} টির মধ্যে ${quizCorrect} টি সঠিক। আরো অনুশীলন করলে আরো ভালো হবে।`; }
+  else { emoji='📚'; title='আরো পড়ো!'; msg=`${total} টির মধ্যে ${quizCorrect} টি সঠিক। Dictionary থেকে শব্দগুলো আরেকবার দেখো।`; }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-msg').textContent   = msg;
+}
+
+function restartQuiz() {
+  document.getElementById('result-screen').classList.remove('active');
+  startQuiz();
+}
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+loadData();
+</script>
+</body>
+</html>
