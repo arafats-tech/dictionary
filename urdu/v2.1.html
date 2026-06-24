@@ -105,7 +105,6 @@
       font-family: 'Noto Serif Bengali', serif;
     }
 
-    /* Day selector */
     .day-selector {
       display: flex;
       gap: 6px;
@@ -236,28 +235,6 @@
       font-size: 14px;
     }
 
-    .chips-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 16px;
-    }
-    .chip {
-      font-size: 11px;
-      padding: 4px 10px;
-      background: var(--chip-bg);
-      color: var(--chip-fg);
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.15s;
-    }
-    .chip:hover, .chip.active {
-      background: var(--text);
-      color: var(--bg);
-    }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -268,9 +245,7 @@
     }
 
     @media (max-width: 640px) {
-      nav {
-        padding: 10px 14px;
-      }
+      nav { padding: 10px 14px; }
       .nav-brand strong { font-size: 14px; }
       .nav-brand span { font-size: 11px; display: none; }
       .container { padding: 14px; }
@@ -408,7 +383,7 @@ function toggleTheme() {
 
 /* ── STATE ── */
 let ALL_WORDS = [];
-let activeDay = null;  // null = show all days
+let activeDay = null;
 
 const searchEl  = document.getElementById('search');
 const sortSel   = document.getElementById('sort-sel');
@@ -420,12 +395,17 @@ const infoDays  = document.getElementById('info-days');
 const infoWords = document.getElementById('info-words');
 const dayTabsEl = document.getElementById('day-tabs');
 
-/* ── LOAD SINGLE DATA FILE ── */
+/* ── LOAD DATA ── */
 async function loadData() {
   try {
     const response = await fetch('urdu_words.html');
-    const text = await response.text();
-    const fn = new Function(text + '; return ALL_DAYS_DATA;');
+    const html = await response.text();
+    
+    const match = html.match(/<script>([\s\S]*?)<\/script>/);
+    if (!match) throw new Error('No script tag found');
+    
+    const scriptContent = match[1];
+    const fn = new Function(scriptContent + '; return ALL_DAYS_DATA;');
     const allDaysData = fn();
 
     allDaysData.forEach(dayData => {
@@ -441,15 +421,14 @@ async function loadData() {
     buildDayTabs(days);
     render();
   } catch (err) {
-    wordList.innerHTML = '<div class="empty-state">ডাটা লোড করতে সমস্যা হয়েছে।</div>';
-    console.error(err);
+    wordList.innerHTML = '<div class="empty-state">ডাটা লোড করতে সমস্যা হয়েছে।<br><small>' + err.message + '</small></div>';
+    console.error('Load error:', err);
   }
 }
 
 function buildDayTabs(days) {
   dayTabsEl.innerHTML = '';
 
-  // "All" button
   const allBtn = document.createElement('button');
   allBtn.className = 'day-btn active';
   allBtn.innerHTML = `All<span class="count">${ALL_WORDS.length}</span>`;
@@ -461,7 +440,6 @@ function buildDayTabs(days) {
   };
   dayTabsEl.appendChild(allBtn);
 
-  // Individual day buttons
   days.forEach(d => {
     const count = ALL_WORDS.filter(w => w.day === d).length;
     const btn = document.createElement('button');
@@ -486,19 +464,15 @@ function render() {
   const q = searchEl.value.trim().toLowerCase();
   const s = sortSel.value;
 
-  // Filter by active day (null = all)
   let pool = activeDay ? ALL_WORDS.filter(w => w.day === activeDay) : ALL_WORDS;
 
-  // Search filter
   let list = pool.filter(w =>
     !q || w.word.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
   );
 
-  // Sort
   if (s === 'az') list.sort((a,b) => a.word.localeCompare(b.word));
   else if (s === 'za') list.sort((a,b) => b.word.localeCompare(a.word));
 
-  // Update stats
   statCount.textContent = list.length;
   if (activeDay) {
     statDesc.textContent = q ? `Day ${activeDay} · সার্চ ফলাফল` : `Day ${activeDay} দেখানো হচ্ছে`;
