@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বরিশাল বিশ্ববিদ্যালয় | Interactive Campus Map 2026</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0a1628;
+            --primary-light: #152238;
+            --accent: #2e7d32;
+            --accent-glow: #4caf50;
+            --gold: #f0a500;
+            --orange: #e65100;
+            --river: #0277bd;
+            --historic: #7b1fa2;
+            --bg: #f5f6fa;
+            --surface: #ffffff;
+            --text: #1a1a2e;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.18);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: #0a0f1a;
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============ SPLASH SCREEN ============ */
+        .splash {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0a1628 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+        .splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .splash-title {
+            color: white;
+            font-size: 1.8em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .splash-subtitle {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9em;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+        .splash-loader {
+            width: 180px;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .splash-loader-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-glow), #81c784, var(--accent-glow));
+            border-radius: 10px;
+            animation: splashLoading 2s ease-in-out infinite;
+            width: 40%;
+        }
+        @keyframes splashLoading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+
+        /* ============ TOP BAR ============ */
+        .topbar {
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            position: relative;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .topbar-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), #1b5e20);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+        }
+        .topbar-text h2 {
+            color: white;
+            font-size: 1.15em;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+        .topbar-text span {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.7em;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        .topbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .topbar-btn {
+            padding: 10px 18px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: white;
+            cursor: pointer;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 0.82em;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .topbar-btn:hover {
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        .topbar-btn.active-btn {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+        }
+        .topbar-btn i { font-size: 0.9em; }
+
+        /* ============ MAIN LAYOUT ============ */
+        .app-container {
+            display: flex;
+            height: calc(100vh - 72px);
+            position: relative;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 440px;
+            min-width: 440px;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .sidebar-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            background: #fafbfc;
+        }
+        .sidebar-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            padding: 10px 16px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        .sidebar-search:focus-within {
+            background: white;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.08);
+        }
+        .sidebar-search i { color: #94a3b8; }
+        .sidebar-search input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 0.9em;
+            outline: none;
+        }
+        .sidebar-search .clear-btn {
+            display: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 0.8em;
+            padding: 4px;
+        }
+        .sidebar-search .clear-btn.visible { display: block; }
+
+        /* Filter Chips */
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            flex-wrap: wrap;
+        }
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.78em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: #b0bec5; }
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(10,22,40,0.25);
+        }
+        .filter-chip .chip-count {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            margin-left: 4px;
+        }
+
+        /* Location List */
+        .location-list {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 8px 14px;
+            scroll-behavior: smooth;
+        }
+        .location-list::-webkit-scrollbar { width: 5px; }
+        .location-list::-webkit-scrollbar-track { background: transparent; }
+        .location-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        .list-section-label {
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #94a3b8;
+            padding: 16px 10px 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .list-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .loc-card {
+            display: flex;
+            gap: 14px;
+            padding: 14px 16px;
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid transparent;
+            position: relative;
+            background: white;
+        }
+        .loc-card:hover {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
+        }
+        .loc-card.active {
+            background: #f0fdf4;
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(46,125,50,0.1);
+        }
+        .loc-card.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background: var(--accent);
+            border-radius: 0 4px 4px 0;
+        }
+        .loc-card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        .icon-campus { background: #eff6ff; color: #1e40af; }
+        .icon-market { background: #fff7ed; color: #c2410c; }
+        .icon-river { background: #f0f9ff; color: #0369a1; }
+        .icon-historic { background: #faf5ff; color: #7e22ce; }
+        .icon-medical { background: #fef2f2; color: #b91c1c; }
+        .icon-transport { background: #fefce8; color: #a16207; }
+        .icon-park { background: #f0fdf4; color: #15803d; }
+
+        .loc-card-info { flex: 1; min-width: 0; }
+        .loc-card-info h4 {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .loc-card-info .loc-eng {
+            font-size: 0.7em;
+            color: #94a3b8;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .loc-card-info .loc-desc {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+        .loc-card-badges {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            font-size: 0.65em;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        .badge-dir { background: #eff6ff; color: #3b82f6; }
+        .badge-dist { background: #f0fdf4; color: #16a34a; }
+        .badge-type { background: #fefce8; color: #ca8a04; }
+
+        .sidebar-footer {
+            padding: 10px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 0.7em;
+            color: #94a3b8;
+            text-align: center;
+            background: #fafbfc;
+        }
+
+        /* ============ MAP AREA ============ */
+        .map-area {
+            flex: 1;
+            position: relative;
+            background: #e8ecf1;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Map Floating Panels */
+        .map-legend-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 16px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            font-size: 0.75em;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .map-legend-panel h5 {
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .legend-bullet {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .map-ctrl {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.08);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            color: #555;
+        }
+        .map-ctrl:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .map-toast {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 0.82em;
+            font-weight: 500;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            box-shadow: var(--shadow-lg);
+            white-space: nowrap;
+        }
+        .map-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============ LOCATION DETAIL MODAL ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 520px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transform: scale(0.9) translateY(20px);
+            transition: var(--transition);
+        }
+        .modal-overlay.open .modal {
+            transform: scale(1) translateY(0);
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+        .modal-header h3 { font-size: 1.2em; font-weight: 700; }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f5f9;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover { background: #e2e8f0; }
+        .modal-body { padding: 20px 24px; }
+        .modal-body img {
+            width: 100%;
+            border-radius: var(--radius-xs);
+            margin-bottom: 16px;
+        }
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .modal-info-item {
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: var(--radius-xs);
+        }
+        .modal-info-item .label {
+            font-size: 0.7em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .modal-info-item .value {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .sidebar { width: 380px; min-width: 380px; }
+            .topbar-btn span { display: none; }
+        }
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                z-index: 2000;
+                max-height: 42vh;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+                transform: translateY(0);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.4s ease;
+            }
+            .sidebar.collapsed {
+                transform: translateY(calc(100% - 50px));
+                max-height: 50px;
+            }
+            .sidebar-handle {
+                width: 40px;
+                height: 5px;
+                background: #cbd5e1;
+                border-radius: 10px;
+                margin: 8px auto;
+                cursor: pointer;
+            }
+            .map-area { flex: 1; min-height: 55vh; }
+            .topbar { padding: 8px 12px; }
+            .topbar-text h2 { font-size: 0.95em; }
+            .topbar-logo { width: 36px; height: 36px; font-size: 1.2em; }
+            .map-legend-panel { bottom: 60px; font-size: 0.68em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div class="splash" id="splash">
+        <div class="splash-logo">🎓</div>
+        <div class="splash-title">বরিশাল বিশ্ববিদ্যালয়</div>
+        <div class="splash-subtitle">UNIVERSITY OF BARISHAL</div>
+        <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">লোকেশন বিস্তারিত</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-brand">
+            <div class="topbar-logo">🏛️</div>
+            <div class="topbar-text">
+                <h2>বরিশাল বিশ্ববিদ্যালয়</h2>
+                <span>CAMPUS & SURROUNDING MAP</span>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <button class="topbar-btn active-btn" onclick="resetView()"><i class="fa-solid fa-house"></i> <span>ক্যাম্পাস</span></button>
+            <button class="topbar-btn" onclick="viewFullCampus()"><i class="fa-solid fa-expand"></i> <span>পূর্ণ দৃশ্য</span></button>
+            <button class="topbar-btn" onclick="toggleSatelliteView()"><i class="fa-solid fa-satellite"></i> <span>স্যাটেলাইট</span></button>
+            <button class="topbar-btn" onclick="showAllMarkers()"><i class="fa-solid fa-layer-group"></i> <span>সব দেখুন</span></button>
+        </div>
+    </div>
+
+    <!-- APP CONTAINER -->
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-handle" id="sidebarHandle" style="display:none;"></div>
+            <div class="sidebar-header">
+                <div class="sidebar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="লোকেশন সার্চ করুন... (বাংলা/English)">
+                    <span class="clear-btn" id="clearSearch"><i class="fa-solid fa-xmark"></i></span>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-chip active" data-filter="all" onclick="applyFilter('all', this)">সব লোকেশন <span class="chip-count">১৬</span></div>
+                <div class="filter-chip" data-filter="campus" onclick="applyFilter('campus', this)">🏫 ক্যাম্পাস <span class="chip-count">৭</span></div>
+                <div class="filter-chip" data-filter="surrounding" onclick="applyFilter('surrounding', this)">📍 আশেপাশে <span class="chip-count">৯</span></div>
+            </div>
+            <div class="location-list" id="locationList"></div>
+            <div class="sidebar-footer">🕐 সর্বশেষ আপডেট: জুন ২০২৬ | মোট ১৬টি লোকেশন</div>
+        </div>
+
+        <!-- MAP -->
+        <div class="map-area">
+            <div id="map"></div>
+            
+            <!-- Map Controls -->
+            <div class="map-controls">
+                <button class="map-ctrl" onclick="resetView()" title="ক্যাম্পাসে ফিরুন"><i class="fa-solid fa-house"></i></button>
+                <button class="map-ctrl" onclick="toggleSatelliteView()" title="স্যাটেলাইট ভিউ"><i class="fa-solid fa-satellite"></i></button>
+                <button class="map-ctrl" onclick="map.zoomIn()" title="জুম ইন"><i class="fa-solid fa-plus"></i></button>
+                <button class="map-ctrl" onclick="map.zoomOut()" title="জুম আউট"><i class="fa-solid fa-minus"></i></button>
+                <button class="map-ctrl" onclick="locateMe()" title="আমার লোকেশন"><i class="fa-solid fa-location-crosshair"></i></button>
+            </div>
+
+            <!-- Legend -->
+            <div class="map-legend-panel">
+                <h5>🗺️ লিজেন্ড</h5>
+                <div class="legend-item"><div class="legend-bullet" style="background:#1e40af;"></div> ক্যাম্পাস</div>
+                <div class="legend-item"><div class="legend-bullet" style="background:#c2410c;"></div> বাজার/দোকান</div>
+                <div class="legend-item"><div class="legend-bullet" style="background:#0369a1;"></div> নদী</div>
+                <div class="legend-item"><div class="legend-bullet" style="background:#7e22ce;"></div> ঐতিহাসিক</div>
+                <div class="legend-item"><div class="legend-bullet" style="background:#b91c1c;"></div> হাসপাতাল</div>
+                <div class="legend-item"><div class="legend-bullet" style="background:#a16207;"></div> পরিবহন</div>
+            </div>
+
+            <!-- Toast -->
+            <div class="map-toast" id="mapToast"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // ============ SPLASH ============
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('splash').classList.add('hidden'), 2000);
+        });
+
+        // ============ SIDEBAR HANDLE (MOBILE) ============
+        const sidebar = document.getElementById('sidebar');
+        const sidebarHandle = document.getElementById('sidebarHandle');
+        
+        function checkMobile() {
+            const isMobile = window.innerWidth <= 768;
+            sidebarHandle.style.display = isMobile ? 'block' : 'none';
+            if (!isMobile) sidebar.classList.remove('collapsed');
+        }
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        sidebarHandle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+
+        // ============ MAP INIT ============
+        const map = L.map('map', {
+            center: [22.6750, 90.3650],
+            zoom: 15,
+            zoomControl: false,
+            attributionControl: false
+        });
+
+        L.control.attribution({ position: 'bottomright', prefix: false }).addTo(map);
+        
+        const streetTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        });
+        
+        const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+        });
+        
+        let currentTile = streetTile;
+        streetTile.addTo(map);
+
+        function toggleSatelliteView() {
+            map.removeLayer(currentTile);
+            currentTile = currentTile === streetTile ? satelliteTile : streetTile;
+            currentTile.addTo(map);
+            showToast(currentTile === satelliteTile ? '🛰️ স্যাটেলাইট ভিউ অন' : '🗺️ স্ট্রিট ভিউ অন');
+        }
+
+        // ============ TOAST ============
+        function showToast(msg) {
+            const toast = document.getElementById('mapToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2200);
+        }
+
+        // ============ LOCATION DATA ============
+        const locations = [
+            { id:'c1', cat:'campus', iconCls:'icon-campus', emoji:'🏫', lat:22.6750, lng:90.3650, name:'একাডেমিক ভবন', eng:'Academic Building', desc:'প্রধান লাল-ইটের ভবন, ২৪টি বিভাগের ক্লাসরুম', dir:'কেন্দ্রীয়', dist:'—', type:'শিক্ষা', details:'বিশ্ববিদ্যালয়ের প্রধান ভবন। ৫ তলা বিশিষ্ট এই ভবনে সমস্ত বিভাগের ক্লাসরুম, সেমিনার হল, এবং শিক্ষক লাউঞ্জ রয়েছে। ভবনের সামনে শহীদ মিনার ও কেন্দ্রীয় মাঠ।', facilities:'ক্লাসরুম, সেমিনার হল, ওয়াইফাই, লিফট' },
+            { id:'c2', cat:'campus', iconCls:'icon-campus', emoji:'🏢', lat:22.6740, lng:90.3638, name:'প্রশাসনিক ভবন', eng:'Admin Building', desc:'রেজিস্ট্রার, উপাচার্য কার্যালয়, ব্যাংক', dir:'প্রধান ফটক', dist:'—', type:'প্রশাসন', details:'ক্যাম্পাসের প্রবেশমুখে অবস্থিত। উপাচার্যের কার্যালয়, রেজিস্ট্রার, পরীক্ষা নিয়ন্ত্রক, এবং অর্থ বিভাগের অফিস এখানে। নিচতলায় সোনালী ব্যাংকের শাখা ও ডাকঘর আছে।', facilities:'ব্যাংক, ডাকঘর, রেজিস্ট্রার অফিস' },
+            { id:'c3', cat:'campus', iconCls:'icon-campus', emoji:'📚', lat:22.6758, lng:90.3660, name:'কেন্দ্রীয় লাইব্রেরি', eng:'Central Library', desc:'৩০,০০০+ বই, ডিজিটাল রিসোর্স, রিডিং রুম', dir:'একাডেমিকের পাশে', dist:'—', type:'লাইব্রেরি', details:'আধুনিক সুবিধাসম্পন্ন লাইব্রেরি। ৩০,০০০-এর বেশি বই, আন্তর্জাতিক জার্নাল, ই-বুক, এবং ডিজিটাল ডাটাবেস রয়েছে। শিক্ষার্থীদের জন্য আলাদা সাইলেন্ট জোন ও গ্রুপ স্টাডি রুম আছে।', facilities:'ওয়াইফাই, ই-লাইব্রেরি, স্টাডি রুম, ক্যাফেটেরিয়া' },
+            { id:'c4', cat:'campus', iconCls:'icon-campus', emoji:'🏠', lat:22.6765, lng:90.3662, name:'জীবনানন্দ দাশ হল', eng:'Jibanananda Das Hall', desc:'পুরুষ আবাসিক হল, ৪০০+ আসন', dir:'পূর্ব পাশে', dist:'—', type:'আবাসিক', details:'কবি জীবনানন্দ দাশের নামে নামকরণকৃত পুরুষ শিক্ষার্থীদের আবাসিক হল। ৪০০+ আসন, কমন রুম, ক্যান্টিন, ইনডোর গেমস, এবং জিমনেসিয়াম সুবিধা আছে। হল থেকে ভোদ্রা নদীর দৃশ্য দেখা যায়।', facilities:'ক্যান্টিন, জিম, কমন রুম, লন্ড্রি' },
+            { id:'c5', cat:'campus', iconCls:'icon-campus', emoji:'🏠', lat:22.6760, lng:90.3640, name:'শেখ হাসিনা হল', eng:'Sheikh Hasina Hall', desc:'মহিলা আবাসিক হল, ৫০০+ আসন', dir:'উত্তর পাশে', dist:'—', type:'আবাসিক', details:'মহিলা শিক্ষার্থীদের জন্য আধুনিক আবাসিক হল। সিসিটিভি নজরদারি, মহিলা নিরাপত্তারক্ষী, এবং সম্পূর্ণ সুরক্ষিত ক্যাম্পাস। ক্যান্টিন, কমন রুম, লন্ড্রি, এবং জিম সুবিধা আছে।', facilities:'সিসিটিভি, ক্যান্টিন, জিম, লন্ড্রি, নিরাপত্তা' },
+            { id:'c6', cat:'campus', iconCls:'icon-campus', emoji:'⚽', lat:22.6735, lng:90.3645, name:'কেন্দ্রীয় খেলার মাঠ', eng:'Central Field', desc:'ক্রিকেট, ফুটবল, বার্ষিক ক্রীড়া', dir:'একাডেমিকের সামনে', dist:'—', type:'খেলাধুলা', details:'বিশ্ববিদ্যালয়ের প্রাণকেন্দ্র এই মাঠ। ক্রিকেট, ফুটবল, হ্যান্ডবল খেলা হয়। বার্ষিক ক্রীড়া প্রতিযোগিতা, নবীন বরণ, সাংস্কৃতিক উৎসব - সবই এই মাঠে আয়োজিত হয়।', facilities:'ফ্লাডলাইট, গ্যালারি, ক্রিকেট পিচ' },
+            { id:'c7', cat:'campus', iconCls:'icon-campus', emoji:'🏘️', lat:22.6745, lng:90.3655, name:'শিক্ষক কোয়ার্টার', eng:'Teachers Quarter', desc:'শিক্ষক ও কর্মকর্তাদের আবাসিক এলাকা', dir:'দক্ষিণে', dist:'—', type:'আবাসিক', details:'ক্যাম্পাসের দক্ষিণ অংশে শিক্ষক-কর্মকর্তাদের জন্য নির্মিত আবাসিক কমপ্লেক্স। প্রায় ৫০টি ফ্ল্যাট, ছোট পার্ক, এবং শিশু খেলার মাঠ রয়েছে।', facilities:'পার্ক, খেলার মাঠ, নিরাপত্তা প্রহরী' },
+            { id:'s1', cat:'surrounding', iconCls:'icon-market', emoji:'🛒', lat:22.6775, lng:90.3685, name:'কর্ণকাঠী নতুন বাজার', eng:'Kornokathi Bazar', desc:'শিক্ষার্থীদের প্রধান হাব, ১০০+ মেস ও দোকান', dir:'পূর্বে', dist:'০.৫ কিমি', type:'বাজার', details:'বিশ্ববিদ্যালয় গেট থেকে ৫ মিনিটের হাঁটা পথ। এখানে ১০০-এর বেশি মেস-বাড়ি, ফটোকপি, স্টেশনারি, রেস্টুরেন্ট, মোবাইল সার্ভিসিং, লন্ড্রি, এবং নিত্যপ্রয়োজনীয় সব দোকান আছে। রাত ১১টা পর্যন্ত সক্রিয় থাকে।', facilities:'মেস, রেস্টুরেন্ট, ফটোকপি, ফার্মেসি, এটিএম' },
+            { id:'s2', cat:'surrounding', iconCls:'icon-river', emoji:'🌊', lat:22.6790, lng:90.3700, name:'ভোদ্রা নদী', eng:'Vodra River', desc:'আড্ডা ও ঘোরার জনপ্রিয় স্পট', dir:'পূর্বে', dist:'০.৮ কিমি', type:'প্রাকৃতিক', details:'কর্ণকাঠী বাজারের পেছনে বয়ে যাওয়া ছোট নদী। শিক্ষার্থীদের কাছে বিকেলের আড্ডা, গান, এবং সময় কাটানোর প্রিয় জায়গা। শীতকালে নদীর পাড়ে পিকনিকের আয়োজন হয়।', facilities:'হাঁটার পথ, বসার জায়গা' },
+            { id:'s3', cat:'surrounding', iconCls:'icon-transport', emoji:'🚌', lat:22.6720, lng:90.3610, name:'রূপাতলী বাস স্ট্যান্ড', eng:'Rupatoli Bus Stand', desc:'ঢাকা-বরিশাল রুটের প্রধান স্টপ', dir:'দক্ষিণে', dist:'২ কিমি', type:'পরিবহন', details:'কুয়াকাটা হাইওয়ের উপর গুরুত্বপূর্ণ বাস স্টপেজ। ঢাকা, চট্টগ্রাম, খুলনা থেকে আসা বাসগুলো এখানে যাত্রী নামায়। অটো/রিকশায় ১০ মিনিটে ক্যাম্পাস।', facilities:'টিকেট কাউন্টার, চায়ের দোকান, টয়লেট' },
+            { id:'s4', cat:'surrounding', iconCls:'icon-park', emoji:'🌳', lat:22.6840, lng:90.3610, name:'বঙ্গবন্ধু উদ্যান', eng:'Bangabandhu Park', desc:'ইকো-পার্ক, হাঁটার ট্রেইল, লেক', dir:'উত্তরে', dist:'১.৫ কিমি', type:'পার্ক', details:'বিশ্ববিদ্যালয়ের উত্তরে হাইওয়ের পাশে অবস্থিত সুন্দর উদ্যান। ফুলের বাগান, লেক, হাঁটার পথ, এবং বসার জায়গা আছে। প্রবেশ ফ্রি। সাপ্তাহিক ছুটিতে শিক্ষার্থীদের ভিড় হয়।', facilities:'লেক, বেঞ্চ, হাঁটার ট্রেইল, ফ্রি এন্ট্রি' },
+            { id:'s5', cat:'surrounding', iconCls:'icon-historic', emoji:'🏰', lat:22.6950, lng:90.3550, name:'রূপাতলী জমিদার বাড়ি', eng:'Rupatoli Zamindar Bari', desc:'১৯০০ শতকের ঐতিহাসিক স্থাপনা', dir:'উত্তরে', dist:'৩ কিমি', type:'ঐতিহাসিক', details:'বিংশ শতাব্দীর প্রথম দিকে নির্মিত জমিদার বাড়ি। বাংলার জমিদারি স্থাপত্যের চমৎকার নিদর্শন। বর্তমানে সংরক্ষিত পুরাকীর্তি হিসেবে স্বীকৃত। ইতিহাস বিভাগের ফিল্ড স্টাডির গুরুত্বপূর্ণ স্পট।', facilities:'দর্শনার্থী গ্যালারি, গাইড' },
+            { id:'s6', cat:'surrounding', iconCls:'icon-medical', emoji:'🏥', lat:22.7100, lng:90.3500, name:'শের-ই-বাংলা মেডিকেল', eng:'Sher-e-Bangla Medical', desc:'বিভাগীয় মেডিকেল কলেজ ও হাসপাতাল', dir:'উত্তরে', dist:'৫ কিমি', type:'হাসপাতাল', details:'বরিশাল বিভাগের সবচেয়ে বড় মেডিকেল কলেজ ও ১০০০+ বেডের হাসপাতাল। জরুরি স্বাস্থ্যসেবার জন্য শিক্ষার্থীরা এখানে আসে। ২৪/৭ ইমার্জেন্সি সেবা চালু।', facilities:'ইমার্জেন্সি, আইসিইউ, ফার্মেসি, ২৪/৭' },
+            { id:'s7', cat:'surrounding', iconCls:'icon-transport', emoji:'🛣️', lat:22.6800, lng:90.3580, name:'কুয়াকাটা মহাসড়ক', eng:'Kuakata Highway', desc:'বরিশাল-পটুয়াখালী সংযোগ সড়ক', dir:'পশ্চিমে', dist:'সংলগ্ন', type:'সড়ক', details:'বিশ্ববিদ্যালয়ের পশ্চিম সীমানা ঘেঁষে চলে যাওয়া গুরুত্বপূর্ণ মহাসড়ক। বরিশাল শহর থেকে কুয়াকাটা সমুদ্র সৈকত পর্যন্ত বিস্তৃত। ক্যাম্পাসের প্রধান ফটক এই সড়কের উপর।', facilities:'বাস স্টপ, ফুটপাত, স্ট্রিট লাইট' },
+            { id:'s8', cat:'surrounding', iconCls:'icon-campus', emoji:'🏛️', lat:22.6900, lng:90.3650, name:'কর্ণকাঠী ইউনিয়ন পরিষদ', eng:'Union Parishad Office', desc:'স্থানীয় প্রশাসনিক সেবা', dir:'উত্তর-পূর্বে', dist:'২ কিমি', type:'প্রশাসন', details:'স্থানীয় ইউনিয়ন পরিষদ কার্যালয়। ভূমি রেকর্ড, জন্ম নিবন্ধন, ট্রেড লাইসেন্স, এবং কাউন্সিলর অফিস। শিক্ষার্থীদের ঠিকানা সংশ্লিষ্ট কাগজপত্রের জন্য দরকারি।', facilities:'জন্ম নিবন্ধন, ভূমি অফিস' },
+            { id:'s9', cat:'surrounding', iconCls:'icon-transport', emoji:'🚂', lat:22.6660, lng:90.3580, name:'রূপাতলী রেল স্টেশন', eng:'Rupatoli Railway Station', desc:'লোকাল ট্রেন পরিষেবা', dir:'দক্ষিণে', dist:'৩ কিমি', type:'পরিবহন', details:'বরিশাল-ঢাকা রুটের ছোট রেল স্টেশন। আন্তঃনগর ট্রেন থামে না, তবে লোকাল ট্রেন থামে। বিকল্প হিসেবে বরিশাল মূল স্টেশন (৮ কিমি দূরে) বেশি ব্যবহৃত হয়।', facilities:'টিকেট কাউন্টার, প্ল্যাটফর্ম' }
+        ];
+
+        // ============ RENDER CARDS ============
+        function renderCards(filter = 'all', searchQuery = '') {
+            const container = document.getElementById('locationList');
+            let html = '';
+            let lastCat = '';
+            
+            const filtered = locations.filter(loc => {
+                if (filter !== 'all' && loc.cat !== filter) return false;
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    const match = loc.name.toLowerCase().includes(q) || 
+                                  loc.eng.toLowerCase().includes(q) ||
+                                  loc.desc.toLowerCase().includes(q);
+                    if (!match) return false;
+                }
+                return true;
+            });
+
+            filtered.forEach(loc => {
+                if (loc.cat !== lastCat) {
+                    const label = loc.cat === 'campus' ? '🏫 ক্যাম্পাসের ভিতরে' : '📍 আশেপাশের এলাকা';
+                    html += `<div class="list-section-label">${label}</div>`;
+                    lastCat = loc.cat;
+                }
+                html += `
+                    <div class="loc-card" data-id="${loc.id}" onclick="selectLocation('${loc.id}')">
+                        <div class="loc-card-icon ${loc.iconCls}">${loc.emoji}</div>
+                        <div class="loc-card-info">
+                            <h4>${loc.name}</h4>
+                            <div class="loc-eng">${loc.eng}</div>
+                            <div class="loc-desc">${loc.desc}</div>
+                            <div class="loc-card-badges">
+                                <span class="badge badge-dir">🧭 ${loc.dir}</span>
+                                <span class="badge badge-dist">📏 ${loc.dist}</span>
+                                <span class="badge badge-type">🏷️ ${loc.type}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (filtered.length === 0) {
+                html = `<div style="text-align:center;padding:40px;color:#94a3b8;">
+                    <div style="font-size:3em;">🔍</div>
+                    <p>কোনো লোকেশন পাওয়া যায়নি</p>
+                </div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // ============ MAP MARKERS ============
+        const markerMap = new Map();
+        const markerGroup = L.layerGroup().addTo(map);
+
+        function createIcon(bg, emoji) {
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background:${bg};width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2em;border:3px solid white;box-shadow:0 4px 15px rgba(0,0,0,0.25);">${emoji}</div>`,
+                iconSize: [38,38],
+                iconAnchor: [19,19],
+                popupAnchor: [0,-19]
+            });
+        }
+
+        const iconMap = {
+            'icon-campus': createIcon('#1e40af', '🏫'),
+            'icon-market': createIcon('#c2410c', '🛒'),
+            'icon-river': createIcon('#0369a1', '🌊'),
+            'icon-historic': createIcon('#7e22ce', '🏰'),
+            'icon-medical': createIcon('#b91c1c', '🏥'),
+            'icon-transport': createIcon('#a16207', '🚌'),
+            'icon-park': createIcon('#15803d', '🌳')
+        };
+
+        locations.forEach(loc => {
+            const icon = iconMap[loc.iconCls] || iconMap['icon-campus'];
+            const marker = L.marker([loc.lat, loc.lng], { icon }).addTo(markerGroup);
+            marker.bindPopup(`
+                <div style="font-family:'Hind Siliguri',sans-serif;text-align:center;min-width:180px;padding:5px;">
+                    <div style="font-size:2em;">${loc.emoji}</div>
+                    <strong style="font-size:1em;">${loc.name}</strong><br>
+                    <span style="font-size:0.7em;color:#888;">${loc.eng}</span>
+                    <p style="font-size:0.75em;color:#555;margin:6px 0;">${loc.desc}</p>
+                    <button onclick="window._selectLocationById('${loc.id}')" 
+                        style="padding:6px 16px;background:#1e40af;color:white;border:none;border-radius:20px;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:0.75em;margin-top:4px;">
+                        বিস্তারিত 📋
+                    </button>
+                </div>
+            `);
+            markerMap.set(loc.id, marker);
+        });
+
+        // Campus boundary
+        L.polygon([
+            [22.6775, 90.3630], [22.6778, 90.3678],
+            [22.6722, 90.3678], [22.6722, 90.3630]
+        ], {
+            color: '#1e40af', weight: 2.5, fillColor: '#1e40af',
+            fillOpacity: 0.04, dashArray: '8 5'
+        }).addTo(map).bindPopup('<b>🏛️ বরিশাল বিশ্ববিদ্যালয় ক্যাম্পাস</b><br>কর্ণকাঠী, বরিশাল সদর');
+
+        // Highway line
+        L.polyline([
+            [22.6500,90.3600],[22.6650,90.3590],[22.6750,90.3600],
+            [22.6850,90.3595],[22.7000,90.3580],[22.7150,90.3560]
+        ], {
+            color: '#dc2626', weight: 4, opacity: 0.6, dashArray: '12 8'
+        }).addTo(map).bindPopup('<b>🛣️ বরিশাল-কুয়াকাটা মহাসড়ক</b>');
+
+        // ============ SELECT LOCATION ============
+        function selectLocation(id) {
+            const loc = locations.find(l => l.id === id);
+            if (!loc) return;
+            
+            map.flyTo([loc.lat, loc.lng], 17, { duration: 1, easeLinearity: 0.3 });
+            
+            document.querySelectorAll('.loc-card').forEach(c => c.classList.remove('active'));
+            const card = document.querySelector(`.loc-card[data-id="${id}"]`);
+            if (card) {
+                card.classList.add('active');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            setTimeout(() => {
+                const m = markerMap.get(id);
+                if (m) m.openPopup();
+            }, 1100);
+            
+            showToast(`${loc.emoji} ${loc.name} দেখানো হচ্ছে`);
+        }
+
+        window._selectLocationById = selectLocation;
+
+        // ============ MODAL ============
+        function openModal(id) {
+            const loc = locations.find(l => l.id === id);
+            if (!loc) return;
+            
+            document.getElementById('modalTitle').textContent = `${loc.emoji} ${loc.name}`;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="text-align:center;font-size:4em;">${loc.emoji}</div>
+                <h4 style="text-align:center;color:#666;font-weight:400;">${loc.eng}</h4>
+                <p style="margin-top:10px;line-height:1.7;">${loc.details}</p>
+                <div class="modal-info-grid">
+                    <div class="modal-info-item"><div class="label">📍 দিক</div><div class="value">${loc.dir}</div></div>
+                    <div class="modal-info-item"><div class="label">📏 দূরত্ব</div><div class="value">${loc.dist}</div></div>
+                    <div class="modal-info-item"><div class="label">🏷️ ধরন</div><div class="value">${loc.type}</div></div>
+                    <div class="modal-info-item"><div class="label">🎯 সুবিধা</div><div class="value">${loc.facilities}</div></div>
+                </div>
+                <button onclick="closeModal();selectLocation('${loc.id}')" 
+                    style="width:100%;padding:12px;background:#1e40af;color:white;border:none;border-radius:10px;font-family:'Hind Siliguri',sans-serif;font-size:0.95em;cursor:pointer;margin-top:10px;font-weight:600;">
+                    🗺️ ম্যাপে দেখুন
+                </button>
+            `;
+            document.getElementById('modalOverlay').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+        }
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Override selectLocation to show modal on double-click
+        document.getElementById('locationList').addEventListener('dblclick', function(e) {
+            const card = e.target.closest('.loc-card');
+            if (card) {
+                const id = card.getAttribute('data-id');
+                openModal(id);
+            }
+        });
+
+        // Also open modal from popup
+        window._selectLocationById = function(id) {
+            selectLocation(id);
+            // Long press / double tap simulates detail view
+        };
+
+        // ============ FILTER & SEARCH ============
+        let currentFilter = 'all';
+        
+        function applyFilter(filter, chipEl) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            if (chipEl) chipEl.classList.add('active');
+            const query = document.getElementById('searchInput').value.trim();
+            renderCards(filter, query);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.trim();
+            document.getElementById('clearSearch').classList.toggle('visible', query.length > 0);
+            renderCards(currentFilter, query);
+        });
+
+        document.getElementById('clearSearch').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            this.classList.remove('visible');
+            renderCards(currentFilter, '');
+            document.getElementById('searchInput').focus();
+        });
+
+        // ============ MAP FUNCTIONS ============
+        function resetView() {
+            map.flyTo([22.6750, 90.3650], 15, { duration: 1 });
+            document.querySelectorAll('.loc-card').forEach(c => c.classList.remove('active'));
+            showToast('🏛️ ক্যাম্পাস ভিউ');
+        }
+
+        function viewFullCampus() {
+            map.flyTo([22.6750, 90.3650], 14, { duration: 1.2 });
+            showToast('🔭 সম্পূর্ণ এলাকা দেখা হচ্ছে');
+        }
+
+        function showAllMarkers() {
+            const bounds = L.latLngBounds(locations.map(l => [l.lat, l.lng]));
+            map.flyToBounds(bounds, { padding: [40, 40], duration: 1.2 });
+            showToast('📍 সব লোকেশন একসাথে');
+        }
+
+        function locateMe() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, { duration: 1.2 });
+                        L.marker([pos.coords.latitude, pos.coords.longitude], {
+                            icon: L.divIcon({
+                                html: '<div style="background:#22c55e;width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 0 20px #22c55e;"></div>',
+                                iconSize: [20,20],
+                                iconAnchor: [10,10]
+                            })
+                        }).addTo(map).bindPopup('📍 আপনি এখানে').openPopup();
+                        showToast('📍 আপনার লোকেশন দেখানো হয়েছে');
+                    },
+                    () => showToast('⚠️ লোকেশন পাওয়া যায়নি')
+                );
+            } else {
+                showToast('⚠️ আপনার ব্রাউজারে জিওলোকেশন সাপোর্ট নেই');
+            }
+        }
+
+        // ============ KEYBOARD SHORTCUTS ============
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'f':
+                        e.preventDefault();
+                        document.getElementById('searchInput').focus();
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        resetView();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        toggleSatelliteView();
+                        break;
+                }
+            }
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ============ INIT ============
+        renderCards('all');
+        console.log('✅ বরিশাল বিশ্ববিদ্যালয় ইন্টারেক্টিভ ম্যাপ রেডি!');
+        console.log('⌨️ শর্টকাট: Ctrl+F = সার্চ, Ctrl+R = রিসেট, Ctrl+S = স্যাটেলাইট');
+    </script>
+</body>
+</html>
