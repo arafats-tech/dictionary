@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বরিশাল বিশ্ববিদ্যালয় | ক্যাম্পাস ও আশেপাশের এলাকা</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0d2137;
+            --primary-light: #1a3a5c;
+            --accent: #2e7d32;
+            --accent-light: #4caf50;
+            --gold: #d4a017;
+            --orange: #e65100;
+            --river: #0288d1;
+            --historic: #6a1b9a;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-light: #555;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ========== LOADING SCREEN ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-logo {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        .loader-text {
+            color: white;
+            font-size: 1.3em;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        .loader-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            background: var(--accent-light);
+            border-radius: 10px;
+            animation: loading 1.8s infinite;
+        }
+        @keyframes loading {
+            0% { width: 0%; margin-left: 0; }
+            50% { width: 100%; margin-left: 0; }
+            100% { width: 0%; margin-left: 100%; }
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            position: relative;
+            z-index: 2000;
+            background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 40%, #0d3b2e 100%);
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-logo {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+        }
+        .header-info h1 {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .header-info .eng-name {
+            font-size: 0.75em;
+            opacity: 0.8;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .header-info .address {
+            font-size: 0.8em;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+        .header-right {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .header-badge {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.8em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .header-badge:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+        .header-badge i { color: var(--gold); }
+
+        /* ========== MAIN CONTAINER ========== */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 95px);
+            position: relative;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 420px;
+            min-width: 420px;
+            background: white;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 2px 0 25px rgba(0,0,0,0.08);
+            z-index: 100;
+            transition: var(--transition);
+            scroll-behavior: smooth;
+        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .sidebar::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
+
+        /* Search */
+        .search-box {
+            padding: 18px 20px;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #eee;
+        }
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f5f6fa;
+            border-radius: 30px;
+            padding: 10px 18px;
+            gap: 10px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        .search-input-wrapper:focus-within {
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.1);
+        }
+        .search-input-wrapper input {
+            border: none;
+            background: transparent;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 0.95em;
+            width: 100%;
+            outline: none;
+            color: var(--text);
+        }
+        .search-input-wrapper i { color: #999; font-size: 0.95em; }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            padding: 5px 20px 15px;
+            position: sticky;
+            top: 78px;
+            background: white;
+            z-index: 9;
+        }
+        .stat-chip {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid transparent;
+        }
+        .stat-chip.campus-chip {
+            background: #e8f0fe;
+            color: var(--primary-light);
+        }
+        .stat-chip.campus-chip:hover, .stat-chip.campus-chip.active {
+            background: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+        .stat-chip.surrounding-chip {
+            background: #fff3e0;
+            color: var(--orange);
+        }
+        .stat-chip.surrounding-chip:hover, .stat-chip.surrounding-chip.active {
+            background: var(--orange);
+            color: white;
+            border-color: var(--orange);
+        }
+        .stat-chip .count {
+            font-size: 1.4em;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+
+        /* Section Title */
+        .section-title {
+            padding: 10px 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        /* Location Card */
+        .location-card {
+            margin: 8px 16px;
+            padding: 16px 18px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--card-bg);
+            border: 1.5px solid #eef0f5;
+            position: relative;
+            overflow: hidden;
+        }
+        .location-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: 4px 0 0 4px;
+            transition: var(--transition);
+        }
+        .location-card.campus-card::before { background: var(--primary-light); }
+        .location-card.surrounding-card::before { background: var(--orange); }
+        .location-card.historic-card::before { background: var(--historic); }
+        .location-card.river-card::before { background: var(--river); }
+
+        .location-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateX(4px);
+            border-color: transparent;
+        }
+        .location-card.active-location {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+            background: #f9fdf9;
+        }
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        .campus-card .card-icon { background: #e8f0fe; color: var(--primary-light); }
+        .surrounding-card .card-icon { background: #fff3e0; color: var(--orange); }
+        .historic-card .card-icon { background: #f3e5f5; color: var(--historic); }
+        .river-card .card-icon { background: #e1f5fe; color: var(--river); }
+
+        .card-content h4 {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+        .card-content .card-subtitle {
+            font-size: 0.75em;
+            color: #888;
+            font-weight: 400;
+        }
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            font-size: 0.68em;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .tag-direction { background: #f0f4ff; color: #3b5998; }
+        .tag-distance { background: #e8f5e9; color: #2e7d32; }
+        .tag-type { background: #fff8e1; color: #f57f17; }
+        .tag-facility { background: #fce4ec; color: #c62828; }
+
+        .card-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #e8e8e8;
+            font-size: 0.78em;
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+        .location-card.active-location .card-details {
+            display: block;
+        }
+        .card-details i {
+            width: 18px;
+            color: var(--accent);
+        }
+
+        /* ========== MAP WRAPPER ========== */
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+            background: #e8ecf1;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Map Controls */
+        .map-overlay-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .map-ctrl-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            font-size: 1.1em;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .map-ctrl-btn:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Map Legend */
+        .map-legend {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            background: white;
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            z-index: 1000;
+            font-size: 0.78em;
+            min-width: 180px;
+        }
+        .map-legend h4 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 7px;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .legend-dot.campus-dot { background: #1a3a5c; }
+        .legend-dot.surrounding-dot { background: #e65100; }
+        .legend-dot.river-dot { background: #0288d1; }
+        .legend-dot.historic-dot { background: #6a1b9a; }
+
+        /* Info Tooltip */
+        .info-tooltip {
+            position: absolute;
+            bottom: 25px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.8em;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ========== MOBILE BOTTOM NAV ========== */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 3000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 8px 10px;
+        }
+        .mobile-nav-inner {
+            display: flex;
+            gap: 8px;
+        }
+        .mobile-nav-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .mobile-nav-btn.map-btn { background: var(--primary-light); color: white; }
+        .mobile-nav-btn.list-btn { background: #f0f0f0; color: var(--text); }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                max-height: 40vh;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                z-index: 2000;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+                transition: max-height 0.4s ease;
+            }
+            .sidebar.collapsed { max-height: 55px; overflow: hidden; }
+            .sidebar-handle {
+                width: 40px;
+                height: 5px;
+                background: #ccc;
+                border-radius: 10px;
+                margin: 8px auto;
+                cursor: pointer;
+            }
+            .map-wrapper { height: 60vh; flex: none; }
+            .header { padding: 12px 15px; }
+            .header-info h1 { font-size: 1.2em; }
+            .header-badge { font-size: 0.7em; padding: 6px 10px; }
+            .mobile-nav { display: block; }
+            .map-legend { bottom: 80px; font-size: 0.7em; }
+        }
+        @media (max-width: 500px) {
+            .header { gap: 8px; }
+            .header-logo { width: 38px; height: 38px; font-size: 1.4em; }
+            .header-info h1 { font-size: 1em; }
+            .stats-row { padding: 5px 10px 10px; gap: 5px; }
+            .stat-chip { font-size: 0.7em; padding: 8px 4px; }
+            .location-card { margin: 6px 8px; padding: 12px 14px; }
+            .sidebar { max-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader-logo">🏛️</div>
+        <div class="loader-text">বরিশাল বিশ্ববিদ্যালয়</div>
+        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo">🎓</div>
+            <div class="header-info">
+                <h1>বরিশাল বিশ্ববিদ্যালয়</h1>
+                <div class="eng-name">UNIVERSITY OF BARISHAL</div>
+                <div class="address"><i class="fa-solid fa-location-dot"></i> কর্ণকাঠী, বরিশাল সদর, বরিশাল - ৮২০০</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-badge"><i class="fa-solid fa-graduation-cap"></i> ২০১১ সালে প্রতিষ্ঠিত</div>
+            <div class="header-badge"><i class="fa-solid fa-users"></i> ২৪+ বিভাগ</div>
+            <div class="header-badge"><i class="fa-solid fa-building-columns"></i> ৫০+ একর</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-handle" id="sidebarHandle" style="display:none;"></div>
+            
+            <!-- Search -->
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="লোকেশন খুঁজুন... (যেমন: লাইব্রেরি, বাজার, হল)">
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-chip campus-chip active" onclick="filterLocations('campus', this)">
+                    <span class="count">০৭</span> ক্যাম্পাস
+                </div>
+                <div class="stat-chip surrounding-chip" onclick="filterLocations('surrounding', this)">
+                    <span class="count">০৯</span> আশেপাশে
+                </div>
+                <div class="stat-chip surrounding-chip" onclick="filterLocations('all', this)" style="background:#e8f5e9; color:#2e7d32;">
+                    <span class="count">১৬</span> সব
+                </div>
+            </div>
+
+            <!-- Campus Section -->
+            <div class="section-title"><i class="fa-solid fa-school" style="color:var(--primary-light);"></i> ক্যাম্পাসের ভিতরে</div>
+            <div id="campusList"></div>
+
+            <!-- Surrounding Section -->
+            <div class="section-title" style="margin-top:10px;"><i class="fa-solid fa-map-pin" style="color:var(--orange);"></i> আশেপাশের এলাকা</div>
+            <div id="surroundingList"></div>
+            <div style="height: 30px;"></div>
+        </div>
+
+        <!-- Map -->
+        <div class="map-wrapper" id="mapWrapper">
+            <div id="map"></div>
+            
+            <!-- Map Overlay Controls -->
+            <div class="map-overlay-top">
+                <button class="map-ctrl-btn" onclick="resetMapView()" title="পুরো ক্যাম্পাস দেখুন"><i class="fa-solid fa-house"></i></button>
+                <button class="map-ctrl-btn" onclick="toggleSatellite()" title="স্যাটেলাইট ভিউ"><i class="fa-solid fa-satellite"></i></button>
+            </div>
+
+            <!-- Legend -->
+            <div class="map-legend">
+                <h4>🗺️ ম্যাপ লিজেন্ড</h4>
+                <div class="legend-row"><div class="legend-dot campus-dot"></div> ক্যাম্পাস ভবন</div>
+                <div class="legend-row"><div class="legend-dot surrounding-dot"></div> আশেপাশের জায়গা</div>
+                <div class="legend-row"><div class="legend-dot river-dot"></div> নদী / জলাশয়</div>
+                <div class="legend-row"><div class="legend-dot historic-dot"></div> ঐতিহাসিক স্থান</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-inner">
+            <button class="mobile-nav-btn map-btn" onclick="showMapMobile()"><i class="fa-solid fa-map"></i> ম্যাপ</button>
+            <button class="mobile-nav-btn list-btn" onclick="showListMobile()"><i class="fa-solid fa-list"></i> তালিকা</button>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // ========== LOADING SCREEN ==========
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1800);
+        });
+
+        // ========== SIDEBAR HANDLE (Mobile) ==========
+        const sidebar = document.getElementById('sidebar');
+        const sidebarHandle = document.getElementById('sidebarHandle');
+        let isMobile = window.innerWidth <= 900;
+        
+        function checkMobile() {
+            isMobile = window.innerWidth <= 900;
+            sidebarHandle.style.display = isMobile ? 'block' : 'none';
+            if (!isMobile) sidebar.classList.remove('collapsed');
+        }
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        sidebarHandle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+
+        // ========== MAP INIT ==========
+        const map = L.map('map', {
+            center: [22.6750, 90.3650],
+            zoom: 15,
+            zoomControl: false
+        });
+        
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Tile Layers
+        const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap | BU Map',
+            maxZoom: 19
+        });
+        
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri',
+            maxZoom: 19
+        });
+        
+        let currentLayer = streetLayer;
+        streetLayer.addTo(map);
+
+        function toggleSatellite() {
+            map.removeLayer(currentLayer);
+            if (currentLayer === streetLayer) {
+                currentLayer = satelliteLayer;
+            } else {
+                currentLayer = streetLayer;
+            }
+            currentLayer.addTo(map);
+        }
+
+        // ========== ICONS ==========
+        function createIcon(bgColor, emoji) {
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="background:${bgColor}; color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:3px solid white; box-shadow: 0 3px 12px rgba(0,0,0,0.3); transition: transform 0.2s;">${emoji}</div>`,
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
+                popupAnchor: [0, -18]
+            });
+        }
+
+        const campusIcon = createIcon('#1a3a5c', '🏫');
+        const surroundingIcon = createIcon('#e65100', '📍');
+        const riverIcon = createIcon('#0288d1', '🌊');
+        const historicIcon = createIcon('#6a1b9a', '🏰');
+        const busIcon = createIcon('#d84315', '🚌');
+        const parkIcon = createIcon('#2e7d32', '🌳');
+        const medicalIcon = createIcon('#c62828', '🏥');
+        const bazarIcon = createIcon('#ef6c00', '🛒');
+
+        // ========== ALL LOCATIONS DATA ==========
+        const allLocations = [
+            // CAMPUS LOCATIONS
+            {
+                id: 'c1', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6750, lng: 90.3650,
+                name: 'একাডেমিক ভবন', nameEn: 'Academic Building',
+                iconEmoji: '🏫',
+                subtitle: 'প্রধান শিক্ষা ভবন',
+                tags: [{ text: 'কেন্দ্রীয়', class: 'tag-type' }, { text: '৫ তলা', class: 'tag-facility' }],
+                details: 'বরিশাল বিশ্ববিদ্যালয়ের প্রধান ও সবচেয়ে আকর্ষণীয় ভবন। লাল ইটের তৈরি এই ভবনে ২৪টি বিভাগের ক্লাসরুম, শিক্ষক লাউঞ্জ, এবং সেমিনার কক্ষ রয়েছে। ভবনটির সামনে রয়েছে সুবিশাল খেলার মাঠ ও শহীদ মিনার।'
+            },
+            {
+                id: 'c2', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6740, lng: 90.3638,
+                name: 'প্রশাসনিক ভবন', nameEn: 'Administrative Building',
+                iconEmoji: '🏢',
+                subtitle: 'অফিস ও প্রশাসন',
+                tags: [{ text: 'প্রধান ফটক', class: 'tag-direction' }, { text: 'রেজিস্ট্রার', class: 'tag-facility' }],
+                details: 'ক্যাম্পাসের প্রধান ফটকের কাছে অবস্থিত। ভর্তি, পরীক্ষা নিয়ন্ত্রণ, রেজিস্ট্রার অফিস, উপাচার্যের কার্যালয় - সব প্রশাসনিক কাজ এখান থেকে পরিচালিত হয়। নিচতলায় ব্যাংক ও ডাকঘর রয়েছে।'
+            },
+            {
+                id: 'c3', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6758, lng: 90.3660,
+                name: 'কেন্দ্রীয় লাইব্রেরি', nameEn: 'Central Library',
+                iconEmoji: '📚',
+                subtitle: 'জ্ঞান ভান্ডার',
+                tags: [{ text: '৩০,০০০+ বই', class: 'tag-facility' }, { text: 'ডিজিটাল', class: 'tag-type' }],
+                details: 'একাডেমিক ভবনের পূর্ব পাশে অবস্থিত আধুনিক লাইব্রেরি। এখানে ৩০,০০০-এর বেশি বই, জার্নাল, এবং ডিজিটাল রিসোর্স রয়েছে। শিক্ষার্থীদের জন্য আলাদা রিডিং রুম, ই-লাইব্রেরি, এবং ফ্রি ওয়াইফাই সুবিধা আছে।'
+            },
+            {
+                id: 'c4', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6765, lng: 90.3662,
+                name: 'জীবনানন্দ দাশ হল', nameEn: 'Jibanananda Das Hall',
+                iconEmoji: '🏠',
+                subtitle: 'পুরুষ আবাসিক হল',
+                tags: [{ text: 'পূর্ব পাশে', class: 'tag-direction' }, { text: '৪০০+ আসন', class: 'tag-facility' }],
+                details: 'ক্যাম্পাসের পূর্ব প্রান্তে অবস্থিত পুরুষ শিক্ষার্থীদের আবাসিক হল। বিখ্যাত কবি জীবনানন্দ দাশের নামে নামকরণকৃত। এখানে ৪০০+ শিক্ষার্থীর থাকার ব্যবস্থা, কমন রুম, ক্যান্টিন, এবং খেলার জায়গা রয়েছে। হলের পেছন দিয়ে ভোদ্রা নদী।'
+            },
+            {
+                id: 'c5', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6760, lng: 90.3640,
+                name: 'শেখ হাসিনা হল', nameEn: 'Sheikh Hasina Hall',
+                iconEmoji: '🏠',
+                subtitle: 'মহিলা আবাসিক হল',
+                tags: [{ text: 'উত্তর পাশে', class: 'tag-direction' }, { text: '৫০০+ আসন', class: 'tag-facility' }],
+                details: 'ক্যাম্পাসের উত্তর পাশে অবস্থিত মহিলা শিক্ষার্থীদের জন্য আধুনিক আবাসিক হল। পূর্ণাঙ্গ নিরাপত্তা বেষ্টনী, সিসিটিভি, এবং মহিলা প্রহরী ব্যবস্থা রয়েছে। হলে ক্যান্টিন, কমন রুম, লন্ড্রি, এবং জিমনেসিয়াম সুবিধা আছে।'
+            },
+            {
+                id: 'c6', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6735, lng: 90.3645,
+                name: 'কেন্দ্রীয় খেলার মাঠ', nameEn: 'Central Playground',
+                iconEmoji: '⚽',
+                subtitle: 'খেলাধুলা ও অনুষ্ঠান',
+                tags: [{ text: 'একাডেমিকের সামনে', class: 'tag-direction' }, { text: 'বড় মাঠ', class: 'tag-facility' }],
+                details: 'একাডেমিক ভবনের সামনে সুবিশাল মাঠ। এখানে ক্রিকেট, ফুটবল, অ্যাথলেটিকসহ বিভিন্ন খেলাধুলার আয়োজন হয়। বার্ষিক ক্রীড়া প্রতিযোগিতা, সাংস্কৃতিক অনুষ্ঠান, এবং নবীন বরণ সবই এই মাঠে অনুষ্ঠিত হয়।'
+            },
+            {
+                id: 'c7', category: 'campus', icon: campusIcon, cardClass: 'campus-card',
+                lat: 22.6745, lng: 90.3655,
+                name: 'শিক্ষক ও কর্মকর্তা কোয়ার্টার', nameEn: 'Teachers Quarter',
+                iconEmoji: '🏘️',
+                subtitle: 'আবাসিক এলাকা',
+                tags: [{ text: 'দক্ষিণে', class: 'tag-direction' }, { text: 'আবাসিক', class: 'tag-type' }],
+                details: 'ক্যাম্পাসের দক্ষিণ অংশে শিক্ষক ও কর্মকর্তাদের জন্য আবাসিক কোয়ার্টার অবস্থিত। এখানে প্রায় ৫০টি পরিবারের বসবাসের ব্যবস্থা আছে। পাশেই রয়েছে একটি ছোট পার্ক ও শিশু খেলার জায়গা।'
+            },
+            // SURROUNDING LOCATIONS
+            {
+                id: 's1', category: 'surrounding', icon: bazarIcon, cardClass: 'surrounding-card',
+                lat: 22.6775, lng: 90.3685,
+                name: 'কর্ণকাঠী নতুন বাজার', nameEn: 'Kornokathi Bazar',
+                iconEmoji: '🛒',
+                subtitle: 'শিক্ষার্থীদের প্রধান হাব',
+                tags: [{ text: 'পূর্ব দিকে', class: 'tag-direction' }, { text: '০.৫ কিমি', class: 'tag-distance' }],
+                details: 'বিশ্ববিদ্যালয়ের গেট থেকে মাত্র ৫ মিনিটের হাঁটা পথ। এখানে ১০০+ মেস-বাড়ি, অগণিত ফটোকপি দোকান, রেস্টুরেন্ট, মোবাইল সার্ভিসিং, লন্ড্রি, এবং নিত্যপ্রয়োজনীয় সব দোকান রয়েছে। শিক্ষার্থীদের লাইফলাইন বলা যায়। রাত ১১টা পর্যন্ত দোকান খোলা থাকে।'
+            },
+            {
+                id: 's2', category: 'surrounding', icon: riverIcon, cardClass: 'river-card',
+                lat: 22.6790, lng: 90.3700,
+                name: 'ভোদ্রা নদী', nameEn: 'Vodra River',
+                iconEmoji: '🌊',
+                subtitle: 'প্রাকৃতিক সৌন্দর্য',
+                tags: [{ text: 'পূর্বে', class: 'tag-direction' }, { text: '০.৮ কিমি', class: 'tag-distance' }],
+                details: 'কর্ণকাঠী বাজারের একটু পরেই ভোদ্রা নদী। এটি বরিশালের অন্যতম ছোট নদী। শিক্ষার্থীরা বিকেলে এখানে আড্ডা দিতে, গান গাইতে, এবং নদীর পাড়ে বসে সময় কাটাতে ভালোবাসে। শীতকালে নদীর পাড়ে পিকনিকের আয়োজন হয়।'
+            },
+            {
+                id: 's3', category: 'surrounding', icon: busIcon, cardClass: 'surrounding-card',
+                lat: 22.6720, lng: 90.3610,
+                name: 'রূপাতলী বাস স্ট্যান্ড', nameEn: 'Rupatoli Bus Stand',
+                iconEmoji: '🚌',
+                subtitle: 'প্রধান পরিবহন কেন্দ্র',
+                tags: [{ text: 'দক্ষিণে', class: 'tag-direction' }, { text: '২ কিমি', class: 'tag-distance' }],
+                details: 'কুয়াকাটা হাইওয়ের উপর অবস্থিত গুরুত্বপূর্ণ বাস স্টপ। ঢাকা-বরিশাল, চট্টগ্রাম-বরিশাল, এবং খুলনা রুটের বেশিরভাগ বাস এখানে থামে। এখান থেকে অটোরিকশা/রিকশা করে ১০ মিনিটে ক্যাম্পাসে পৌঁছানো যায়।'
+            },
+            {
+                id: 's4', category: 'surrounding', icon: parkIcon, cardClass: 'surrounding-card',
+                lat: 22.6840, lng: 90.3610,
+                name: 'বঙ্গবন্ধু উদ্যান', nameEn: 'Bangabandhu Udyan',
+                iconEmoji: '🌳',
+                subtitle: 'ইকো-পার্ক ও বিনোদন',
+                tags: [{ text: 'উত্তরে', class: 'tag-direction' }, { text: '১.৫ কিমি', class: 'tag-distance' }],
+                details: 'বিশ্ববিদ্যালয়ের উত্তরে কুয়াকাটা হাইওয়ের পাশেই অবস্থিত সুন্দর ইকো-পার্ক। হাঁটার ট্রেইল, ফুলের বাগান, লেক, এবং বসার জায়গা রয়েছে। সাপ্তাহিক ছুটিতে শিক্ষার্থীরা এখানে বেড়াতে আসে। প্রবেশ ফ্রি।'
+            },
+            {
+                id: 's5', category: 'surrounding', icon: historicIcon, cardClass: 'historic-card',
+                lat: 22.6950, lng: 90.3550,
+                name: 'রূপাতলী জমিদার বাড়ি', nameEn: 'Rupatoli Zamindar Bari',
+                iconEmoji: '🏰',
+                subtitle: 'ঐতিহাসিক স্থাপনা',
+                tags: [{ text: 'উত্তরে', class: 'tag-direction' }, { text: '৩ কিমি', class: 'tag-distance' }],
+                details: '১৯০০ শতকের প্রথম দিকে নির্মিত ঐতিহাসিক জমিদার বাড়ি। বাংলার জমিদারি স্থাপত্যের চমৎকার নিদর্শন। বর্তমানে এটি সংরক্ষিত পুরাকীর্তি। ইতিহাসের শিক্ষার্থীদের জন্য এটি একটি গুরুত্বপূর্ণ ফিল্ড স্টাডি স্পট।'
+            },
+            {
+                id: 's6', category: 'surrounding', icon: medicalIcon, cardClass: 'surrounding-card',
+                lat: 22.7100, lng: 90.3500,
+                name: 'শের-ই-বাংলা মেডিকেল কলেজ', nameEn: 'Sher-e-Bangla Medical College',
+                iconEmoji: '🏥',
+                subtitle: 'মেডিকেল শিক্ষা ও হাসপাতাল',
+                tags: [{ text: 'উত্তরে', class: 'tag-direction' }, { text: '৫ কিমি', class: 'tag-distance' }],
+                details: 'বরিশাল বিভাগের সবচেয়ে বড় মেডিকেল কলেজ ও হাসপাতাল। এখানে ১০০০+ বেডের হাসপাতাল, মেডিকেল শিক্ষা, এবং নার্সিং ইনস্টিটিউট রয়েছে। বিশ্ববিদ্যালয়ের শিক্ষার্থীদের জরুরি স্বাস্থ্যসেবার জন্য এটিই প্রধান ভরসা।'
+            },
+            {
+                id: 's7', category: 'surrounding', icon: surroundingIcon, cardClass: 'surrounding-card',
+                lat: 22.6800, lng: 90.3580,
+                name: 'বরিশাল-কুয়াকাটা মহাসড়ক', nameEn: 'Barishal-Kuakata Highway',
+                iconEmoji: '🛣️',
+                subtitle: 'প্রধান যোগাযোগ সড়ক',
+                tags: [{ text: 'পশ্চিমে', class: 'tag-direction' }, { text: 'সংলগ্ন', class: 'tag-distance' }],
+                details: 'বিশ্ববিদ্যালয়ের পশ্চিম পাশ দিয়ে চলে যাওয়া এই মহাসড়ক বরিশাল শহরকে কুয়াকাটা সমুদ্র সৈকতের সাথে যুক্ত করেছে। ঢাকা-বরিশাল মহাসড়কের সাথেও সংযুক্ত। ক্যাম্পাসের প্রধান গেট এই সড়কের উপরেই।'
+            },
+            {
+                id: 's8', category: 'surrounding', icon: surroundingIcon, cardClass: 'surrounding-card',
+                lat: 22.6900, lng: 90.3650,
+                name: 'কর্ণকাঠী ইউনিয়ন পরিষদ', nameEn: 'Kornokathi Union Office',
+                iconEmoji: '🏛️',
+                subtitle: 'স্থানীয় প্রশাসন',
+                tags: [{ text: 'উত্তর-পূর্ব', class: 'tag-direction' }, { text: '২ কিমি', class: 'tag-distance' }],
+                details: 'স্থানীয় ইউনিয়ন পরিষদ কার্যালয়। ভূমি রেকর্ড, জন্ম নিবন্ধন, ওয়ার্ড কাউন্সিলর অফিস - স্থানীয় প্রশাসনিক সেবা এখান থেকে পাওয়া যায়। শিক্ষার্থীদের ঠিকানা সংক্রান্ত কাগজপত্রের জন্য প্রয়োজন হতে পারে।'
+            },
+            {
+                id: 's9', category: 'surrounding', icon: surroundingIcon, cardClass: 'surrounding-card',
+                lat: 22.6660, lng: 90.3580,
+                name: 'রূপাতলী রেলওয়ে স্টেশন', nameEn: 'Rupatoli Railway Station',
+                iconEmoji: '🚂',
+                subtitle: 'ট্রেন যোগাযোগ',
+                tags: [{ text: 'দক্ষিণে', class: 'tag-direction' }, { text: '৩ কিমি', class: 'tag-distance' }],
+                details: 'বরিশাল-ঢাকা রুটের ছোট রেল স্টেশন। আন্তঃনগর ট্রেন এখানে থামে না, তবে লোকাল ট্রেন থামে। দূরত্ব ৩ কিমি হওয়ায় রিকশা বা অটোতে সহজেই যাওয়া যায়। বিকল্প হিসেবে বরিশাল স্টেশন (৮ কিমি) ব্যবহার করা হয়।'
+            }
+        ];
+
+        // ========== RENDER CARDS ==========
+        const campusListEl = document.getElementById('campusList');
+        const surroundingListEl = document.getElementById('surroundingList');
+        const markersMap = new Map();
+
+        function renderCards(filter = 'all') {
+            campusListEl.innerHTML = '';
+            surroundingListEl.innerHTML = '';
+            
+            allLocations.forEach(loc => {
+                const cardHTML = `
+                    <div class="location-card ${loc.cardClass}" 
+                         data-id="${loc.id}" 
+                         data-category="${loc.category}"
+                         data-name="${loc.name.toLowerCase()} ${loc.nameEn.toLowerCase()}"
+                         onclick="flyToLocation(${loc.lat}, ${loc.lng}, '${loc.id}')">
+                        <div class="card-header">
+                            <div class="card-icon">${loc.iconEmoji}</div>
+                            <div class="card-content">
+                                <h4>${loc.name} <span style="font-weight:400;font-size:0.75em;color:#999;">${loc.nameEn}</span></h4>
+                                <div class="card-subtitle">${loc.subtitle}</div>
+                            </div>
+                        </div>
+                        <div class="card-tags">
+                            ${loc.tags.map(t => `<span class="tag ${t.class}">${t.text}</span>`).join('')}
+                        </div>
+                        <div class="card-details">
+                            ${loc.details}
+                        </div>
+                    </div>
+                `;
+                
+                if (loc.category === 'campus') {
+                    campusListEl.innerHTML += cardHTML;
+                } else {
+                    surroundingListEl.innerHTML += cardHTML;
+                }
+            });
+
+            // Apply filter
+            if (filter === 'campus') {
+                surroundingListEl.style.display = 'none';
+                document.querySelector('.section-title:nth-of-type(2)').style.display = 'none';
+            } else if (filter === 'surrounding') {
+                campusListEl.style.display = 'none';
+                document.querySelector('.section-title:nth-of-type(1)').style.display = 'none';
+            } else {
+                campusListEl.style.display = 'block';
+                surroundingListEl.style.display = 'block';
+                document.querySelectorAll('.section-title').forEach(el => el.style.display = 'flex');
+            }
+        }
+
+        function filterLocations(filter, chipElement) {
+            // Update chip styles
+            document.querySelectorAll('.stat-chip').forEach(c => c.classList.remove('active'));
+            if (chipElement) chipElement.classList.add('active');
+            
+            renderCards(filter);
+        }
+
+        // ========== ADD MARKERS TO MAP ==========
+        allLocations.forEach(loc => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: loc.icon }).addTo(map);
+            marker.bindPopup(`
+                <div style="font-family: 'Hind Siliguri', sans-serif; min-width: 200px; text-align: center;">
+                    <div style="font-size: 2em;">${loc.iconEmoji}</div>
+                    <strong style="font-size: 1.1em; color: #1a1a2e;">${loc.name}</strong><br>
+                    <span style="font-size: 0.8em; color: #888;">${loc.nameEn}</span>
+                    <p style="font-size: 0.78em; color: #555; margin-top: 5px;">${loc.subtitle}</p>
+                    <button onclick="window.showDetails('${loc.id}')" 
+                            style="margin-top: 8px; padding: 6px 16px; background: #1a3a5c; color: white; border: none; border-radius: 20px; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; font-size: 0.8em;">
+                        বিস্তারিত দেখুন
+                    </button>
+                </div>
+            `);
+            markersMap.set(loc.id, marker);
+        });
+
+        // Campus Boundary
+        L.polygon([
+            [22.6775, 90.3630], [22.6775, 90.3675],
+            [22.6725, 90.3675], [22.6725, 90.3630]
+        ], {
+            color: '#1a3a5c', weight: 2.5, fillColor: '#1a3a5c',
+            fillOpacity: 0.06, dashArray: '8, 4'
+        }).addTo(map).bindPopup('<strong>🏛️ বরিশাল বিশ্ববিদ্যালয় ক্যাম্পাস সীমানা</strong>');
+
+        // Highway
+        L.polyline([
+            [22.6500, 90.3600], [22.6650, 90.3590], [22.6750, 90.3600],
+            [22.6850, 90.3595], [22.7000, 90.3580], [22.7150, 90.3560]
+        ], {
+            color: '#d63031', weight: 4, opacity: 0.7, dashArray: '12, 8'
+        }).addTo(map).bindPopup('<strong>🛣️ বরিশাল-কুয়াকাটা মহাসড়ক</strong>');
+
+        // ========== FLY TO LOCATION ==========
+        function flyToLocation(lat, lng, id) {
+            map.flyTo([lat, lng], 17, { duration: 1.2, easeLinearity: 0.3 });
+            
+            // Highlight card
+            document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active-location'));
+            const card = document.querySelector(`[data-id="${id}"]`);
+            if (card) {
+                card.classList.add('active-location');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Open marker popup
+            setTimeout(() => {
+                const marker = markersMap.get(id);
+                if (marker) marker.openPopup();
+            }, 1300);
+        }
+
+        function resetMapView() {
+            map.flyTo([22.6750, 90.3650], 15, { duration: 1 });
+            document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active-location'));
+        }
+
+        // ========== SEARCH ==========
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.location-card').forEach(card => {
+                const nameData = card.getAttribute('data-name');
+                if (query === '' || nameData.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // ========== MOBILE NAV ==========
+        function showMapMobile() {
+            document.querySelector('.map-wrapper').style.display = 'block';
+            sidebar.classList.add('collapsed');
+        }
+        function showListMobile() {
+            sidebar.classList.remove('collapsed');
+        }
+
+        // ========== GLOBAL FUNCTION FOR POPUP BUTTON ==========
+        window.showDetails = function(id) {
+            const loc = allLocations.find(l => l.id === id);
+            if (loc) {
+                flyToLocation(loc.lat, loc.lng, loc.id);
+            }
+        };
+
+        // ========== INITIAL RENDER ==========
+        renderCards('all');
+
+        // ========== TOOLTIP ==========
+        setTimeout(() => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'info-tooltip';
+            tooltip.textContent = '👆 কার্ডে ক্লিক করলে ম্যাপ সেই স্থানে চলে যাবে';
+            document.querySelector('.map-wrapper').appendChild(tooltip);
+            setTimeout(() => tooltip.remove(), 5000);
+        }, 2500);
+
+        console.log('✅ বরিশাল বিশ্ববিদ্যালয় ম্যাপ সম্পূর্ণ লোড হয়েছে!');
+    </script>
+</body>
+</html>
