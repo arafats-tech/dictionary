@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barishal University | Campus & Surrounding Map</title>
+    
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans Bengali', sans-serif;
+            background: #f0f4f8;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f2d 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1000;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .header .subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        .university-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 20px;
+            border-radius: 20px;
+            margin-top: 8px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 140px);
+            position: relative;
+        }
+
+        /* Map Container */
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+            border-right: 3px solid #2c5f2d;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Legend Panel */
+        .legend-panel {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 0.85em;
+            min-width: 200px;
+        }
+        .legend-panel h3 {
+            margin-bottom: 10px;
+            color: #1a3a5c;
+            border-bottom: 2px solid #2c5f2d;
+            padding-bottom: 5px;
+            font-size: 1em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            width: 380px;
+            background: white;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+        .info-panel h2 {
+            color: #1a3a5c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 3px solid #2c5f2d;
+            padding-bottom: 10px;
+        }
+        .location-card {
+            background: #f8fafc;
+            border-left: 5px solid #2c5f2d;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .location-card:hover {
+            background: #e8f5e9;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .location-card.campus {
+            border-left-color: #1a3a5c;
+        }
+        .location-card.surrounding {
+            border-left-color: #e67e22;
+        }
+        .location-card h4 {
+            color: #1a3a5c;
+            margin-bottom: 4px;
+            font-size: 1em;
+        }
+        .location-card p {
+            color: #555;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+        .location-card .category {
+            display: inline-block;
+            font-size: 0.7em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .cat-campus {
+            background: #dbeafe;
+            color: #1a3a5c;
+        }
+        .cat-surrounding {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .info-panel {
+                width: 100%;
+                max-height: 35vh;
+            }
+            .map-wrapper {
+                height: 65vh;
+            }
+            .header h1 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📍 বরিশাল বিশ্ববিদ্যালয় ও আশেপাশের এলাকা</h1>
+        <div class="subtitle">University of Barishal & Surrounding Areas Map</div>
+        <div class="university-badge">🏛️ কর্ণকাঠী, বরিশাল সদর, বরিশাল</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Map Section -->
+        <div class="map-wrapper">
+            <div id="map"></div>
+            <div class="legend-panel">
+                <h3>🗺️ ম্যাপ লিজেন্ড</h3>
+                <div class="legend-item"><div class="legend-color" style="background:#1a3a5c;"></div> ক্যাম্পাস ভবন (Campus)</div>
+                <div class="legend-item"><div class="legend-color" style="background:#e67e22;"></div> আশেপাশের জায়গা (Surrounding)</div>
+                <div class="legend-item"><div class="legend-color" style="background:#27ae60;"></div> নদী / জলাশয়</div>
+                <div class="legend-item"><div class="legend-color" style="background:#8e44ad;"></div> ঐতিহাসিক স্থান</div>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="infoPanel">
+            <h2><i class="fa-solid fa-list-check"></i> সকল লোকেশন</h2>
+            <p style="color:#666; font-size:0.85em; margin-bottom:15px;">👇 ক্লিক করলে ম্যাপে লোকেশন দেখাবে</p>
+            
+            <h3 style="color:#1a3a5c; margin:15px 0 10px;">🏫 ক্যাম্পাসের ভিতরে</h3>
+            <div class="location-card campus" onclick="flyToLocation(22.6750, 90.3650, 'Academic Building')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>📚 একাডেমিক ভবন (Academic Building)</h4>
+                <p>প্রধান লাল-ইটের ভবন, সব ক্লাসরুম ও ডিপার্টমেন্ট</p>
+            </div>
+            <div class="location-card campus" onclick="flyToLocation(22.6740, 90.3638, 'Admin Building')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>🏢 প্রশাসনিক ভবন</h4>
+                <p>প্রধান ফটকের পাশে, ভর্তি ও অফিস সংক্রান্ত কাজ</p>
+            </div>
+            <div class="location-card campus" onclick="flyToLocation(22.6758, 90.3660, 'Library')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>📖 কেন্দ্রীয় লাইব্রেরি</h4>
+                <p>একাডেমিক ভবনের পাশে, বিশাল বইয়ের সংগ্রহ</p>
+            </div>
+            <div class="location-card campus" onclick="flyToLocation(22.6765, 90.3662, 'Jibanananda Hall')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>🏠 কবি জীবনানন্দ দাশ হল (পুরুষ)</h4>
+                <p>ক্যাম্পাসের পূর্ব পাশে, পুরুষ শিক্ষার্থীদের আবাসিক হল</p>
+            </div>
+            <div class="location-card campus" onclick="flyToLocation(22.6760, 90.3640, 'Sheikh Hasina Hall')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>🏠 শেখ হাসিনা হল (মহিলা)</h4>
+                <p>উত্তর পাশে, মহিলা শিক্ষার্থীদের আবাসিক হল</p>
+            </div>
+            <div class="location-card campus" onclick="flyToLocation(22.6735, 90.3645, 'Playground')">
+                <span class="category cat-campus">ক্যাম্পাস</span>
+                <h4>⚽ কেন্দ্রীয় মাঠ</h4>
+                <p>একাডেমিক ভবনের সামনে, খেলাধুলা ও অনুষ্ঠানের স্থান</p>
+            </div>
+
+            <h3 style="color:#e67e22; margin:20px 0 10px;">🌍 আশেপাশের গুরুত্বপূর্ণ জায়গা</h3>
+            <div class="location-card surrounding" onclick="flyToLocation(22.6775, 90.3685, 'Kornokathi Bazar')">
+                <span class="category cat-surrounding">পূর্ব দিক</span>
+                <h4>🛒 কর্ণকাঠী নতুন বাজার</h4>
+                <p>শিক্ষার্থীদের প্রধান হাব, মেস, ফটোকপি, রেস্টুরেন্ট</p>
+            </div>
+            <div class="location-card surrounding" onclick="flyToLocation(22.6790, 90.3700, 'Vodra River')">
+                <span class="category cat-surrounding">পূর্ব দিক</span>
+                <h4>🌊 ভোদ্রা নদী</h4>
+                <p>পূর্ব সীমান্তে, আড্ডা ও ঘোরার জনপ্রিয় জায়গা</p>
+            </div>
+            <div class="location-card surrounding" onclick="flyToLocation(22.6720, 90.3610, 'Rupatoli Bus Stand')">
+                <span class="category cat-surrounding">দক্ষিণ-পশ্চিম</span>
+                <h4>🚌 রূপাতলী বাস স্ট্যান্ড</h4>
+                <p>মাত্র ২ কিমি দক্ষিণে, ঢাকা-বরিশাল রুটের প্রধান স্টপ</p>
+            </div>
+            <div class="location-card surrounding" onclick="flyToLocation(22.6840, 90.3610, 'Bangabandhu Udyan')">
+                <span class="category cat-surrounding">উত্তর দিক</span>
+                <h4>🌳 বঙ্গবন্ধু উদ্যান</h4>
+                <p>ইকো-পার্ক, হাঁটার জায়গা, ইউনিভার্সিটির কাছেই</p>
+            </div>
+            <div class="location-card surrounding" onclick="flyToLocation(22.6950, 90.3550, 'Rupatoli Zamindar Bari')">
+                <span class="category cat-surrounding">উত্তর দিক</span>
+                <h4>🏰 রূপাতলী জমিদার বাড়ি</h4>
+                <p>ঐতিহাসিক স্থাপনা, প্রায় ৩ কিমি উত্তরে</p>
+            </div>
+            <div class="location-card surrounding" onclick="flyToLocation(22.7100, 90.3500, 'Sher-e-Bangla Medical')">
+                <span class="category cat-surrounding">উত্তর-পশ্চিম</span>
+                <h4>🏥 শের-ই-বাংলা মেডিকেল কলেজ</h4>
+                <p>প্রায় ৫ কিমি উত্তরে, শহরের দিকে</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Initialize Map
+        // Center: Barishal University approximate coordinates
+        const map = L.map('map').setView([22.6750, 90.3650], 15);
+
+        // Tile Layer (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | Barishal University Map',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Custom Icon for Campus
+        const campusIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background:#1a3a5c; color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; border:3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">🏫</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+
+        // Custom Icon for Surrounding
+        const surroundingIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background:#e67e22; color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; border:3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+
+        // Custom Icon for River
+        const riverIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background:#27ae60; color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; border:3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">🌊</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+
+        // Historic Icon
+        const historicIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background:#8e44ad; color:white; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; border:3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">🏰</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+
+        // Campus Locations Data
+        const campusLocations = [
+            { lat: 22.6750, lng: 90.3650, name: 'একাডেমিক ভবন', desc: 'প্রধান লাল-ইটের ভবন, শিক্ষা কার্যক্রমের কেন্দ্র', icon: campusIcon },
+            { lat: 22.6740, lng: 90.3638, name: 'প্রশাসনিক ভবন', desc: 'প্রধান ফটকের কাছে, অফিস ও প্রশাসন', icon: campusIcon },
+            { lat: 22.6758, lng: 90.3660, name: 'কেন্দ্রীয় লাইব্রেরি', desc: 'একাডেমিক ভবনের পাশে', icon: campusIcon },
+            { lat: 22.6765, lng: 90.3662, name: 'জীবনানন্দ হল (পুরুষ)', desc: 'ক্যাম্পাসের পূর্ব পাশে', icon: campusIcon },
+            { lat: 22.6760, lng: 90.3640, name: 'শেখ হাসিনা হল (মহিলা)', desc: 'উত্তর পাশে, নিরাপত্তা বেষ্টনী সহ', icon: campusIcon },
+            { lat: 22.6735, lng: 90.3645, name: 'কেন্দ্রীয় খেলার মাঠ', desc: 'একাডেমিক ভবনের সামনে', icon: campusIcon },
+            { lat: 22.6745, lng: 90.3655, name: 'শিক্ষক কোয়ার্টার', desc: 'দক্ষিণ পাশে আবাসিক এলাকা', icon: campusIcon }
+        ];
+
+        // Surrounding Locations Data
+        const surroundingLocations = [
+            { lat: 22.6775, lng: 90.3685, name: 'কর্ণকাঠী নতুন বাজার', desc: 'মেস, ফটোকপি, রেস্টুরেন্ট - শিক্ষার্থীদের হাব', icon: surroundingIcon },
+            { lat: 22.6790, lng: 90.3700, name: 'ভোদ্রা নদী', desc: 'পূর্ব দিকে, আড্ডার জনপ্রিয় স্পট', icon: riverIcon },
+            { lat: 22.6720, lng: 90.3610, name: 'রূপাতলী বাস স্ট্যান্ড', desc: 'কুয়াকাটা হাইওয়ের উপর, ২ কিমি দক্ষিণে', icon: surroundingIcon },
+            { lat: 22.6840, lng: 90.3610, name: 'বঙ্গবন্ধু উদ্যান', desc: 'ইকো-পার্ক, ইউনিভার্সিটির উত্তরে', icon: surroundingIcon },
+            { lat: 22.6950, lng: 90.3550, name: 'রূপাতলী জমিদার বাড়ি', desc: 'ঐতিহাসিক স্থাপনা, ৩ কিমি উত্তরে', icon: historicIcon },
+            { lat: 22.7100, lng: 90.3500, name: 'শের-ই-বাংলা মেডিকেল', desc: 'মেডিকেল কলেজ, ৫ কিমি উত্তরে', icon: surroundingIcon }
+        ];
+
+        // Add Campus Markers
+        campusLocations.forEach(loc => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: loc.icon }).addTo(map);
+            marker.bindPopup(`
+                <div style="font-family: 'Noto Sans Bengali', sans-serif; text-align:center;">
+                    <strong style="color:#1a3a5c; font-size:14px;">${loc.name}</strong><br>
+                    <span style="font-size:12px; color:#555;">${loc.desc}</span>
+                </div>
+            `);
+        });
+
+        // Add Surrounding Markers
+        surroundingLocations.forEach(loc => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: loc.icon }).addTo(map);
+            marker.bindPopup(`
+                <div style="font-family: 'Noto Sans Bengali', sans-serif; text-align:center;">
+                    <strong style="color:#e67e22; font-size:14px;">${loc.name}</strong><br>
+                    <span style="font-size:12px; color:#555;">${loc.desc}</span>
+                </div>
+            `);
+        });
+
+        // Fly to location function (called from info panel)
+        function flyToLocation(lat, lng, name) {
+            map.flyTo([lat, lng], 17, {
+                duration: 1.5,
+                easeLinearity: 0.25
+            });
+            
+            // Briefly highlight effect - open popup for the nearest marker
+            setTimeout(() => {
+                // Find closest marker and open popup
+                map.eachLayer((layer) => {
+                    if (layer instanceof L.Marker) {
+                        const markerLatLng = layer.getLatLng();
+                        const distance = Math.sqrt(
+                            Math.pow(markerLatLng.lat - lat, 2) + 
+                            Math.pow(markerLatLng.lng - lng, 2)
+                        );
+                        if (distance < 0.001) {
+                            layer.openPopup();
+                        }
+                    }
+                });
+            }, 1600);
+        }
+
+        // Add a polygon to roughly outline campus boundary
+        const campusBoundary = L.polygon([
+            [22.6770, 90.3635],
+            [22.6770, 90.3670],
+            [22.6730, 90.3670],
+            [22.6730, 90.3635]
+        ], {
+            color: '#1a3a5c',
+            weight: 2,
+            fillColor: '#1a3a5c',
+            fillOpacity: 0.08,
+            dashArray: '5, 5'
+        }).addTo(map);
+        campusBoundary.bindPopup('<strong>🏛️ বরিশাল বিশ্ববিদ্যালয় ক্যাম্পাস</strong><br>কর্ণকাঠী, বরিশাল সদর');
+
+        // Add highway line (Kuakata Highway)
+        const highwayPoints = [
+            [22.6500, 90.3600],
+            [22.6600, 90.3610],
+            [22.6700, 90.3620],
+            [22.6800, 90.3625],
+            [22.6900, 90.3615],
+            [22.7000, 90.3600]
+        ];
+        const highway = L.polyline(highwayPoints, {
+            color: '#c0392b',
+            weight: 4,
+            opacity: 0.7,
+            dashArray: '10, 10'
+        }).addTo(map);
+        highway.bindPopup('<strong>🛣️ কুয়াকাটা হাইওয়ে (বরিশাল-পটুয়াখালী)</strong>');
+
+        // Scale control
+        L.control.scale({ imperial: false, metric: true, position: 'bottomright' }).addTo(map);
+
+        console.log('🗺️ Barishal University Interactive Map Loaded Successfully!');
+    </script>
+</body>
+</html>
