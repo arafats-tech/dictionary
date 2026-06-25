@@ -1,0 +1,316 @@
+<title>বরিশাল বিশ্ববিদ্যালয় | Campus Explorer 2026</title> <style> :root { --navy:#0b1829; --navy2:#122035; --green:#1f7a4d; --green2:#27a567; --green3:#3ecf82; --red:#e63950; --bg:#f2f5f9; --surface:#ffffff; --card:#f8fafc; --border:#e4eaf3; --text:#0f172a; --text2:#475569; --text3:#94a3b8; --r:16px; --shadow:0 4px 24px rgba(11,24,41,.10); --shadowL:0 16px 56px rgba(11,24,41,.18); --trans:all 0.28s cubic-bezier(.4,0,.2,1); } *{margin:0;padding:0;box-sizing:border-box;} html,body{height:100%;overflow:hidden;font-family:'Hind Siliguri',sans-serif;background:var(--navy);color:var(--text);-webkit-font-smoothing:antialiased;}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#061020 0%,#0d2035 55%,#091828 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s ease;}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none;}
+.sp-badge{width:90px;height:90px;border-radius:24px;background:linear-gradient(135deg,var(--green),#0d5c37);display:flex;align-items:center;justify-content:center;font-size:2.6em;animation:spulse 2.5s ease-in-out infinite;}
+@Keyframes spulse{0%,100%{box-shadow:0 0 0 0 rgba(39,165,103,.5);}60%{box-shadow:0 0 0 18px rgba(39,165,103,0);}}
+.sp-title{color:#fff;font-size:1.9em;font-weight:700;margin:20px 0 4px;}
+.sp-sub{color:rgba(255,255,255,.45);font-family:'Inter',sans-serif;font-size:.72em;letter-spacing:3px;margin-bottom:30px;}
+.sp-bar{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--green3),var(--green2));border-radius:4px;animation:sfill 2.2s ease forwards;}
+@Keyframes sfill{from{width:0%}to{width:100%}}
+
+/* TOPBAR */
+#topbar{height:58px;background:rgba(11,24,41,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px;z-index:900;position:relative;flex-shrink:0;}
+.tb-brand{display:flex;align-items:center;gap:12px;}
+.tb-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--green),#155a35);display:flex;align-items:center;justify-content:center;font-size:1.3em;box-shadow:0 3px 12px rgba(31,122,77,.35);}
+.tb-title{color:#fff;font-size:1.05em;font-weight:700;line-height:1.2;}
+.tb-sub{color:rgba(255,255,255,.38);font-size:.62em;font-family:'Inter',sans-serif;letter-spacing:1.5px;}
+.tb-pills{display:flex;gap:6px;align-items:center;}
+.pill{height:34px;padding:0 14px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.78);cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:.78em;font-weight:500;display:flex;align-items:center;gap:6px;transition:var(--trans);white-space:nowrap;}
+.pill:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);}
+.pill.act{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 3px 12px rgba(31,122,77,.35);}
+.pill i{font-size:.85em;}
+.tb-stats{display:flex;gap:16px;align-items:center;}
+.stat-item{text-align:center;}
+.stat-n{color:var(--green3);font-family:'Inter',sans-serif;font-size:.85em;font-weight:700;line-height:1;}
+.stat-l{color:rgba(255,255,255,.35);font-size:.58em;letter-spacing:.5px;margin-top:1px;}
+
+/* LAYOUT */
+#shell{display:flex;height:calc(100vh - 58px);position:relative;overflow:hidden;}
+
+/* SIDEBAR */
+#sidebar{width:420px;min-width:420px;background:var(--surface);display:flex;flex-direction:column;z-index:100;box-shadow:4px 0 32px rgba(11,24,41,.10);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.sb-head{padding:16px 16px 0;background:#fff;border-bottom:1px solid var(--border);}
+.sb-search{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:30px;padding:10px 16px;border:2px solid transparent;transition:var(--trans);}
+.sb-search:focus-within{background:#fff;border-color:var(--green);box-shadow:0 0 0 4px rgba(31,122,77,.08);}
+.sb-search i{color:var(--text3);}
+.sb-search input{border:none;background:transparent;flex:1;font-family:'Hind Siliguri',sans-serif;font-size:.88em;outline:none;color:var(--text);}
+#clrBtn{cursor:pointer;color:var(--text3);display:none;font-size:.85em;padding:3px;}
+#clrBtn.on{display:block;}
+.tab-row{display:flex;gap:0;padding:10px 16px 0;border-bottom:1px solid var(--border);}
+.tab{padding:9px 12px;font-size:.76em;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--text3);transition:var(--trans);white-space:nowrap;}
+.tab:hover{color:var(--text2);}
+.tab.on{color:var(--green);border-bottom-color:var(--green);}
+.chip-row{display:flex;gap:6px;padding:10px 16px;flex-wrap:wrap;background:#fafbfd;border-bottom:1px solid var(--border);}
+.chip{padding:5px 12px;border-radius:16px;font-size:.72em;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text2);transition:var(--trans);white-space:nowrap;}
+.chip:hover{border-color:#b0bec5;}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 2px 8px rgba(11,24,41,.2);}
+.chip-cnt{display:inline-block;background:rgba(0,0,0,.1);padding:0 6px;border-radius:8px;font-size:.85em;margin-left:3px;}
+.chip.on .chip-cnt{background:rgba(255,255,255,.2);}
+
+/* LIST */
+#locList{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 12px 12px;scroll-behavior:smooth;}
+#locList::-webkit-scrollbar{width:4px;}
+#locList::-webkit-scrollbar-thumb{background:#dde3ec;border-radius:4px;}
+.sec-label{font-size:.65em;text-transform:uppercase;letter-spacing:2px;color:var(--text3);padding:14px 8px 6px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.lcard{display:flex;gap:12px;padding:12px 14px;margin-bottom:5px;border-radius:var(--r);cursor:pointer;transition:var(--trans);border:1.5px solid transparent;position:relative;background:#fff;}
+.lcard:hover{background:var(--card);border-color:var(--border);transform:translateX(2px);box-shadow:var(--shadow);}
+.lcard.on{background:#f0fdf7;border-color:var(--green);box-shadow:0 3px 14px rgba(31,122,77,.12);}
+.lcard.on::before{content:'';position:absolute;left:0;top:14%;height:72%;width:3px;background:var(--green);border-radius:0 3px 3px 0;}
+.li-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25em;flex-shrink:0;}
+.ic-campus{background:#eff6ff;} .ic-market{background:#fff7ed;} .ic-river{background:#f0f9ff;}
+.ic-hist{background:#faf5ff;} .ic-med{background:#fef2f2;} .ic-trans{background:#fefce8;}
+.ic-park{background:#f0fdf4;} .ic-food{background:#fff1f0;}
+.li-info{flex:1;min-width:0;}
+.li-name{font-size:.9em;font-weight:700;color:var(--text);margin-bottom:1px;line-height:1.25;}
+.li-eng{font-size:.66em;color:var(--text3);font-family:'Inter',sans-serif;}
+.li-desc{font-size:.72em;color:var(--text2);margin-top:3px;line-height:1.45;}
+.li-tags{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
+.tag{font-size:.6em;padding:2px 8px;border-radius:10px;font-weight:600;}
+.tag-dir{background:#eff6ff;color:#3b82f6;}
+.tag-dist{background:#f0fdf4;color:#16a34a;}
+.tag-open{background:#f0fdf4;color:#15803d;}
+.tag-close{background:#fff1f2;color:#be123c;}
+.tag-info{background:#fefce8;color:#a16207;}
+.li-fav{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;border:none;background:transparent;cursor:pointer;font-size:.9em;color:var(--text3);transition:var(--trans);display:flex;align-items:center;justify-content:center;}
+.li-fav:hover{color:var(--red);}
+.li-fav.saved{color:var(--red);}
+.empty{text-align:center;padding:50px 20px;color:var(--text3);}
+.empty-ico{font-size:3em;margin-bottom:10px;}
+.empty p{font-size:.82em;}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--border);background:#fafbfd;display:flex;align-items:center;justify-content:space-between;}
+.sb-foot span{font-size:.65em;color:var(--text3);}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:.65em;color:var(--green);font-weight:600;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.4s ease infinite;}
+@Keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* MAP */
+#mapWrap{flex:1;position:relative;}
+#map{height:100%;width:100%;}
+.map-btns{position:absolute;top:14px;right:14px;z-index:500;display:flex;flex-direction:column;gap:6px;}
+.mbtn{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9em;color:#444;transition:var(--trans);}
+.mbtn:hover{background:var(--navy);color:#fff;}
+.mbtn.ruler-on{background:var(--green);color:#fff;}
+
+/* Map info card */
+.map-info-card{position:absolute;bottom:16px;right:16px;z-index:500;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-radius:16px;padding:16px 18px;box-shadow:var(--shadowL);width:260px;border:1px solid rgba(0,0,0,.06);transform:translateY(20px);opacity:0;transition:var(--trans);pointer-events:none;}
+.map-info-card.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+.mic-close{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:.9em;}
+.mic-ico{font-size:2em;margin-bottom:8px;}
+.mic-name{font-size:1em;font-weight:700;color:var(--text);margin-bottom:2px;}
+.mic-eng{font-size:.68em;color:var(--text3);font-family:'Inter',sans-serif;margin-bottom:8px;}
+.mic-desc{font-size:.73em;color:var(--text2);line-height:1.5;margin-bottom:10px;}
+.mic-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.mic-gi{background:var(--bg);border-radius:8px;padding:7px 10px;}
+.mic-gi .gl{font-size:.58em;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.mic-gi .gv{font-size:.75em;font-weight:600;color:var(--text);margin-top:1px;}
+.mic-actions{display:flex;gap:6px;}
+.mic-btn{flex:1;padding:8px;border-radius:8px;border:none;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:.72em;font-weight:600;transition:var(--trans);}
+.mic-btn.primary{background:var(--green);color:#fff;}
+.mic-btn.primary:hover{background:var(--green2);}
+.mic-btn.sec{background:var(--bg);color:var(--text2);}
+.mic-btn.sec:hover{background:var(--border);}
+
+/* Legend */
+.legend{position:absolute;bottom:16px;left:16px;z-index:500;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);font-size:.72em;}
+.legend h6{font-size:.8em;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.leg-i{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* Toast */
+#toast{position:absolute;top:16px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(11,24,41,.92);color:#fff;padding:9px 20px;border-radius:24px;font-size:.78em;font-weight:500;z-index:600;pointer-events:none;opacity:0;transition:opacity .35s ease,transform .35s ease;white-space:nowrap;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,.25);}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Ruler overlay */
+#distOverlay{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:500;background:rgba(11,24,41,.9);color:#fff;padding:8px 18px;border-radius:24px;font-size:.78em;display:none;backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.3);}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(11,24,41,.65);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:var(--trans);}
+.overlay.on{opacity:1;visibility:visible;}
+.modal{background:#fff;border-radius:22px;width:94%;max-width:560px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 96px rgba(0,0,0,.28);transform:scale(.92) translateY(24px);transition:var(--trans);}
+.overlay.on .modal{transform:scale(1) translateY(0);}
+.modal-head{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:1;}
+.modal-head h3{font-size:1.05em;font-weight:700;}
+.modal-x{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:1em;display:flex;align-items:center;justify-content:center;transition:var(--trans);}
+.modal-x:hover{background:var(--border);}
+.modal-body{flex:1;overflow-y:auto;padding:20px 22px;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:#dde3ec;border-radius:4px;}
+.m-hero{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:22px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;}
+.m-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(39,165,103,.25),transparent 60%);}
+.m-hero-ico{font-size:3em;margin-bottom:6px;position:relative;}
+.m-hero-name{color:#fff;font-size:1.2em;font-weight:700;margin-bottom:2px;position:relative;}
+.m-hero-eng{color:rgba(255,255,255,.45);font-family:'Inter',sans-serif;font-size:.7em;letter-spacing:.5px;position:relative;}
+.m-section{margin-bottom:14px;}
+.m-section h5{font-size:.72em;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);font-weight:700;margin-bottom:8px;}
+.m-desc{font-size:.83em;color:var(--text2);line-height:1.7;}
+.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.m-gi{background:var(--bg);border-radius:10px;padding:10px 14px;}
+.m-gi .ml{font-size:.63em;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px;}
+.m-gi .mv{font-size:.82em;font-weight:600;color:var(--text);}
+.m-fac{display:flex;flex-wrap:wrap;gap:6px;}
+.m-fac-tag{padding:5px 12px;border-radius:20px;background:var(--bg);color:var(--text2);font-size:.7em;font-weight:500;border:1px solid var(--border);}
+.m-hour-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.78em;}
+.m-hour-row:last-child{border:none;}
+.m-hour-row .day{color:var(--text2);}
+.m-hour-row .time{font-weight:600;color:var(--text);}
+.m-actions{display:flex;gap:8px;margin-top:16px;}
+.m-act-btn{flex:1;padding:11px;border-radius:12px;border:none;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:.8em;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--trans);}
+.m-act-btn.primary{background:var(--green);color:#fff;}
+.m-act-btn.primary:hover{background:var(--green2);}
+.m-act-btn.sec{background:var(--bg);color:var(--text2);}
+.m-act-btn.sec:hover{background:var(--border);}
+
+/* FAV PANEL — sits inside #shell so position:absolute is relative to shell */
+#favPanel{position:absolute;bottom:0;left:0;width:420px;background:#fff;border-radius:20px 20px 0 0;z-index:400;box-shadow:0 -8px 40px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);max-height:55%;overflow-y:auto;}
+#favPanel.on{transform:translateY(0);}
+.fav-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;}
+.fav-head h4{font-size:.9em;font-weight:700;}
+.fav-head button{background:none;border:none;cursor:pointer;font-size:.9em;color:var(--text3);}
+
+/* Leaflet popup */
+.leaflet-popup-content-wrapper{border-radius:16px!important;box-shadow:0 16px 48px rgba(0,0,0,.18)!important;padding:0!important;overflow:hidden;font-family:'Hind Siliguri',sans-serif;}
+.leaflet-popup-content{margin:0!important;}
+.lpop{padding:16px;}
+.lpop-hed{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.lpop-hed span{font-size:1.5em;}
+.lpop-name{font-size:.92em;font-weight:700;color:#0f172a;}
+.lpop-eng{font-size:.65em;color:#94a3b8;font-family:'Inter',sans-serif;}
+.lpop-desc{font-size:.73em;color:#475569;line-height:1.5;margin-bottom:10px;}
+.lpop-btns{display:flex;gap:6px;}
+.lpop-btn{flex:1;padding:7px;border-radius:8px;border:none;cursor:pointer;font-family:'Hind Siliguri',sans-serif;font-size:.7em;font-weight:600;}
+.lpop-btn.p{background:#1f7a4d;color:#fff;}
+.lpop-btn.s{background:#f2f5f9;color:#475569;}
+
+/* RESPONSIVE */
+@media(max-width:900px){#sidebar{width:360px;min-width:360px;}#favPanel{width:360px;}}
+@media(max-width:700px){
+#shell{flex-direction:column;}
+#sidebar{width:100%;min-width:100%;position:absolute;bottom:0;left:0;max-height:44vh;z-index:600;border-radius:20px 20px 0 0;box-shadow:0 -6px 40px rgba(0,0,0,.18);}
+#sidebar.hide{transform:translateY(calc(100% - 44px));}
+#favPanel{width:100%;}
+#mapWrap{flex:1;}
+.tb-stats{display:none;}
+.pill span{display:none;}
+}
+</style>
+
+🎓
+বরিশাল বিশ্ববিদ্যালয়
+CAMPUS EXPLORER 2026
+বিস্তারিত তথ্য
+✕
+🏛️
+বরিশাল বিশ্ববিদ্যালয়
+CAMPUS & SURROUNDING EXPLORER
+১৯৯৬
+প্রতিষ্ঠা
+২৪+
+বিভাগ
+১৮,০০০+
+শিক্ষার্থী
+৫৫০+
+শিক্ষক
+হোম সব দেখুন স্যাটেলাইট সেভ করা
+সব
+🏫 ক্যাম্পাস
+📍 আশেপাশে
+❤️ সেভ করা
+সব০
+📚 শিক্ষা
+🏠 হল
+🛒 বাজার
+🚌 পরিবহন
+🏥 স্বাস্থ্য
+🌿 প্রকৃতি
+🏰 ঐতিহাসিক
+কর্ণকাঠী, বরিশাল সদর • ১৯টি স্থান
+লাইভ ম্যাপ
+🗺️ চিহ্নের অর্থ
+ক্যাম্পাস
+বাজার
+নদী/প্রকৃতি
+ঐতিহাসিক
+হাসপাতাল
+পরিবহন
+পার্ক
+📏 দুটি স্থানে ক্লিক করুন — —  বন্ধ ✕
+❤️ সেভ করা লোকেশন
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> <script> // ── Safe localStorage wrapper (blocked in some sandboxes) ── const store = { get(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return def; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} } }; // ── DATA ── const LOCATIONS = [ { id:'c1', cat:'campus', type:'education', icon:'📚', iconCls:'ic-campus', lat:22.6750, lng:90.3650, name:'একাডেমিক ভবন', eng:'Academic Building (Main)', short:'প্রধান শিক্ষা ভবন, ২৪টি বিভাগ', desc:'লাল-ইটের ঐতিহ্যবাহী প্রধান ভবন। বিজ্ঞান, মানবিক, বাণিজ্য ও সামাজিক বিজ্ঞান অনুষদের ক্লাসরুম, সেমিনার হল এবং অধ্যাপকদের কক্ষ রয়েছে।', dir:'কেন্দ্রীয়', dist:'—', floor:'৫ তলা', facilities:['ক্লাসরুম','সেমিনার হল','ওয়াইফাই','লিফট','ফটোকপি','পানীয় জল'], hours:{open:'সোম–শুক্র ৮:০০–৫:০০', sat:'শনি বন্ধ', note:'পরীক্ষার সময় ভিন্ন হতে পারে'}, contact:'রেজিস্ট্রার: ০৪৩১-২১৭৩৪৫', tip:'প্রধান প্রবেশদ্বার হাইওয়ে পাশ থেকে। কেন্দ্রীয় মাঠের উত্তর দিক।', isOpen:true }, { id:'c2', cat:'campus', type:'education', icon:'🏢', iconCls:'ic-campus', lat:22.6740, lng:90.3638, name:'প্রশাসনিক ভবন', eng:'Administration Building', short:'উপাচার্য কার্যালয়, রেজিস্ট্রার, ব্যাংক', desc:'ক্যাম্পাসের প্রবেশমুখে প্রশাসন কেন্দ্র। উপাচার্য, উপ-উপাচার্য, রেজিস্ট্রার, পরীক্ষা নিয়ন্ত্রক কার্যালয় এখানে। নিচতলায় সোনালী ব্যাংক ও ডাকঘর।', dir:'প্রধান ফটক', dist:'—', floor:'৩ তলা', facilities:['সোনালী ব্যাংক','ডাকঘর','নোটারি','ফটোকপি','ATM','ওয়েটিং লাউঞ্জ'], hours:{open:'সোম–বৃহ ৯:০০–৪:৩০', sat:'শনি ৯–১', note:'ব্যাংক ও ডাক আলাদা সময়সূচী'}, contact:'VC অফিস: ০৪৩১-২১৮৮৯৯', tip:'ভর্তি, মাইগ্রেশন, সার্টিফিকেট সব কাজ এখানে।', isOpen:true }, { id:'c3', cat:'campus', type:'education', icon:'📖', iconCls:'ic-campus', lat:22.6758, lng:90.3660, name:'কেন্দ্রীয় লাইব্রেরি', eng:'Central Library', short:'৩০,০০০+ বই, ই-লাইব্রেরি, রিডিং রুম', desc:'৩০,০০০+ বই, আন্তর্জাতিক জার্নাল, JSTOR/IEEE ডাটাবেস, ই-বুক। গ্রুপ স্টাডি রুম ও সাইলেন্ট জোন আছে।', dir:'একাডেমিক পাশে', dist:'—', floor:'৪ তলা', facilities:['সাইলেন্ট জোন','গ্রুপ স্টাডি','ই-লাইব্রেরি','প্রিন্টার','ওয়াইফাই','ক্যাফেটেরিয়া'], hours:{open:'সোম–শুক্র ৮:০০–৮:০০', sat:'শনি ৯:০০–৫:০০', note:'পরীক্ষায় রাত ১০টা পর্যন্ত'}, contact:'লাইব্রেরিয়ান: ০৪৩১-২১৭৩৪৬', tip:'শুক্রবার জুমার সময় ১–২টা বন্ধ।', isOpen:true }, { id:'c4', cat:'campus', type:'hostel', icon:'🏠', iconCls:'ic-campus', lat:22.6765, lng:90.3662, name:'জীবনানন্দ দাশ হল', eng:'Jibanananda Das Hall (Male)', short:'পুরুষ আবাসিক হল, ৪০০+ আসন', desc:'৪০০+ আসন, ডাবল ও সিঙ্গেল রুম, কমন রুম, ক্যান্টিন, ইনডোর গেমস। হল থেকে ভোদ্রা নদীর দৃশ্য।', dir:'পূর্ব পাশে', dist:'—', floor:'৫ তলা', facilities:['ক্যান্টিন','জিম','কমন রুম','ইন্টারনেট','লন্ড্রি','জেনারেটর'], hours:{open:'২৪/৭ খোলা', sat:'প্রতিদিন', note:'রাত ১১টার পর বাইরে থাকলে প্রভোস্টকে জানান'}, contact:'প্রভোস্ট: ০১৭XX-XXXXXX', tip:'হল মসজিদে ৫ ওয়াক্ত নামাজ হয়। ছাদ থেকে নদী দেখা যায়।', isOpen:true }, { id:'c5', cat:'campus', type:'hostel', icon:'🏠', iconCls:'ic-campus', lat:22.6760, lng:90.3640, name:'শেখ হাসিনা হল', eng:'Sheikh Hasina Hall (Female)', short:'মহিলা আবাসিক হল, ৫০০+ আসন', desc:'সিসিটিভি নজরদারি, মহিলা নিরাপত্তারক্ষী, বায়োমেট্রিক প্রবেশ। ক্যান্টিন, কমন রুম, বিউটি পার্লার ও মেডিকেল রুম আছে।', dir:'উত্তর পাশে', dist:'—', floor:'৬ তলা', facilities:['সিসিটিভি','বায়োমেট্রিক','ক্যান্টিন','জিম','মেডিকেল রুম','লন্ড্রি'], hours:{open:'২৪/৭ (নিয়ন্ত্রিত)', sat:'প্রতিদিন', note:'রাত ১০টার পর আগাম অনুমতি লাগে'}, contact:'প্রভোস্ট (মহিলা): ০১৭XX-XXXXXX', tip:'প্রতি শুক্রবার সকালে যোগব্যায়াম ক্লাস।', isOpen:true }, { id:'c6', cat:'campus', type:'education', icon:'⚽', iconCls:'ic-campus', lat:22.6735, lng:90.3645, name:'কেন্দ্রীয় খেলার মাঠ', eng:'Central Sports Field', short:'ক্রিকেট, ফুটবল, বার্ষিক ক্রীড়া', desc:'ক্রিকেট, ফুটবল, হ্যান্ডবল, ভলিবল। বার্ষিক ক্রীড়া প্রতিযোগিতা, নবীন বরণ ও সাংস্কৃতিক উৎসব এখানে হয়।', dir:'একাডেমিকের সামনে', dist:'—', floor:'—', facilities:['ক্রিকেট পিচ','ফুটবল পোস্ট','ফ্লাডলাইট','গ্যালারি','দর্শক বেঞ্চ'], hours:{open:'ভোর ৬–রাত ৯', sat:'প্রতিদিন', note:'ইভেন্টের সময় সীমিত প্রবেশ'}, contact:'ক্রীড়া অফিসার: ০১৮XX-XXXXXX', tip:'বিশ্ববিদ্যালয় দিবসে (২২ ফেব্রুয়ারি) বড় অনুষ্ঠান হয়।', isOpen:true }, { id:'c7', cat:'campus', type:'education', icon:'🏘️', iconCls:'ic-campus', lat:22.6745, lng:90.3655, name:'শিক্ষক কোয়ার্টার', eng:'Faculty Quarters', short:'শিক্ষক ও কর্মকর্তাদের আবাসিক এলাকা', desc:'৫০+ আবাসিক ফ্ল্যাট, ছোট পার্ক ও শিশু খেলার মাঠ। অধ্যাপক ও উর্ধ্বতন কর্মকর্তারা বাস করেন।', dir:'দক্ষিণে', dist:'—', floor:'—', facilities:['পার্ক','খেলার মাঠ','মসজিদ','কমিউনিটি হল','নিরাপত্তা প্রহরী'], hours:{open:'নিয়ন্ত্রিত প্রবেশ', sat:'—', note:'শিক্ষকের আমন্ত্রণ ছাড়া প্রবেশ সীমিত'}, contact:'এস্টেট অফিস: ০১৮XX-XXXXXX', tip:'পার্কটি সন্ধ্যায় পরিবারের জন্য উন্মুক্ত।', isOpen:false }, { id:'c8', cat:'campus', type:'education', icon:'🔬', iconCls:'ic-campus', lat:22.6755, lng:90.3670, name:'বিজ্ঞান অনুষদ ভবন', eng:'Faculty of Science Building', short:'ফিজিক্স, কেমিস্ট্রি, ম্যাথ, বায়ো ল্যাব', desc:'পদার্থ, রসায়ন, গণিত, পরিসংখ্যান, জীববিজ্ঞান ও ভূগোল বিভাগের গবেষণাগার। উন্নত যন্ত্রপাতি সম্পন্ন ৩০+ ল্যাব।', dir:'একাডেমিক পূর্বে', dist:'—', floor:'৪ তলা', facilities:['৩০+ ল্যাব','গবেষণা রুম','সেমিনার হল','রোবোটিক্স ল্যাব','ওয়াইফাই'], hours:{open:'সোম–বৃহ ৮:০০–৫:০০', sat:'শুক্র–শনি বন্ধ', note:'ল্যাব বুকিং আগে করতে হয়'}, contact:'বিজ্ঞান ডিন: ০১৮XX-XXXXXX', tip:'বিশেষ গবেষণায় রাতেও ল্যাব ব্যবহার করা যায়।', isOpen:true }, { id:'c9', cat:'campus', type:'education', icon:'🖥️', iconCls:'ic-campus', lat:22.6748, lng:90.3643, name:'আইটি সেন্টার / কম্পিউটার ল্যাব', eng:'IT Center & Computer Labs', short:'২০০+ কম্পিউটার, হাই-স্পিড ইন্টারনেট', desc:'২০০+ কম্পিউটার, হাই-স্পিড ব্রডব্যান্ড। CSE ও ICT বিভাগের প্রধান ল্যাব। অনলাইন পরীক্ষা, সফটওয়্যার ডেভেলপমেন্ট।', dir:'প্রশাসনিক ভবন পাশে', dist:'—', floor:'২ তলা', facilities:['২০০+ পিসি','ব্রডব্যান্ড','সফটওয়্যার স্টুডিও','প্রিন্টার','স্ক্যানার','AC'], hours:{open:'সোম–বৃহ ৯:০০–৫:০০', sat:'শুক্র সংযুক্ত বিভাগ', note:'পরীক্ষার সময় ২৪/৭'}, contact:'সিস্টেম অ্যাডমিন: ০১৭XX-XXXXXX', tip:'Wi-Fi পাসওয়ার্ড ভর্তির সময় দেওয়া হয়। BDIX সংযুক্ত।', isOpen:true }, { id:'s1', cat:'surrounding', type:'market', icon:'🛒', iconCls:'ic-market', lat:22.6775, lng:90.3685, name:'কর্ণকাঠী নতুন বাজার', eng:'Kornokathi New Market', short:'শিক্ষার্থীদের প্রধান হাব, ১০০+ দোকান', desc:'গেট থেকে ৫ মিনিট। মেস, রেস্টুরেন্ট, ফটোকপি, স্টেশনারি, মোবাইল সার্ভিসিং, কাপড়, ফার্মেসি সব পাবেন।', dir:'পূর্বে', dist:'০.৫ কিমি', floor:'—', facilities:['রেস্টুরেন্ট','ফার্মেসি','ATM','ফটোকপি','মেস-বাড়ি','মোবাইল শপ'], hours:{open:'সকাল ৭–রাত ১১', sat:'প্রতিদিন', note:'শুক্রবার জুমার সময় কিছু দোকান বন্ধ'}, contact:'—', tip:'মেস খুঁজতে সন্ধ্যায় আসুন। ভালো মান ও কম দামে পাবেন।', isOpen:true }, { id:'s2', cat:'surrounding', type:'nature', icon:'🌊', iconCls:'ic-river', lat:22.6790, lng:90.3700, name:'ভোদ্রা নদী তীর', eng:'Vodra Riverbank', short:'আড্ডা ও বিকেলের প্রিয় স্পট', desc:'কর্ণকাঠীর পেছনে ছোট্ট ভোদ্রা নদী। বিকেলে সোনালী আলো পড়লে অসাধারণ। আড্ডা, গান-বাজনা ও শান্ত সময়ের সেরা জায়গা।', dir:'পূর্বে', dist:'০.৮ কিমি', floor:'—', facilities:['হাঁটার পথ','বসার জায়গা','নৌকা ভ্রমণ','মৌসুমি বাজার'], hours:{open:'সব সময়', sat:'প্রতিদিন', note:'সন্ধ্যার পর সাবধানে যাবেন'}, contact:'—', tip:'ভোরে মাছ ধরা দেখা যায়। শীতকালে পিকনিক বিশেষ চমৎকার।', isOpen:true }, { id:'s3', cat:'surrounding', type:'transport', icon:'🚌', iconCls:'ic-trans', lat:22.6720, lng:90.3610, name:'রূপাতলী বাস স্ট্যান্ড', eng:'Rupatoli Bus Terminal', short:'ঢাকা-বরিশাল রুটের প্রধান বাস স্টপ', desc:'ঢাকা, চট্টগ্রাম, খুলনা, পটুয়াখালী থেকে আসা বাস এখানে থামে। অটো বা রিকশায় ১০–১৫ মিনিটে ক্যাম্পাস।', dir:'দক্ষিণে', dist:'২ কিমি', floor:'—', facilities:['টিকেট কাউন্টার','চায়ের দোকান','ফার্মেসি','টয়লেট','পার্কিং'], hours:{open:'সকাল ৫–রাত ১২', sat:'প্রতিদিন', note:'ঢাকার রাতের বাস সন্ধ্যা ৬–১০টায়'}, contact:'গ্রীনলাইন: ০১৭XX | শ্যামলী: ০১৮XX', tip:'সাকুরা, গ্রীনলাইন, হানিফ থেকে ঢাকার টিকেট পাবেন। আগাম বুকিং দিন।', isOpen:true }, { id:'s4', cat:'surrounding', type:'nature', icon:'🌳', iconCls:'ic-park', lat:22.6840, lng:90.3610, name:'বঙ্গবন্ধু উদ্যান', eng:'Bangabandhu Eco Park', short:'হাঁটার ট্রেইল, লেক, পরিবার স্পট', desc:'হাইওয়ের পাশে সুন্দর ইকো-পার্ক। ফুলের বাগান, ছোট লেক, হাঁটার পথ। প্রবেশ ফ্রি।', dir:'উত্তরে', dist:'১.৫ কিমি', floor:'—', facilities:['লেক','ফুল বাগান','শিশু রাইড','বেঞ্চ','ওয়াটার পয়েন্ট','ফ্রি এন্ট্রি'], hours:{open:'সকাল ৭–সন্ধ্যা ৬', sat:'প্রতিদিন', note:'শুক্রবার সকাল বেশি ভিড়'}, contact:'পার্ক: ০১৮XX-XXXXXX', tip:'ভোরের হাঁটা চমৎকার। ক্যামেরা নিন — পাখি দেখা যায়।', isOpen:true }, { id:'s5', cat:'surrounding', type:'historic', icon:'🏰', iconCls:'ic-hist', lat:22.6950, lng:90.3550, name:'রূপাতলী জমিদার বাড়ি', eng:'Rupatoli Zamindar Estate', short:'১৯০০ শতকের ঐতিহাসিক স্থাপত্য', desc:'বিংশ শতাব্দীর শুরুতে নির্মিত। বাংলার জমিদারি স্থাপত্যের অন্যতম নিদর্শন। সংরক্ষিত পুরাকীর্তি।', dir:'উত্তরে', dist:'৩ কিমি', floor:'—', facilities:['দর্শনার্থী গ্যালারি','গাইড সার্ভিস','ক্যাফে','পার্কিং'], hours:{open:'সকাল ৯–বিকাল ৫', sat:'শুক্র বন্ধ', note:'ছুটির দিন প্রবেশ ফি প্রযোজ্য'}, contact:'পুরাকীর্তি বিভাগ: ০১৭XX-XXXXXX', tip:'বিকেলের আলোয় ভবনের ছবি অসাধারণ।', isOpen:false }, { id:'s6', cat:'surrounding', type:'medical', icon:'🏥', iconCls:'ic-med', lat:22.7100, lng:90.3500, name:'শের-ই-বাংলা মেডিকেল কলেজ', eng:'Sher-e-Bangla Medical College', short:'১০০০+ বেড, ২৪/৭ ইমার্জেন্সি', desc:'বরিশাল বিভাগের সবচেয়ে বড় সরকারি হাসপাতাল। ১০০০+ বেড, ICU, CT Scan, MRI। ২৪/৭ ইমার্জেন্সি।', dir:'উত্তরে', dist:'৫ কিমি', floor:'—', facilities:['ICU','CT Scan','MRI','ব্লাড ব্যাংক','ফার্মেসি','অ্যাম্বুলেন্স'], hours:{open:'২৪/৭ ইমার্জেন্সি', sat:'বহির্বিভাগ সোম–বৃহ', note:'ইন্টার্ন ডাক্তার সবসময়'}, contact:'ইমার্জেন্সি: ০৪৩১-৬৪৭৮৮', tip:'শিক্ষার্থী পরিচয়পত্রে কিছু সেবায় ছাড় পাওয়া যায়।', isOpen:true }, { id:'s7', cat:'surrounding', type:'transport', icon:'🛣️', iconCls:'ic-trans', lat:22.6800, lng:90.3580, name:'বরিশাল-কুয়াকাটা মহাসড়ক', eng:'Barishal–Kuakata Highway (N8)', short:'বরিশাল-পটুয়াখালী সংযোগ N8', desc:'জাতীয় মহাসড়ক N8 ক্যাম্পাসের পশ্চিম সীমানা ধরে। বাস, সিএনজি, অটোরিকশা সব পাওয়া যায়।', dir:'পশ্চিমে', dist:'সংলগ্ন', floor:'—', facilities:['বাস স্টপ','সিএনজি স্ট্যান্ড','ফুটপাত','স্ট্রিট লাইট','পেট্রোল স্টেশন'], hours:{open:'২৪/৭', sat:'—', note:'রাতে ভারী যানবাহন বেশি'}, contact:'—', tip:'গেটের সামনে থেকে CNG নিলে সরাসরি বরিশাল লঞ্চ ঘাটে যাওয়া যায়।', isOpen:true }, { id:'s8', cat:'surrounding', type:'education', icon:'🏛️', iconCls:'ic-campus', lat:22.6900, lng:90.3650, name:'কর্ণকাঠী ইউনিয়ন পরিষদ', eng:'Kornokathi Union Parishad', short:'স্থানীয় প্রশাসনিক সেবা, নথিপত্র', desc:'জন্ম-মৃত্যু নিবন্ধন, ওয়ারিশ সনদ, ট্রেড লাইসেন্স, নাগরিক সনদ পাওয়া যায়।', dir:'উত্তর-পূর্বে', dist:'২ কিমি', floor:'—', facilities:['জন্ম নিবন্ধন','নাগরিক সনদ','ফটোকপি','নোটারি'], hours:{open:'রবি–বৃহ ৯:০০–৪:০০', sat:'শুক্র–শনি বন্ধ', note:'ছুটির আগে ভিড় বেশি'}, contact:'চেয়ারম্যান: ০১৮XX-XXXXXX', tip:'সনদ ইস্যুতে ৩–৭ কর্মদিন লাগে।', isOpen:false }, { id:'s9', cat:'surrounding', type:'transport', icon:'🚂', iconCls:'ic-trans', lat:22.6660, lng:90.3580, name:'রূপাতলী রেল স্টেশন', eng:'Rupatoli Railway Station', short:'লোকাল ট্রেন, বরিশাল মূল স্টেশন কাছে', desc:'ছোট রেল স্টেশন, শুধু লোকাল ট্রেন থামে। আন্তঃনগর ট্রেনের জন্য বরিশাল মূল স্টেশন (৮ কিমি)।', dir:'দক্ষিণে', dist:'৩ কিমি', floor:'—', facilities:['টিকেট কাউন্টার','প্ল্যাটফর্ম','চায়ের দোকান'], hours:{open:'ট্রেন অনুযায়ী', sat:'প্রতিদিন', note:'বরিশাল মূল স্টেশন বেশি সুবিধাজনক'}, contact:'রেলওয়ে: ০১৭XX-XXXXXX', tip:'ঢাকার সুন্দরবন এক্সপ্রেস বরিশাল মূল স্টেশন থেকে ছাড়ে।', isOpen:true }, { id:'s10', cat:'surrounding', type:'market', icon:'🍜', iconCls:'ic-food', lat:22.6778, lng:90.3692, name:'ভাতের হোটেল ও রেস্টুরেন্ট জোন', eng:'Student Food Zone', short:'সস্তায় খাবার, ভাতের হোটেল, চা', desc:'৩০+ রেস্টুরেন্ট ও ভাতের হোটেল। ৩৫–৬০ টাকায় ভাত-তরকারি, সকালে পরোটা-ডাল। রাত ১১টা পর্যন্ত।', dir:'পূর্বে', dist:'০.৬ কিমি', floor:'—', facilities:['ভাতের হোটেল','চায়ের আড্ডা','ফাস্টফুড','জুসবার','বেকারি'], hours:{open:'সকাল ৬–রাত ১১', sat:'প্রতিদিন', note:'দুপুরে ১২–২টায় সবচেয়ে ভিড়'}, contact:'—', tip:'"মা রেস্টুরেন্ট" ও "হাজী হোটেল" প্রিয়। পরোটা-ডাল সকালে ২৫ টাকা।', isOpen:true } ]; // ── STATE ── let favorites = store.get('buFavs', []); let activeTab = 'all'; let activeChip = 'all'; let searchQ = ''; let selectedId = null; let rulerActive = false; let rulerPoints = []; let rulerLayer = null; let isSatellite = false; // ── SPLASH ── window.addEventListener('load', () => { setTimeout(() => document.getElementById('splash').classList.add('out'), 2300); }); // ── MAP ── const map = L.map('map', { center:[22.6760,90.3650], zoom:15, zoomControl:false, attributionControl:false }); const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19}); const satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}); streetLayer.addTo(map); L.polygon([[22.6778,90.3630],[22.6778,90.3680],[22.6722,90.3680],[22.6722,90.3630]], {color:'#1e40af',weight:2.5,fillColor:'#1e40af',fillOpacity:.05,dashArray:'10 6'}) .addTo(map).bindPopup('🏛️ বরিশাল বিশ্ববিদ্যালয় ক্যাম্পাস
+কর্ণকাঠী, বরিশাল সদর'); L.polyline([[22.6500,90.3600],[22.6650,90.3590],[22.6760,90.3600],[22.6850,90.3595],[22.7000,90.3580],[22.7150,90.3560]], {color:'#dc2626',weight:3.5,opacity:.55,dashArray:'12 7'}) .addTo(map).bindPopup('🛣️ বরিশাল-কুয়াকাটা মহাসড়ক (N8)'); // ── ICON COLOR MAP ── const ICON_COLOR = { 'ic-campus':'#1e40af','ic-market':'#c2410c','ic-river':'#0369a1', 'ic-hist':'#7e22ce','ic-med':'#b91c1c','ic-trans':'#a16207', 'ic-park':'#15803d','ic-food':'#d97706' }; function mkIcon(emoji, bg) { return L.divIcon({ className:'', html:`
+${emoji}
+`, iconSize:[40,40], iconAnchor:[20,20], popupAnchor:[0,-22] }); } const mkrMap = new Map(); LOCATIONS.forEach(loc => { const bg = ICON_COLOR[loc.iconCls] || '#1e40af'; const m = L.marker([loc.lat,loc.lng], {icon:mkIcon(loc.icon,bg)}).addTo(map); m.bindPopup(`
+${loc.icon}
+${loc.name}
+${loc.eng}
+${loc.short}
+${loc.dist} ${loc.dir} ${loc.isOpen?'✅ খোলা':'❌ বন্ধ'}
+ম্যাপে দেখুন বিস্তারিত
+`, {maxWidth:260,className:''}); mkrMap.set(loc.id, m); }); // ── RENDER CARDS ── function renderCards() { const container = document.getElementById('locList'); document.getElementById('cntAll').textContent = LOCATIONS.length; let html = '', lastCat = ''; const filtered = LOCATIONS.filter(loc => { if (activeTab === 'campus' && loc.cat !== 'campus') return false; if (activeTab === 'surrounding'&& loc.cat !== 'surrounding') return false; if (activeTab === 'favorites' && !favorites.includes(loc.id)) return false; if (activeChip !== 'all' && loc.type !== activeChip) return false; if (searchQ) { const q = searchQ.toLowerCase(); if (!loc.name.toLowerCase().includes(q) && !loc.eng.toLowerCase().includes(q) && !loc.short.toLowerCase().includes(q) && !loc.type.toLowerCase().includes(q)) return false; } return true; }); if (!filtered.length) { container.innerHTML = '
+🔍
+কোনো লোকেশন পাওয়া যায়নি
+
+'; return; } filtered.forEach(loc => { if (loc.cat !== lastCat) { html += `
+${loc.cat==='campus'?'🏫 ক্যাম্পাস':'📍 আশেপাশে'}
+`; lastCat = loc.cat; } const faved = favorites.includes(loc.id); html += `
+${loc.icon}
+${loc.name}
+${loc.eng}
+${loc.short}
+🧭 ${loc.dir} 📏 ${loc.dist} ${loc.isOpen?'✅ খোলা':'❌ বন্ধ'} 🏷️ ${loc.type}
+`; }); container.innerHTML = html; // double-click → modal container.querySelectorAll('.lcard').forEach(c => { c.addEventListener('dblclick', () => openModal(c.dataset.id)); }); } // ── SELECT LOCATION ── function selectLoc(id) { selectedId = id; const loc = LOCATIONS.find(l => l.id === id); if (!loc) return; renderCards(); map.flyTo([loc.lat,loc.lng], 17, {duration:1.1, easeLinearity:.3}); const card = document.querySelector(`.lcard[data-id="${id}"]`); if (card) card.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(() => { const m = mkrMap.get(id); if(m) m.openPopup(); }, 1200); showInfoCard(loc); toast(`${loc.icon} ${loc.name}`); } // ── MAP INFO CARD ── function showInfoCard(loc) { const faved = favorites.includes(loc.id); document.getElementById('micContent').innerHTML = `
+${loc.icon}
+${loc.name}
+${loc.eng}
+${loc.short}
+দিক
+${loc.dir}
+দূরত্ব
+${loc.dist}
+অবস্থা
+${loc.isOpen?'✅ খোলা':'❌ বন্ধ'}
+ধরন
+${loc.type}
+📋 বিস্তারিত ${faved?'❤️ সেভ করা':'🤍 সেভ করুন'}
+`; document.getElementById('mapCard').classList.add('show'); } function updateMicFav(id) { const btn = document.getElementById('micFavBtn'); if (btn) btn.textContent = favorites.includes(id) ? '❤️ সেভ করা' : '🤍 সেভ করুন'; } function closeMapCard() { document.getElementById('mapCard').classList.remove('show'); selectedId = null; renderCards(); } // ── MODAL ── function openModal(id) { const loc = LOCATIONS.find(l => l.id === id); if (!loc) return; const faved = favorites.includes(loc.id); document.getElementById('mTitle').textContent = `${loc.icon} ${loc.name}`; document.getElementById('mBody').innerHTML = `
+${loc.icon}
+${loc.name}
+${loc.eng}
+📝 বিবরণ
+${loc.desc}
+
+📊 মূল তথ্য
+📍 দিক
+${loc.dir}
+📏 দূরত্ব
+${loc.dist}
+🏷️ ধরন
+${loc.type}
+🏢 তলা
+${loc.floor||'—'}
+🕐 সময়সূচী
+সোম–শুক্র${loc.hours.open}
+শনি/শুক্র${loc.hours.sat}
+ℹ️ ${loc.hours.note}
+${loc.isOpen?'🟢 এখন খোলা আছে':'🔴 এখন বন্ধ'}
+✅ সুযোগ-সুবিধা
+${loc.facilities.map(f=>`${f}`).join('')}
+${loc.contact && loc.contact!=='—'?`
+📞 যোগাযোগ
+${loc.contact}
+`:''}
+💡 টিপস
+${loc.tip}
+ম্যাপে দেখুন ${faved?'❤️ সেভ করা':'🤍 সেভ করুন'}
+`; document.getElementById('overlay').classList.add('on'); } function refreshModalFavBtn(id) { const btn = document.getElementById('modalFavBtn'); if (btn) btn.innerHTML = favorites.includes(id)?'❤️ সেভ করা':'🤍 সেভ করুন'; } function closeModal() { document.getElementById('overlay').classList.remove('on'); } document.getElementById('overlay').addEventListener('click', e => { if(e.target.id==='overlay') closeModal(); }); // ── FAVORITES ── function toggleFav(e, id) { e.stopPropagation(); if (favorites.includes(id)) { favorites = favorites.filter(f => f !== id); } else { favorites.push(id); toast('❤️ সেভ করা হয়েছে'); } store.set('buFavs', favorites); renderCards(); renderFavPanel(); } function renderFavPanel() { const container = document.getElementById('favList'); const favLocs = LOCATIONS.filter(l => favorites.includes(l.id)); if (!favLocs.length) { container.innerHTML = '
+💔
+কোনো লোকেশন সেভ করা নেই
+
+'; return; } container.innerHTML = favLocs.map(loc => `
+${loc.icon}
+${loc.name}
+${loc.eng}
+`).join(''); } function openFavPanel() { renderFavPanel(); document.getElementById('favPanel').classList.add('on'); } function closeFavPanel() { document.getElementById('favPanel').classList.remove('on'); } // ── SEARCH & FILTER ── document.getElementById('searchInp').addEventListener('input', function() { searchQ = this.value.trim(); document.getElementById('clrBtn').classList.toggle('on', searchQ.length > 0); renderCards(); }); document.getElementById('clrBtn').addEventListener('click', function() { document.getElementById('searchInp').value = ''; searchQ = ''; this.classList.remove('on'); renderCards(); document.getElementById('searchInp').focus(); }); function switchTab(el, tab) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('on')); el.classList.add('on'); activeTab = tab; renderCards(); } function setChip(el, chip) { document.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); activeChip = chip; renderCards(); } // ── TOAST ── function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2200); } // ── MAP CONTROLS ── // FIX: resetView and toggleSat no longer take a btn arg — they manage pills themselves function resetView() { map.flyTo([22.6760,90.3650], 15, {duration:1.1}); document.querySelectorAll('.pill').forEach(p => p.classList.remove('act')); document.getElementById('pillHome').classList.add('act'); closeMapCard(); toast('🏛️ ক্যাম্পাস ভিউ'); } function fitAll() { const bounds = L.latLngBounds(LOCATIONS.map(l => [l.lat,l.lng])); map.flyToBounds(bounds, {padding:[50,50], duration:1.2}); toast('📍 সব লোকেশন'); } function toggleSat() { if (isSatellite) { map.removeLayer(satLayer); streetLayer.addTo(map); isSatellite = false; document.getElementById('pillSat').classList.remove('act'); document.getElementById('satBtn').classList.remove('ruler-on'); toast('🗺️ স্ট্রিট ভিউ'); } else { map.removeLayer(streetLayer); satLayer.addTo(map); isSatellite = true; document.getElementById('pillSat').classList.add('act'); document.getElementById('satBtn').classList.add('ruler-on'); toast('🛰️ স্যাটেলাইট ভিউ'); } } function locateMe() { if (!navigator.geolocation) { toast('⚠️ জিওলোকেশন সাপোর্ট নেই'); return; } navigator.geolocation.getCurrentPosition(pos => { map.flyTo([pos.coords.latitude,pos.coords.longitude], 16, {duration:1.2}); L.marker([pos.coords.latitude,pos.coords.longitude], { icon:L.divIcon({html:`
+`,iconSize:[18,18],iconAnchor:[9,9]}) }).addTo(map).bindPopup('📍 আপনি এখানে').openPopup(); toast('📍 আপনার লোকেশন'); }, () => toast('⚠️ লোকেশন পাওয়া যায়নি')); } // ── RULER ── function toggleRuler() { rulerActive = !rulerActive; const btn = document.getElementById('rulerBtn'); const overlay = document.getElementById('distOverlay'); if (rulerActive) { rulerPoints = []; document.getElementById('distVal').textContent = '—'; overlay.style.display = 'block'; map.getContainer().style.cursor = 'crosshair'; btn.classList.add('ruler-on'); toast('📏 দুটি স্থানে ক্লিক করুন'); } else { stopRuler(); } } function stopRuler() { rulerActive = false; rulerPoints = []; document.getElementById('distOverlay').style.display = 'none'; map.getContainer().style.cursor = ''; document.getElementById('rulerBtn').classList.remove('ruler-on'); if (rulerLayer) { map.removeLayer(rulerLayer); rulerLayer = null; } } map.on('click', function(e) { if (!rulerActive) return; rulerPoints.push(e.latlng); if (rulerLayer) map.removeLayer(rulerLayer); rulerLayer = L.polyline(rulerPoints, {color:'#1f7a4d',weight:3,dashArray:'6 4'}).addTo(map); if (rulerPoints.length === 2) { const d = rulerPoints[0].distanceTo(rulerPoints[1]); const txt = d >= 1000 ? (d/1000).toFixed(2)+' কিমি' : Math.round(d)+' মিটার'; document.getElementById('distVal').textContent = txt; toast(`📏 দূরত্ব: ${txt}`); setTimeout(stopRuler, 4000); } }); // ── MOBILE ── function checkMobile() { const mob = window.innerWidth <= 700; document.getElementById('mobHandle').style.display = mob ? 'block' : 'none'; } checkMobile(); window.addEventListener('resize', checkMobile); function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hide'); } // ── KEYBOARD ── document.addEventListener('keydown', e => { if (e.ctrlKey || e.metaKey) { if (e.key==='f') { e.preventDefault(); document.getElementById('searchInp').focus(); } if (e.key==='r') { e.preventDefault(); resetView(); } if (e.key==='s') { e.preventDefault(); toggleSat(); } if (e.key==='e') { e.preventDefault(); fitAll(); } } if (e.key==='Escape') { closeModal(); closeFavPanel(); if(rulerActive) stopRuler(); } }); // ── INIT ── renderCards(); console.log('%c✅ বরিশাল বিশ্ববিদ্যালয় ক্যাম্পাস এক্সপ্লোরার — সব ঠিকঠাক!', 'color:#1f7a4d;font-weight:bold;font-size:14px;'); console.log('%c⌨️ Ctrl+F=সার্চ | Ctrl+R=হোম | Ctrl+S=স্যাটেলাইট | Ctrl+E=সব দেখুন | Esc=বন্ধ', 'color:#0369a1;'); </script> HTMLEOF echo "Done: $(wc -l < /mnt/user-data/outputs/bu_campus_map.html) lines"
