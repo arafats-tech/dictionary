@@ -237,6 +237,9 @@
       flex-wrap: wrap;
       gap: 4px;
       margin-bottom: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 4px;
     }
     .chip {
       font-size: 11px;
@@ -252,6 +255,17 @@
     .chip:hover, .chip.active {
       background: var(--text);
       color: var(--bg);
+    }
+    .chip-separator {
+      width: 100%;
+      font-size: 10px;
+      color: var(--text3);
+      padding: 4px 4px 0 4px;
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     footer {
@@ -387,15 +401,33 @@
 <footer>CSE Vocabulary — ইংরেজি শব্দভান্ডার</footer>
 
 <script>
-// Get today's day of month (1-31)
-const todayDay = new Date().getDate();
-// Build day files array dynamically, but cap at day7 since we only have day1-day7
-const MAX_DAYS = 7;
-const dayNumber = todayDay <= MAX_DAYS ? todayDay : todayDay % MAX_DAYS || MAX_DAYS;
-const DAY_FILES = [];
-for (let i = 1; i <= MAX_DAYS; i++) {
-  DAY_FILES.push(`day${i}.html`);
+// Dynamically generate day files array - will try to load files until they fail
+async function discoverDayFiles() {
+  const dayFiles = [];
+  let dayNum = 1;
+  let consecutiveFails = 0;
+  const maxFails = 3; // Stop after 3 consecutive fails
+  
+  while (consecutiveFails < maxFails) {
+    try {
+      const response = await fetch(`day${dayNum}.html`);
+      if (response.ok) {
+        dayFiles.push(`day${dayNum}.html`);
+        consecutiveFails = 0; // Reset fail counter on success
+      } else {
+        consecutiveFails++;
+      }
+    } catch (error) {
+      consecutiveFails++;
+    }
+    dayNum++;
+  }
+  
+  return dayFiles;
 }
+
+// Get today's day of month for auto-selection
+const todayDay = new Date().getDate();
 
 /* ── THEME ── */
 const root = document.documentElement;
@@ -420,6 +452,7 @@ function toggleTheme() {
 let ALL_WORDS = [];
 let activeDay = 'all'; // 'all' for all days, or a number for specific day
 let activeChip = null;
+let DAY_FILES = [];
 
 const searchEl  = document.getElementById('search');
 const sortSel   = document.getElementById('sort-sel');
@@ -434,6 +467,9 @@ const chipsEl   = document.getElementById('chips');
 
 /* ── LOAD ── */
 async function loadDays() {
+  // Discover available day files
+  DAY_FILES = await discoverDayFiles();
+  
   const results = await Promise.all(
     DAY_FILES.map(file =>
       fetch(file)
@@ -457,9 +493,9 @@ async function loadDays() {
   infoWords.textContent = ALL_WORDS.length;
 
   // Check if today's day file was loaded successfully
-  const todayDataExists = days.includes(dayNumber);
+  const todayDataExists = days.includes(todayDay);
   if (todayDataExists) {
-    activeDay = dayNumber; // Set to today's matching day
+    activeDay = todayDay; // Set to today's matching day
   }
   // If no matching day, default to 'all'
 
@@ -506,27 +542,61 @@ function buildDayTabs(days) {
 
 function buildChips() {
   chipsEl.innerHTML = '';
-  const chipWords = activeDay === 'all' 
-    ? ALL_WORDS 
-    : ALL_WORDS.filter(w => w.day === activeDay);
   
-  chipWords.forEach(w => {
-    const b = document.createElement('button');
-    b.className = 'chip' + (activeChip === w.word ? ' active' : '');
-    b.textContent = w.word;
-    b.onclick = () => {
-      if (activeChip === w.word) {
-        activeChip = null; searchEl.value = '';
-        b.classList.remove('active');
-      } else {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        activeChip = w.word; searchEl.value = w.word;
-        b.classList.add('active');
-      }
-      render();
-    };
-    chipsEl.appendChild(b);
-  });
+  if (activeDay === 'all') {
+    // Show 2 words from each day with day separators
+    const days = [...new Set(ALL_WORDS.map(w => w.day))].sort((a,b) => a-b);
+    
+    days.forEach(day => {
+      // Add day separator
+      const separator = document.createElement('div');
+      separator.className = 'chip-separator';
+      separator.textContent = `Day ${day}`;
+      chipsEl.appendChild(separator);
+      
+      // Get first 2 words from this day
+      const dayWords = ALL_WORDS.filter(w => w.day === day).slice(0, 2);
+      
+      dayWords.forEach(w => {
+        const b = document.createElement('button');
+        b.className = 'chip' + (activeChip === w.word ? ' active' : '');
+        b.textContent = w.word;
+        b.onclick = () => {
+          if (activeChip === w.word) {
+            activeChip = null; searchEl.value = '';
+            b.classList.remove('active');
+          } else {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            activeChip = w.word; searchEl.value = w.word;
+            b.classList.add('active');
+          }
+          render();
+        };
+        chipsEl.appendChild(b);
+      });
+    });
+  } else {
+    // Show all words from selected day (no separator needed)
+    const dayWords = ALL_WORDS.filter(w => w.day === activeDay);
+    
+    dayWords.forEach(w => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (activeChip === w.word ? ' active' : '');
+      b.textContent = w.word;
+      b.onclick = () => {
+        if (activeChip === w.word) {
+          activeChip = null; searchEl.value = '';
+          b.classList.remove('active');
+        } else {
+          document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          activeChip = w.word; searchEl.value = w.word;
+          b.classList.add('active');
+        }
+        render();
+      };
+      chipsEl.appendChild(b);
+    });
+  }
 }
 
 function hl(str, q) {
