@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSE Vocabulary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #f2f1ee;
+      --surface:   #ffffff;
+      --border:    #e3e2de;
+      --text:      #18181b;
+      --text2:     #52525b;
+      --text3:     #a1a1aa;
+      --hover:     #fafaf9;
+      --chip-bg:   #e8e7e3;
+      --chip-fg:   #52525b;
+      --mark:      #fde68a;
+      --nav-bg:    #18181b;
+      --nav-fg:    #e4e4e7;
+      --nav-sub:   #52525b;
+      --day-bg:    #f0efec;
+      --day-act:   #18181b;
+      --day-act-fg:#ffffff;
+    }
+    [data-theme="dark"] {
+      --bg:        #0f0f10;
+      --surface:   #18181b;
+      --border:    #27272a;
+      --text:      #e4e4e7;
+      --text2:     #a1a1aa;
+      --text3:     #52525b;
+      --hover:     #1c1c1f;
+      --chip-bg:   #27272a;
+      --chip-fg:   #a1a1aa;
+      --mark:      #78350f;
+      --nav-bg:    #09090b;
+      --nav-fg:    #e4e4e7;
+      --nav-sub:   #3f3f46;
+      --day-bg:    #1c1c1f;
+      --day-act:   #e4e4e7;
+      --day-act-fg:#18181b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      background: var(--nav-bg);
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .nav-brand strong { font-size: 15px; font-weight: 600; color: var(--nav-fg); }
+    .nav-brand span { font-size: 12px; color: var(--nav-sub); font-family: 'Noto Serif Bengali', serif; margin-left: 8px; }
+    .theme-btn {
+      background: none; border: 1px solid #3f3f46; border-radius: 6px;
+      padding: 6px 12px; color: var(--nav-fg); font-size: 12px;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 100px;
+    }
+    .stat-box .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+    .stat-box .value {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .stat-box .sub {
+      font-size: 11px;
+      color: var(--text3);
+      font-family: 'Noto Serif Bengali', serif;
+    }
+
+    /* Day selector */
+    .day-selector {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .day-btn {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text2);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+    .day-btn:hover { background: var(--hover); }
+    .day-btn.active {
+      background: var(--day-act);
+      color: var(--day-act-fg);
+      border-color: var(--day-act);
+    }
+    .day-btn .count {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 4px;
+    }
+
+    /* Search and sort */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .search-wrap {
+      flex: 1;
+      position: relative;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      pointer-events: none;
+    }
+    input[type="search"] {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      outline: none;
+    }
+    input[type="search"]:focus { border-color: var(--text3); }
+    input[type="search"]::placeholder { color: var(--text3); }
+    select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .result-count {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+
+    /* Word list */
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .word-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.1s;
+    }
+    .word-row:first-child { border-radius: 10px 10px 0 0; }
+    .word-row:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+    .word-row:hover { background: var(--hover); }
+    
+    .word-row.header {
+      background: var(--bg);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text3);
+      font-weight: 600;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .word-row.header:first-child { border-radius: 10px 10px 0 0; }
+
+    .col-id { color: var(--text3); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .col-word { font-weight: 600; font-size: 15px; }
+    .col-en { font-size: 14px; color: var(--text); }
+    .col-bn { font-family: 'Noto Serif Bengali', serif; font-size: 14px; color: var(--text2); }
+
+    mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-size: 14px;
+    }
+
+    /* Chips */
+    .chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--chip-bg);
+      color: var(--chip-fg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+    .chip:hover, .chip.active {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--text3);
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* Mobile: collapse to 2-column card layout */
+    @media (max-width: 640px) {
+      nav {
+        padding: 10px 14px;
+      }
+      .nav-brand strong { font-size: 14px; }
+      .nav-brand span { font-size: 11px; display: none; }
+      .container { padding: 14px; }
+
+      .stats { gap: 8px; }
+      .stat-box { padding: 10px 12px; }
+      .stat-box .value { font-size: 24px; }
+
+      .controls { flex-direction: column; }
+      select { width: 100%; }
+
+      /* Hide table header on mobile */
+      .word-row.header { display: none; }
+
+      /* Switch to card-like 2-column layout */
+      .word-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 4px 8px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+      .word-row:first-child { border-radius: 8px; }
+      .word-row:last-child { border-radius: 8px; }
+
+      .col-id { grid-column: 1; grid-row: 1; font-size: 10px; }
+      .col-word { grid-column: 2; grid-row: 1; font-size: 14px; }
+      .col-en { grid-column: 1; grid-row: 2; font-size: 13px; }
+      .col-bn { grid-column: 2; grid-row: 2; font-size: 13px; font-family: 'Noto Serif Bengali', serif; }
+    }
+
+    @media (max-width: 380px) {
+      .stats { flex-direction: column; }
+      .word-row {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 2px;
+      }
+      .col-id { grid-column: 1; grid-row: 1; }
+      .col-word { grid-column: 1; grid-row: 2; }
+      .col-en { grid-column: 1; grid-row: 3; }
+      .col-bn { grid-column: 1; grid-row: 4; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <strong>CSE Vocabulary</strong>
+    <span>ইংরেজি শব্দভান্ডার</span>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()">
+    <svg id="t-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <span id="t-label">Light</span>
+  </button>
+</nav>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box">
+      <div class="label">শব্দ দেখাচ্ছে</div>
+      <div class="value" id="stat-count">—</div>
+      <div class="sub" id="stat-desc">লোড হচ্ছে…</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">মোট দিন</div>
+      <div class="value" id="info-days">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">মোট শব্দ</div>
+      <div class="value" id="info-words">—</div>
+    </div>
+  </div>
+
+  <!-- Day selector -->
+  <div class="day-selector" id="day-tabs">লোড হচ্ছে…</div>
+
+  <!-- Quick chips -->
+  <div class="chips-wrap" id="chips"></div>
+
+  <!-- Search & sort -->
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search" placeholder="Word বা বাংলায় খুঁজুন…" autocomplete="off" />
+    </div>
+    <select id="sort-sel">
+      <option value="">Default</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+    </select>
+  </div>
+
+  <!-- Result count -->
+  <div class="result-count" id="meta"></div>
+
+  <!-- Word list -->
+  <div class="word-list" id="word-list">
+    <div class="empty-state">লোড হচ্ছে…</div>
+  </div>
+
+</div>
+
+<footer>CSE Vocabulary — ইংরেজি শব্দভান্ডার</footer>
+
+<script>
+// Get today's day of month (1-31)
+const todayDay = new Date().getDate();
+// Build day files array dynamically, but cap at day7 since we only have day1-day7
+const MAX_DAYS = 7;
+const dayNumber = todayDay <= MAX_DAYS ? todayDay : todayDay % MAX_DAYS || MAX_DAYS;
+const DAY_FILES = [];
+for (let i = 1; i <= MAX_DAYS; i++) {
+  DAY_FILES.push(`day${i}.html`);
+}
+
+/* ── THEME ── */
+const root = document.documentElement;
+(function(){
+  const saved = localStorage.getItem('csv-theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(saved);
+})();
+function applyTheme(t) {
+  root.setAttribute('data-theme', t);
+  localStorage.setItem('csv-theme', t);
+  document.getElementById('t-label').textContent = t === 'dark' ? 'Dark' : 'Light';
+  document.getElementById('t-icon').innerHTML = t === 'dark'
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+function toggleTheme() {
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── STATE ── */
+let ALL_WORDS = [];
+let activeDay = 'all'; // 'all' for all days, or a number for specific day
+let activeChip = null;
+
+const searchEl  = document.getElementById('search');
+const sortSel   = document.getElementById('sort-sel');
+const wordList  = document.getElementById('word-list');
+const metaEl    = document.getElementById('meta');
+const statCount = document.getElementById('stat-count');
+const statDesc  = document.getElementById('stat-desc');
+const infoDays  = document.getElementById('info-days');
+const infoWords = document.getElementById('info-words');
+const dayTabsEl = document.getElementById('day-tabs');
+const chipsEl   = document.getElementById('chips');
+
+/* ── LOAD ── */
+async function loadDays() {
+  const results = await Promise.all(
+    DAY_FILES.map(file =>
+      fetch(file)
+        .then(r => r.text())
+        .then(text => {
+          const fn = new Function(text + '; return DAY_DATA;');
+          return fn();
+        })
+        .catch(() => null)
+    )
+  );
+
+  results.forEach(data => {
+    if (data && data.words) {
+      data.words.forEach(w => ALL_WORDS.push({ ...w, day: data.day }));
+    }
+  });
+
+  const days = [...new Set(ALL_WORDS.map(w => w.day))].sort((a,b) => a-b);
+  infoDays.textContent  = days.length;
+  infoWords.textContent = ALL_WORDS.length;
+
+  // Check if today's day file was loaded successfully
+  const todayDataExists = days.includes(dayNumber);
+  if (todayDataExists) {
+    activeDay = dayNumber; // Set to today's matching day
+  }
+  // If no matching day, default to 'all'
+
+  buildDayTabs(days);
+  buildChips();
+  render();
+}
+
+function buildDayTabs(days) {
+  dayTabsEl.innerHTML = '';
+  
+  // Add "All Days" button
+  const allBtn = document.createElement('button');
+  allBtn.className = 'day-btn' + (activeDay === 'all' ? ' active' : '');
+  allBtn.innerHTML = `All Days<span class="count">${ALL_WORDS.length}</span>`;
+  allBtn.onclick = () => {
+    activeDay = 'all';
+    activeChip = null;
+    searchEl.value = '';
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+    buildChips();
+    render();
+  };
+  dayTabsEl.appendChild(allBtn);
+  
+  days.forEach(d => {
+    const count = ALL_WORDS.filter(w => w.day === d).length;
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (d === activeDay ? ' active' : '');
+    btn.innerHTML = `Day ${d}<span class="count">${count}</span>`;
+    btn.onclick = () => {
+      activeDay = d;
+      activeChip = null;
+      searchEl.value = '';
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      buildChips();
+      render();
+    };
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+function buildChips() {
+  chipsEl.innerHTML = '';
+  const chipWords = activeDay === 'all' 
+    ? ALL_WORDS 
+    : ALL_WORDS.filter(w => w.day === activeDay);
+  
+  chipWords.forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (activeChip === w.word ? ' active' : '');
+    b.textContent = w.word;
+    b.onclick = () => {
+      if (activeChip === w.word) {
+        activeChip = null; searchEl.value = '';
+        b.classList.remove('active');
+      } else {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        activeChip = w.word; searchEl.value = w.word;
+        b.classList.add('active');
+      }
+      render();
+    };
+    chipsEl.appendChild(b);
+  });
+}
+
+function hl(str, q) {
+  if (!q) return str;
+  return str.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<mark>$1</mark>');
+}
+
+function render() {
+  const q = searchEl.value.trim().toLowerCase();
+  const s = sortSel.value;
+  const pool = q ? ALL_WORDS : (activeDay === 'all' ? ALL_WORDS : ALL_WORDS.filter(w => w.day === activeDay));
+  let list = pool.filter(w =>
+    !q || w.word.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.bn.includes(q)
+  );
+  if (s === 'az') list.sort((a,b) => a.word.localeCompare(b.word));
+  else if (s === 'za') list.sort((a,b) => b.word.localeCompare(a.word));
+
+  statCount.textContent = list.length;
+  if (q) {
+    statDesc.textContent = 'সার্চ ফলাফল';
+  } else if (activeDay === 'all') {
+    statDesc.textContent = 'সব দিন দেখানো হচ্ছে';
+  } else {
+    statDesc.textContent = `Day ${activeDay} দেখানো হচ্ছে`;
+  }
+  metaEl.textContent    = list.length === pool.length
+    ? `${list.length} টি শব্দ`
+    : `${list.length} / ${pool.length} টি শব্দ`;
+
+  if (!list.length) {
+    wordList.innerHTML = '<div class="empty-state">কোনো শব্দ পাওয়া যায়নি।</div>';
+    return;
+  }
+
+  wordList.innerHTML = `
+    <div class="word-row header">
+      <div>#</div>
+      <div>Word</div>
+      <div>English</div>
+      <div>বাংলা</div>
+    </div>
+    ${list.map(w => `
+      <div class="word-row">
+        <div class="col-id">${w.id}</div>
+        <div class="col-word">${hl(w.word, q)}</div>
+        <div class="col-en">${hl(w.en, q)}</div>
+        <div class="col-bn">${hl(w.bn, q)}</div>
+      </div>`).join('')}
+  `;
+}
+
+searchEl.addEventListener('input', () => {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  activeChip = null;
+  render();
+});
+sortSel.addEventListener('change', render);
+
+loadDays();
+</script>
+</body>
+</html>
